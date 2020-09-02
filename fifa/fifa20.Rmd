@@ -1,0 +1,243 @@
+---
+title: "fifa 20"
+output:
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggthemes)
+library(RColorBrewer)
+theme_set(theme_minimal())
+```
+
+```{r clean_and_tidy, include=FALSE}
+pros <- read_csv("players_20.csv")
+
+pros <- pros %>% 
+    mutate(name=short_name,
+           cost=value_eur,
+           wage=wage_eur,
+           positions=player_positions,
+    )
+
+pros_position_longer <- pros %>% 
+    separate(col=positions,
+             sep=",",
+             into=c("pos1","pos2","pos3")
+    ) %>% 
+    mutate(pos1=str_trim(pos1),
+           pos2=str_trim(pos2),
+           pos3=str_trim(pos3),
+    ) %>% 
+    pivot_longer(cols=c(pos1,pos2,pos3),
+                 names_to="position_rank",
+                 values_to="position",
+                 values_drop_na=TRUE
+    )
+```
+
+```{r club_rating, echo=FALSE, fig.align="center", fig.width=9, fig.asp=0.618}
+pros %>% 
+    filter(!(team_position %in% c("SUB","RES"))) %>% 
+    group_by(club) %>% 
+    summarise(rating=mean(overall),count=n(),roster_cost=sum(cost),.groups="drop") %>% 
+    filter(count>=11) %>% 
+    top_n(20, rating) %>% 
+    arrange(desc(rating)) %>% 
+    ggplot(aes(x=fct_reorder(club,rating),y=rating)) +
+        geom_point(size=3.5,shape=21,fill="#00c0ff",color="black",alpha=0.8) +
+        coord_flip() +
+        labs(title="football clubs by average player rating",
+             x="", y="average player rating"
+        )
+```
+
+```{r club_spending, echo=FALSE, fig.align="center", fig.width=9, fig.asp=0.618}
+pros %>% 
+    filter(!(team_position %in% c("SUB","RES"))) %>% 
+    group_by(club) %>% 
+    summarise(rating=mean(overall),count=n(),roster_cost=sum(cost),.groups="drop") %>% 
+    filter(count>=11) %>% 
+    top_n(20, roster_cost) %>% 
+    arrange(desc(roster_cost)) %>% 
+    ggplot(aes(x=fct_reorder(club,rating),y=roster_cost/1e6)) +
+        geom_point(size=3.5,shape=21,fill="#5fa052",color="black",alpha=0.8) +
+        coord_flip() +
+        labs(title="football clubs by roster spending",
+             x="", y="overall player cost (€ - in millions)"
+        )
+```
+
+```{r club_rating_spending, echo=FALSE, fig.align="center", fig.width=9, fig.asp=0.8}
+pros %>% 
+    filter(!(team_position %in% c("SUB","RES"))) %>% 
+    filter(cost!=0) %>% 
+    group_by(club) %>% 
+    summarise(rating=mean(overall),avg_cost=mean(cost),count=n(),.groups="drop") %>% 
+    filter(count>=11) %>% 
+    ggplot(aes(x=avg_cost,y=rating)) +
+        geom_point(size=2) +
+        scale_x_continuous(trans="log10",
+                           labels=scales::comma,
+                           ) +
+        labs(title="club player rating vs roster cost",
+             x="average roster cost (€)",
+             y="average overall rating"
+             ) 
+```
+
+```{r club_rating_spending_labels, echo=FALSE, fig.align="center", fig.width=9, fig.asp=0.8}
+labels_df <- pros %>% 
+    filter(club %in% c("Sunderland",
+                       "Manchester City",
+                       "FC Barcelona",
+                       "Real Madrid",
+                       "Liverpool",
+                       "Manchester United",
+                       "Paris Saint-Germain",
+                       "Juventus",
+                       "Chelsea",
+                       "Arsenal",
+                       "LA Galaxy",
+                       "New York Red Bulls",
+                       "DC United",
+                       "Everton",
+                       "Peterborough United",
+                       "Shanghai Greenland Shenhua FC",
+                       "Bolton Wanderers",
+                       "Finn Harps",
+                       "Guadalajara"
+                       )
+           ) %>% 
+    filter(!(team_position %in% c("SUB","RES"))) %>% 
+    filter(cost!=0) %>% 
+    group_by(club) %>% 
+    summarise(rating=mean(overall),avg_cost=mean(cost),count=n(),.groups="drop")
+
+        
+pros %>% 
+    filter(!(team_position %in% c("SUB","RES"))) %>% 
+    filter(cost!=0) %>% 
+    group_by(club) %>% 
+    summarise(rating=mean(overall),avg_cost=mean(cost),count=n(),.groups="drop") %>% 
+    filter(count>=11) %>% 
+    ggplot(aes(x=avg_cost,y=rating)) +
+        geom_point(size=2) +
+        scale_x_continuous(trans="log10",
+                           labels=scales::comma,
+                           ) +
+        labs(title="club player rating vs roster cost",
+             x="average roster cost (€)",
+             y="average overall rating"
+             ) +
+        geom_point(data=labels_df,aes(x=avg_cost,y=rating),size=2,color="red") +
+        ggrepel::geom_label_repel(data=labels_df,aes(x=avg_cost,y=rating,label=club),box.padding=0.6,segment.color="#00c0ff")
+```
+
+```{r underrated_attackers, echo=FALSE, fig.align="center", fig.width=9, fig.asp=0.618}
+attackers <- c("CF","ST","CAM","LW","RW","LAM","RAM")
+pros_position_longer %>% 
+    filter(cost!=0,
+           position %in% attackers,
+           position_rank=="pos1",
+           potential>=82,
+           overall>60,
+    ) %>% 
+    mutate(value_ratio=potential/cost) %>% 
+    top_n(30, value_ratio) %>% 
+    ggplot(aes(x=fct_reorder(name,value_ratio),y=value_ratio*1e4,fill=position)) +
+        geom_col(aes(fill=position),
+                 color="black",
+                 width=0.8,
+                 alpha=0.8,
+                 ) +
+        geom_text(aes(label=paste(potential," - €",format(cost,big.mark=","),sep=""),
+                      y=0.1),size=2.5,color="black") +
+        coord_flip() +
+        scale_fill_brewer(palette="Accent") +
+        labs(title="scouting targets by position - attackers",
+             x="", y="value ratio (per $10,000)"
+        )
+```
+ 
+ 
+```{r underrated_midfielders, echo=FALSE, fig.align="center", fig.width=9, fig.asp=0.618}
+midfielders <- c("CM","LM","RM","LWB","RWB")
+pros_position_longer %>% 
+    filter(cost!=0,
+           position %in% midfielders,
+           position_rank=="pos1",
+           potential>=82,
+           overall>60,
+    ) %>% 
+    mutate(value_ratio=potential/cost) %>%     
+    
+    top_n(30, value_ratio) %>% 
+    ggplot(aes(x=fct_reorder(name,value_ratio),y=value_ratio*1e4,fill=position)) +
+        geom_col(aes(fill=position),
+                 color="black",
+                 width=0.8,
+                 alpha=0.8,
+                 ) +
+        geom_text(aes(label=paste(potential," - €",format(cost,big.mark=","),sep=""),
+                      y=0.1),size=2.5,color="black") +
+        coord_flip() +
+        scale_fill_brewer(palette="Accent") +
+        labs(title="scouting targets by position - midfielders",
+             x="", y="value ratio (per $10,000)"
+        )
+```
+
+```{r underrated_defenders, echo=FALSE, fig.align="center", fig.width=9, fig.asp=0.618}
+defenders <- c("CB","LB","RB","DM")
+pros_position_longer %>% 
+    filter(cost!=0,
+           position %in% defenders,
+           position_rank=="pos1",
+           potential>=82,
+           overall>=60,
+    ) %>% 
+    mutate(value_ratio=potential/cost) %>% 
+    top_n(30, value_ratio) %>% 
+    ggplot(aes(x=fct_reorder(name,value_ratio),y=value_ratio*1e4,fill=position)) +
+        geom_col(aes(fill=position),
+                 color="black",
+                 width=0.8,
+                 alpha=0.8,
+                 ) +
+        geom_text(aes(label=paste(potential," - €",format(cost,big.mark=","),sep=""),
+                      y=0.12),size=2.5,color="black") +
+        coord_flip() +
+        scale_fill_brewer(palette="Accent") +
+        labs(title="scouting targets by position - defenders",
+             x="", y="value ratio (per $10,000)"
+        )
+```
+
+```{r underrated_keepers, echo=FALSE, fig.align="center", fig.width=9, fig.asp=0.618}
+goalkeepers <- c("GK")
+pros_position_longer %>% 
+    filter(cost!=0,
+           position %in% goalkeepers,
+           position_rank=="pos1",
+           potential>=82,
+           overall>=60,
+    ) %>% 
+    mutate(value_ratio=potential/cost) %>% 
+    top_n(30, value_ratio) %>% 
+    ggplot(aes(x=fct_reorder(name,value_ratio),y=value_ratio*1e4,fill=position)) +
+        geom_col(aes(fill=position),
+                 color="black",
+                 width=0.8,
+                 alpha=0.8,
+                 ) +
+        geom_text(aes(label=paste(potential," - €",format(cost,big.mark=","),sep=""),
+                      y=0.1),size=2.5,color="black") +
+        coord_flip() +
+        scale_fill_brewer(palette="Accent") +
+        labs(title="scouting targets by position - goalkeepers",
+             x="", y="value ratio (per $10,000)"
+        )
+```

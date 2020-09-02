@@ -1,0 +1,7 @@
+"0","pinguino_forest <- rand_forest("
+"0","                     trees = 200,"
+"0","                     mtry = 3,"
+"0","                     mode = ""classification"""
+"0","                   ) %>%"
+"0","  set_engine(""randomForest"") %>%"
+"0","  fit(species ~ ., data = pinguino_training)"

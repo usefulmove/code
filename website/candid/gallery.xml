@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simpleviewerGallery maxImageWidth="800" maxImageHeight="800" textColor="0xDFDEDC" frameColor="0xC0C0C0" frameWidth="1" stagePadding="40" thumbnailColumns="3" thumbnailRows="3" navPosition="left" title="candid" enableRightClickOpen="false" backgroundImagePath="" imagePath="" thumbPath="">
+<image>
+	<filename>tomeka_tattoo.jpg</filename>
+	<caption><![CDATA[<i>(i)  Copyright © D. Edmonds</i>]]></caption>
+</image>
+<image>
+	<filename>tomeka_laundry_reach.jpg</filename>
+	<caption><![CDATA[<i>(ii)  Copyright © D. Edmonds</i>]]></caption>
+</image>
+<image>
+	<filename>seated_girl.jpg</filename>
+	<caption><![CDATA[<i>(iii)  Copyright © D. Edmonds</i>]]></caption>
+</image>
+<image>
+	<filename>walk.jpg</filename>
+	<caption><![CDATA[<i>(iv)  Copyright © D. Edmonds</i>]]></caption>
+</image>
+<image>
+	<filename>couple.jpg</filename>
+	<caption><![CDATA[<i>(v)  Copyright © D. Edmonds</i>]]></caption>
+</image>
+<image>
+	<filename>boy_eyes.jpg</filename>
+	<caption><![CDATA[<i>(vi)  Copyright © D. Edmonds</i>]]></caption>
+</image>
+<image>
+	<filename>justice.jpg</filename>
+	<caption><![CDATA[<i>(vii)  Copyright © D. Edmonds</i>]]></caption>
+</image>
+<image>
+	<filename>sandwich.jpg</filename>
+	<caption><![CDATA[<i>(viii)  Copyright © D. Edmonds</i>]]></caption>
+</image>
+<image>
+	<filename>td_laundry_basket.jpg</filename>
+	<caption><![CDATA[<i>(ix)  Copyright © D. Edmonds</i>]]></caption>
+</image>
+</simpleviewerGallery>

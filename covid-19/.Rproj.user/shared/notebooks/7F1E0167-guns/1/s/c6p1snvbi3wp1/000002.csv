@@ -1,0 +1,22 @@
+"0","```r
+gs %>% 
+    group_by(state) %>% 
+    summarise(deaths=sum(dead)) %>%
+    left_join(gowners,by=\"state\") %>%
+    mutate(deaths_capita=deaths/population) %>%
+    filter(region %in% c(\"South\",\"Northeast\")) %>% 
+    ggplot(aes(x=guns_reg/population*1e3,y=deaths_capita*1e5)) +
+        geom_smooth(method=\"lm\",formula=y~x,fill=\"#eeeeee\",color=\"#cccccc\") +
+        geom_point(aes(fill=region),size=5,shape=21,stroke=1.5) +
+        geom_text_repel(aes(label=state),
+                   color=\"grey24\",
+                   point.padding=0.5) +
+        scale_x_continuous(trans=\"log2\") +
+        scale_y_continuous(trans=\"log2\") +
+        scale_fill_brewer(palette=\"Set3\") +
+        theme_minimal() +
+        ggtitle(\"gun deaths vs number of guns\") +
+        xlab(\"number of guns (per thousand)\") +
+        ylab(\"deaths (per 100,000)\")
+
+```"

@@ -1,0 +1,26 @@
+"0","```r
+# clean, tidy and munge
+gs <- gun_incidents %>% 
+    select(id=incident_id,
+           date,
+           state,
+           city=city_or_county,
+           dead=n_killed,
+           injured=n_injured,
+           type=gun_type,
+           nguns=n_guns_involved,
+           age=participant_age,
+           gender=participant_gender,
+           name=participant_name,
+           relates=participant_relationship
+           ) %>% 
+    mutate(state=as.factor(state),
+           city=as.factor(city),
+           gender=as.factor(gender),
+           year=year(date),
+           month=month(date),
+           day=day(date)
+           ) %>% 
+    filter(between(year,2014,2017))  # 2013, 2018 data do not appear to include full year
+            
+```"

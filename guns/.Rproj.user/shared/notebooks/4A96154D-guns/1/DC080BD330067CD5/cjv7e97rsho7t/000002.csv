@@ -1,0 +1,27 @@
+"0","# load murders dataset"
+"0","data(murders)"
+"0","murders <- as_tibble(murders)"
+"0",""
+"0","# load guns dataset"
+"0","guns <- as_tibble( read_csv(""gun-violence-data_01-2013_03-2018.csv"") )"
+"2","Parsed with column specification:
+cols(
+  .default = col_character(),
+  incident_id = [32mcol_double()[39m,
+  date = [34mcol_date(format = """")[39m,
+  n_killed = [32mcol_double()[39m,
+  n_injured = [32mcol_double()[39m,
+  incident_url_fields_missing = [33mcol_logical()[39m,
+  congressional_district = [32mcol_double()[39m,
+  latitude = [32mcol_double()[39m,
+  longitude = [32mcol_double()[39m,
+  n_guns_involved = [32mcol_double()[39m,
+  state_house_district = [32mcol_double()[39m,
+  state_senate_district = [32mcol_double()[39m
+)
+"
+"2","See spec(...) for full column specifications.
+"
+"0","# load state and region data file"
+"0","states <- read.csv(""../library/states.csv"")"
+"0",""

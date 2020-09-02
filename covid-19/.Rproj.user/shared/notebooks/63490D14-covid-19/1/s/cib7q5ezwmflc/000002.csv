@@ -1,0 +1,67 @@
+"0","data_path <- ""../../../covid-19-data/"""
+"0",""
+"0","# united states"
+"0","us <- read_csv( paste( data_path, ""us.csv"", sep="""" ) )"
+"2","Parsed with column specification:
+cols(
+  date = [34mcol_date(format = """")[39m,
+  cases = [32mcol_double()[39m,
+  deaths = [32mcol_double()[39m
+)
+"
+"0","us_live <- read_csv( paste( data_path, ""./live/us.csv"", sep="""" ) )"
+"2","Parsed with column specification:
+cols(
+  date = [34mcol_date(format = """")[39m,
+  cases = [32mcol_double()[39m,
+  deaths = [32mcol_double()[39m,
+  confirmed_cases = [33mcol_logical()[39m,
+  confirmed_deaths = [33mcol_logical()[39m,
+  probable_cases = [33mcol_logical()[39m,
+  probable_deaths = [33mcol_logical()[39m
+)
+"
+"0","us_live <- us %>% "
+"0","    bind_rows( us_live )"
+"0",""
+"0","# states"
+"0","states <- read_csv( paste( data_path, ""us-states.csv"", sep="""" ) )"
+"2","Parsed with column specification:
+cols(
+  date = [34mcol_date(format = """")[39m,
+  state = [31mcol_character()[39m,
+  fips = [31mcol_character()[39m,
+  cases = [32mcol_double()[39m,
+  deaths = [32mcol_double()[39m
+)
+"
+"0","states_live <- read_csv( paste( data_path, ""./live/us-states.csv"", sep="""" ) )"
+"2","Parsed with column specification:
+cols(
+  date = [34mcol_date(format = """")[39m,
+  state = [31mcol_character()[39m,
+  fips = [31mcol_character()[39m,
+  cases = [32mcol_double()[39m,
+  deaths = [32mcol_double()[39m,
+  confirmed_cases = [32mcol_double()[39m,
+  confirmed_deaths = [32mcol_double()[39m,
+  probable_cases = [32mcol_double()[39m,
+  probable_deaths = [32mcol_double()[39m
+)
+"
+"0","states_live <- states %>% "
+"0","    bind_rows( states_live )"
+"0",""
+"0","# counties"
+"0","counties <- read_csv( paste( data_path, ""us-counties.csv"", sep="""" ) )"
+"2","Parsed with column specification:
+cols(
+  date = [34mcol_date(format = """")[39m,
+  county = [31mcol_character()[39m,
+  state = [31mcol_character()[39m,
+  fips = [31mcol_character()[39m,
+  cases = [32mcol_double()[39m,
+  deaths = [32mcol_double()[39m
+)
+"
+"0","    "

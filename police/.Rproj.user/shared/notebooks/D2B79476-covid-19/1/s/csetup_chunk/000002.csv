@@ -1,0 +1,36 @@
+"0","data_path <- ""../../../covid-19-data/"""
+"0",""
+"0","library( tidyverse )"
+"0","library( ggthemes )"
+"0","library( grid )"
+"0","library( gridExtra )"
+"2","
+Attaching package: ‘gridExtra’
+
+"
+"2","The following object is masked from ‘package:dplyr’:
+
+    combine
+
+"
+"0","library( lubridate )"
+"2","
+Attaching package: ‘lubridate’
+
+"
+"2","The following objects are masked from ‘package:dplyr’:
+
+    intersect, setdiff, union
+
+"
+"2","The following objects are masked from ‘package:base’:
+
+    date, intersect, setdiff, union
+
+"
+"0","library( RColorBrewer )"
+"0",""
+"0","prim_color <- ""#fcab18"""
+"0","sec_color <- ""#00c0ff"""
+"0",""
+"0","theme_set(theme_minimal())"

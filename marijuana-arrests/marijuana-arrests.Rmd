@@ -1,0 +1,45 @@
+---
+title: ""
+output: html_document
+---
+
+## District of Columbia Marijuana Arrests
+
+(https://opendata.dc.gov/datasets/8021ab8f582549628a3c044fec97a073_39)
+
+
+>This data includes arrests made by the Metropolitan Police Department (MPD). The data represents individuals arrested with a marijuana charge, regardless of whether there was a more serious secondary charge. If an arrestee was charged with multiple marijuana charges, the arrest is only counted once under the more serious charge type: Distribution, Possession with Intent to Distribute, Possession, Public Consumption. Due to privacy considerations, exact CCNs and arrest numbers for these arrest datasets are not provided. In lieu, hash numbers are provided for CNN which allows individuals to determine whether there are multiple arrests associated with one event. Additionally, arrest numbers can be linked directly to an individual and therefore DC government does not provide this more generally, but again as hash numbers.
+>
+>MPD collects race and ethnicity data according to the United States Census Bureau standards (https://www.census.gov/topics/population/race/about.html). Hispanic, which was previously categorized under the Race field prior to August 2015, is now captured under Ethnicity. All records prior to August 2015 have been updated to “Unknown (Race), Hispanic (Ethnicity)”. Race and ethnicity data are based on officer observation, which may or may not be accurate.
+>
+>MPD cannot release exact addresses to the general public unless proof of ownership or subpoena is submitted. The GeoX and GeoY values represent the block location (approximately 232 ft. radius) as of the date of the arrest. Due to the Department’s redistricting efforts in 2012 and 2017, data may not be comparable in some years.
+>
+>Arrestee age is calculated based on the number of days between the self-reported or verified date of birth (DOB) of the arrestee and the date of the arrest; DOB data may not be accurate if self-reported or if the arrestee refused to provide it.
+>
+>Due to the sensitive nature of juvenile data and to protect the arrestee’s confidentiality, any arrest records for defendants under the age of 18 have been coded as “Juvenile” [...].
+
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(RColorBrewer)
+arrests <- readr::read_csv("marijuana_arrests.csv")
+```
+
+
+```{r analysis, echo=FALSE, fig.width=9, fig.height=6.5}
+arrests %>% 
+    filter(AGE!="Juvenile") %>% 
+    group_by(RACE,SEX) %>% 
+    summarise(count=n(),.groups="drop") %>% 
+    ggplot(aes(fct_reorder(RACE,desc(count)),count,fill=SEX)) +
+        geom_col(color="black") +
+        labs(title="adult marijuana arrests",
+             subtitle="district of columbia (2012-2017)",
+             x="race",y="",
+             fill="sex"
+             ) +
+        scale_y_continuous(labels=scales::comma) +
+        theme_minimal() +
+        scale_fill_brewer(palette="Set1")
+
+```

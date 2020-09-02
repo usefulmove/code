@@ -1,0 +1,97 @@
+---
+title: "U.S. Congress"
+author: "Duane Edmonds"
+date: "8/3/2020"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+library(tidyverse)
+library(ggridges)
+library(ggsci)
+library(RColorBrewer)
+#theme_set(theme_minimal)
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  fig.align = "center",
+  out.width = "80%"
+)
+```
+
+```{r, tidy}
+congress <- readr::read_csv("legislators-current.csv")
+
+congress <- congress %>% 
+  mutate(
+    gender = as.factor(gender),
+    body = recode(
+      type,
+      'sen' = "Senate",
+      'rep' = "House of Representatives"
+    ), 
+    body = as.factor(body),
+    party = fct_relevel(party, c("Republican", "Democrat", "Independent", "Libertarian")),
+    age = as.numeric((as.Date("2020-08-03") - birthday) / 365.2425)
+  )
+
+```
+
+```{r}
+total_male <- sum(congress$gender == "M")
+total_female <- sum(congress$gender == "F")
+```
+
+In total, women make up **`r format(total_female / (total_male + total_female) * 100, digits = 3)`%** of the members of congress represented in the data.
+
+```{r}
+congress %>% 
+  ggplot(aes(body)) +
+    geom_bar(
+      aes(fill = gender),
+      alpha = 0.8,
+      color = "black",
+      width = 0.7
+    ) +
+    labs(
+      subtitle = "U.S. Congressional Members by Chamber",
+      x = "",
+      y = ""
+    ) +
+    scale_fill_simpsons()
+```
+
+```{r}
+congress %>% 
+  ggplot() +
+    geom_bar(
+      aes(party, fill = gender),
+      alpha = 0.8,
+      color = "black"
+    ) +
+    labs(
+      subtitle = "U.S. Congressional Members by Party",
+      x = "",
+      y = ""
+    ) +
+    scale_fill_simpsons()
+```
+
+```{r}
+congress %>% 
+  ggplot() +
+    geom_density_ridges(
+      aes(age, gender, fill = gender),
+      alpha = 0.8
+    ) +
+    facet_grid(
+      body ~ .
+    ) +
+    labs(
+      subtitle = "U.S Congressional Members: Age Distribution",
+      x = "age",
+      y = ""
+    ) +
+    scale_fill_simpsons()
+```

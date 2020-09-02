@@ -1,0 +1,47 @@
+---
+title: "titanic survival "
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(RColorBrewer)
+titanic <- read_csv("titanic3.csv")
+```
+
+```{r}
+titanic <- titanic %>% 
+    mutate(survived=as.factor(survived),pclass=as.factor(pclass),sex=as.factor(sex))
+```
+
+```{r,fig.width=9}
+titanic %>% 
+    filter(age>=18,fare>0) %>% 
+    ggplot(aes(x=pclass,y=fare,color=survived)) +
+        geom_jitter(alpha=0.8,width=0.3) +
+        scale_y_continuous(trans="log2") +
+        scale_color_manual(name="",
+                           values=c("red4","#00c0ff"),
+                           labels=c("perished","survived")) +
+        xlab("passenger class") + ylab("fare paid (£)") +
+        ggtitle("adult passenger outcomes by passenger class and fare paid") +
+        theme_minimal()
+
+```
+
+```{r,fig.width=9}
+titanic %>% 
+    filter(age>=18) %>% 
+    ggplot(aes(x=survived)) +
+        geom_bar(aes(y=after_stat(count), fill=pclass),
+                 position=position_fill(),
+                 alpha=0.8) +
+        facet_grid(.~sex) +
+        ggtitle("adult passenger outcomes by passenger class and gender") +
+        xlab("outcome") + ylab("") +
+        scale_x_discrete(labels=c("perished","survived")) +
+        labs(fill="class") +
+        theme_minimal() +
+        scale_fill_brewer(palette="Set3")
+        
+```

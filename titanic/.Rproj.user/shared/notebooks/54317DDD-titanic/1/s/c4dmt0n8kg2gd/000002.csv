@@ -1,0 +1,21 @@
+"0","library(tidyverse)"
+"0","library(RColorBrewer)"
+"0","titanic <- read_csv(""titanic3.csv"")"
+"2","Parsed with column specification:
+cols(
+  pclass = [32mcol_double()[39m,
+  survived = [32mcol_double()[39m,
+  name = [31mcol_character()[39m,
+  sex = [31mcol_character()[39m,
+  age = [32mcol_double()[39m,
+  sibsp = [32mcol_double()[39m,
+  parch = [32mcol_double()[39m,
+  ticket = [31mcol_character()[39m,
+  fare = [32mcol_double()[39m,
+  cabin = [31mcol_character()[39m,
+  embarked = [31mcol_character()[39m,
+  boat = [31mcol_character()[39m,
+  body = [32mcol_double()[39m,
+  home.dest = [31mcol_character()[39m
+)
+"

@@ -1,0 +1,288 @@
+---
+title: "Income Distribution in the U.S."
+author: ""
+date: "4/30/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include=FALSE}
+library(tidyverse)
+library(ggthemes)
+library(stringr)
+library(readxl)
+library(RColorBrewer)
+library(scales)
+```
+
+## Distribution of Wealth
+
+The U.S. Government Census data for 2018 was imported from The United States Census Bureau.
+
+<https://www.census.gov/data/tables/time-series/demo/income-poverty/cps-finc/finc-02.html>
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+# Importing
+
+# U.S. Government Census Data (2018)
+all_races <- read_excel("C:/Users/duane/repos/dedmonds/code/income-distribution/census_gov_2018/all_races.xls", range = "A14:B54", col_names = FALSE)
+asian_alone <- read_excel("C:/Users/duane/repos/dedmonds/code/income-distribution/census_gov_2018/asian_alone.xls", range = "A14:B54", col_names = FALSE)
+asian_comb <- read_excel("C:/Users/duane/repos/dedmonds/code/income-distribution/census_gov_2018/asian_comb.xls", range = "A14:B54", col_names = FALSE)
+black_alone <- read_excel("C:/Users/duane/repos/dedmonds/code/income-distribution/census_gov_2018/black_alone.xls", range = "A14:B54", col_names = FALSE)
+black_comb <- read_excel("C:/Users/duane/repos/dedmonds/code/income-distribution/census_gov_2018/black_comb.xls", range = "A14:B54", col_names = FALSE)
+hispanic <- read_excel("C:/Users/duane/repos/dedmonds/code/income-distribution/census_gov_2018/hispanic.xls", range = "A14:B54", col_names = FALSE)
+white_alone <- read_excel("C:/Users/duane/repos/dedmonds/code/income-distribution/census_gov_2018/white_alone.xls", range = "A14:B54", col_names = FALSE)
+white_alone_nonhispanic <- read_excel("C:/Users/duane/repos/dedmonds/code/income-distribution/census_gov_2018/white_alone_nonhispanic.xls", range = "A14:B54", col_names = FALSE)
+white_comb <- read_excel("C:/Users/duane/repos/dedmonds/code/income-distribution/census_gov_2018/white_comb.xls", range = "A14:B54", col_names = FALSE)
+
+# add variable names
+names(all_races) <- c("date_range", "n")
+names(asian_alone) <- c("date_range", "n")
+names(asian_comb) <- c("date_range", "n")
+names(black_alone) <- c("date_range", "n")
+names(black_comb) <- c("date_range", "n")
+names(hispanic) <- c("date_range", "n")
+names(white_alone) <- c("date_range", "n")
+names(white_alone_nonhispanic) <- c("date_range", "n")
+names(white_comb) <- c("date_range", "n")
+
+# change class of count
+all_races$n <- as.integer(all_races$n)
+asian_alone$n <- as.integer(asian_alone$n)
+asian_comb$n <- as.integer(asian_comb$n)
+black_alone$n <- as.integer(black_alone$n)
+black_comb$n <- as.integer(black_comb$n)
+hispanic$n <- as.integer(hispanic$n)
+white_alone$n <- as.integer(white_alone$n)
+white_alone_nonhispanic$n <- as.integer(white_alone_nonhispanic$n)
+white_comb$n <- as.integer(white_comb$n)
+
+# split date range into two variables, a minimum and maximum for the income range
+asian_alone <- separate( asian_alone, date_range, into=c("low","high"), sep=" to ")
+asian_comb <- separate( asian_comb, date_range, into=c("low","high"), sep=" to ")
+black_alone <- separate( black_alone, date_range, into=c("low","high"), sep=" to ")
+black_comb <- separate( black_comb, date_range, into=c("low","high"), sep=" to ")
+hispanic <- separate( hispanic, date_range, into=c("low","high"), sep=" to ")
+white_alone <- separate( white_alone, date_range, into=c("low","high"), sep=" to ")
+white_alone_nonhispanic <- separate( white_alone_nonhispanic, date_range, into=c("low","high"), sep=" to ")
+white_comb <- separate( white_comb, date_range, into=c("low","high"), sep=" to ")
+
+
+# handle first and last observation exceptions
+asian_alone$high[1] <- asian_alone$low[1]
+asian_alone$low[1] <- 0
+asian_alone$high[nrow(asian_alone)] <- 250000
+
+asian_comb$high[1] <- asian_comb$low[1]
+asian_comb$low[1] <- 0
+asian_comb$high[nrow(asian_comb)] <- 250000
+
+black_alone$high[1] <- black_alone$low[1]
+black_alone$low[1] <- 0
+black_alone$high[nrow(black_alone)] <- 250000
+
+black_comb$high[1] <- black_comb$low[1]
+black_comb$low[1] <- 0
+black_comb$high[nrow(black_comb)] <- 250000
+
+hispanic$high[1] <- hispanic$low[1]
+hispanic$low[1] <- 0
+hispanic$high[nrow(hispanic)] <- 250000
+
+white_alone$high[1] <- white_alone$low[1]
+white_alone$low[1] <- 0
+white_alone$high[nrow(white_alone)] <- 250000
+
+white_alone_nonhispanic$high[1] <- white_alone_nonhispanic$low[1]
+white_alone_nonhispanic$low[1] <- 0
+white_alone_nonhispanic$high[nrow(white_alone_nonhispanic)] <- 250000
+
+white_comb$high[1] <- white_comb$low[1]
+white_comb$low[1] <- 0
+white_comb$high[nrow(white_comb)] <- 250000
+
+# isolate numeric portion of the string
+asian_alone$low <- str_match(asian_alone$low,rep("[0-9,]+",nrow(asian_alone)))
+asian_alone$high <- str_match(asian_alone$high,rep("[0-9,]+",nrow(asian_alone)))
+
+asian_comb$low <- str_match(asian_comb$low,rep("[0-9,]+",nrow(asian_comb)))
+asian_comb$high <- str_match(asian_comb$high,rep("[0-9,]+",nrow(asian_comb)))
+
+black_alone$low <- str_match(black_alone$low,rep("[0-9,]+",nrow(black_alone)))
+black_alone$high <- str_match(black_alone$high,rep("[0-9,]+",nrow(black_alone)))
+
+black_comb$low <- str_match(black_comb$low,rep("[0-9,]+",nrow(black_comb)))
+black_comb$high <- str_match(black_comb$high,rep("[0-9,]+",nrow(black_comb)))
+
+hispanic$low <- str_match(hispanic$low,rep("[0-9,]+",nrow(hispanic)))
+hispanic$high <- str_match(hispanic$high,rep("[0-9,]+",nrow(hispanic)))
+
+white_alone$low <- str_match(white_alone$low,rep("[0-9,]+",nrow(white_alone)))
+white_alone$high <- str_match(white_alone$high,rep("[0-9,]+",nrow(white_alone)))
+
+white_alone_nonhispanic$low <- str_match(white_alone_nonhispanic$low,rep("[0-9,]+",nrow(white_alone_nonhispanic)))
+white_alone_nonhispanic$high <- str_match(white_alone_nonhispanic$high,rep("[0-9,]+",nrow(white_alone_nonhispanic)))
+
+white_comb$low <- str_match(white_comb$low,rep("[0-9,]+",nrow(white_comb)))
+white_comb$high <- str_match(white_comb$high,rep("[0-9,]+",nrow(white_comb)))
+
+#str_view(x,"[0123456789,]+")
+
+asian_alone$low <- as.numeric(gsub(",","",asian_alone$low))
+asian_alone$high <- as.numeric(gsub(",","",asian_alone$high))
+
+asian_comb$low <- as.numeric(gsub(",","",asian_comb$low))
+asian_comb$high <- as.numeric(gsub(",","",asian_comb$high))
+
+black_alone$low <- as.numeric(gsub(",","",black_alone$low))
+black_alone$high <- as.numeric(gsub(",","",black_alone$high))
+
+black_comb$low <- as.numeric(gsub(",","",black_comb$low))
+black_comb$high <- as.numeric(gsub(",","",black_comb$high))
+
+hispanic$low <- as.numeric(gsub(",","",hispanic$low))
+hispanic$high <- as.numeric(gsub(",","",hispanic$high))
+
+white_alone$low <- as.numeric(gsub(",","",white_alone$low))
+white_alone$high <- as.numeric(gsub(",","",white_alone$high))
+
+white_alone_nonhispanic$low <- as.numeric(gsub(",","",white_alone_nonhispanic$low))
+white_alone_nonhispanic$high <- as.numeric(gsub(",","",white_alone_nonhispanic$high))
+
+white_comb$low <- as.numeric(gsub(",","",white_comb$low))
+white_comb$high <- as.numeric(gsub(",","",white_comb$high))
+```
+
+
+
+```{r, echo=FALSE}
+
+# Tidying
+
+#The U.S. Census data is split into distinct data frames for each demographic category, so it is necessary---in order to enhance efficiency later---to munge the data into a single, tall data frame with each observation representing a single household, the variables being demographic and annual income. This tidy dataset will be much more flexible of transformation and display. Grouping by demographic is then relatively straightforward.
+
+# for each observation in each data frame.
+# two vectors. the first is the demographic category the length of $n.
+# the second is the mean annual income the length of $n.
+# demographic. income. ($n times)
+
+asian_alone <- asian_alone %>% mutate( income = (low + high)/2 ) 
+asian_comb <- asian_comb %>% mutate( income = (low + high)/2 )
+black_alone <- black_alone %>% mutate( income = (low + high)/2 )
+black_comb <- black_comb %>% mutate( income = (low + high)/2 )
+hispanic <- hispanic %>% mutate( income = (low + high)/2 )
+white_alone <- white_alone %>% mutate( income = (low + high)/2 )
+white_alone_nonhispanic <- white_alone_nonhispanic %>% mutate( income = (low + high)/2 )
+white_comb <- white_comb %>% mutate( income = (low + high)/2 )
+
+
+# create data frame
+household_incomes <- tibble( demographic = rep("Asian",asian_alone$n[1]), income = rep(asian_alone$income[1],asian_alone$n[1]) )
+
+for (i in 2:nrow(asian_alone)) {
+    household_incomes <- bind_rows( household_incomes, tibble( demographic = rep("Asian",asian_alone$n[i]), income = rep(asian_alone$income[i],asian_alone$n[i]) ) )
+}
+
+for (i in 1:nrow(asian_comb)) {
+    household_incomes <- bind_rows( household_incomes, tibble( demographic = rep("Asian",asian_comb$n[i]), income = rep(asian_comb$income[i],asian_comb$n[i]) ) )
+}
+
+for (i in 1:nrow(black_alone)) {
+    household_incomes <- bind_rows( household_incomes, tibble( demographic = rep("African American",black_alone$n[i]), income = rep(black_alone$income[i],black_alone$n[i]) ) )
+}
+
+for (i in 1:nrow(black_comb)) {
+    household_incomes <- bind_rows( household_incomes, tibble( demographic = rep("African American",black_comb$n[i]), income = rep(black_comb$income[i],black_comb$n[i]) ) )
+}
+
+for (i in 1:nrow(hispanic)) {
+    household_incomes <- bind_rows( household_incomes, tibble( demographic = rep("Hispanic",hispanic$n[i]), income = rep(hispanic$income[i],hispanic$n[i]) ) )
+}
+
+for (i in 1:nrow(white_alone)) {
+    household_incomes <- bind_rows( household_incomes, tibble( demographic = rep("White",white_alone$n[i]), income = rep(white_alone$income[i],white_alone$n[i]) ) )
+}
+
+#for (i in 2:nrow(white_alone_nonhispanic)) {
+#    household_incomes <- bind_rows( household_incomes, tibble( demographic = rep("White",white_alone_nonhispanic$n[i]), income = rep(white_alone_nonhispanic$income[i],white_alone_nonhispanic$n[i]) ) )
+#}
+
+for (i in 1:nrow(white_comb)) {
+    household_incomes <- bind_rows( household_incomes, tibble( demographic = rep("White",white_comb$n[i]), income = rep(white_comb$income[i],white_comb$n[i]) ) )
+}
+
+```
+
+
+
+
+```{r, echo=FALSE}
+
+# Transforming and Seeing
+
+household_incomes %>%
+    group_by(demographic) %>%
+    ggplot( aes( x=demographic ) ) +
+        geom_boxplot( aes(y=income, fill=demographic), show.legend=FALSE ) +
+        xlab( "" ) + ylab( "annual household income (in dollars)" ) +
+        scale_y_continuous( label=comma ) +
+        ggtitle( "Income Distribution - U.S. Census Bureau Data (2018)" ) +
+        scale_fill_brewer( palette="Accent" ) +
+        theme_hc()
+
+```
+
+```{r, include=FALSE}
+
+income_stats <- household_incomes %>%
+    group_by(demographic) %>%
+    summarise( count=n(), average=mean(income), top=max(income), bottom=min(income) )
+
+```
+
+
+```{r, include=FALSE}
+
+household_incomes %>%
+    group_by(demographic) %>%
+    ggplot() +
+        geom_density( aes(x=income, fill=demographic), alpha=0.5 ) +
+        ylab( "density" ) + xlab( "annual income (in dollars)" ) +
+        scale_x_continuous( label=comma ) +
+        ggtitle( "Income Distribution - U.S. Census Bureau Data (2018)" ) +
+        scale_fill_brewer( palette="Spectral" ) +
+        theme_hc()
+
+```
+
+```{r, include=FALSE}
+
+household_incomes %>%
+    ggplot() +
+        geom_density( aes(x=income), fill="#00c0ff", alpha=0.7 ) +
+        ylab( "density" ) + xlab( "annual income (in dollars)" ) +
+        scale_x_continuous( label=comma ) +
+        ggtitle( "Income Distribution - U.S. Census Bureau Data (2018)" ) +
+        theme_hc()
+
+```
+
+```{r, echo=FALSE}
+
+household_incomes %>%
+    group_by(demographic) %>%
+    ggplot() +
+        geom_density( aes(x=income, fill=demographic), alpha=1, show.legend = FALSE ) +
+        facet_grid(demographic~.) +
+        ylab( "density" ) + xlab( "annual income (in dollars)" ) +
+        scale_x_continuous( label=comma ) +
+        #ggtitle( "Income Distribution - U.S. Census Bureau Data (2018)" ) +
+        scale_fill_brewer( palette="Accent" ) +
+        theme_hc()
+
+```

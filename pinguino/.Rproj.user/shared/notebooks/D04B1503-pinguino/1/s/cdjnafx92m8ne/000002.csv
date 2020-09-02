@@ -1,0 +1,5 @@
+"0","pinguino_forest_accuracy <- pinguino_forest %>%"
+"0","  predict(pinguino_testing) %>%"
+"0","  bind_cols(pinguino_testing) %>%"
+"0","  metrics(truth = species, estimate = .pred_class) %$%"
+"0","  .estimate"

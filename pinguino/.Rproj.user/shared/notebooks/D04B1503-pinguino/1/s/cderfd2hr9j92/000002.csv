@@ -1,0 +1,8 @@
+"0","pinguino_knn <- nearest_neighbor("
+"0","                  neighbors = 5,"
+"0","                  mode = ""classification"","
+"0","                  dist_power = 2,"
+"0","                  weight_func = ""optimal"""
+"0","                ) %>%"
+"0","  set_engine(""kknn"") %>%"
+"0","  fit(species ~ ., data = pinguino_training)"

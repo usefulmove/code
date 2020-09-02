@@ -1,0 +1,52 @@
+---
+title: 'City of Philadelphia'
+output: html_document
+---
+
+## Police Advisory Commission Complaints
+Complaints filed with the Police Advisory Commission against Philadelphia police officers. The information comes directly from Police Advisory Commission Complaint Database.
+
+https://www.opendataphilly.org/dataset/philadelphia-police-advisory-commission-complaints
+
+
+```{r setup, include=FALSE}
+library(tidyverse)
+source("../library/ded/ded.R")
+theme_set(theme_minimal())
+complaints <- readr::read_csv("PAC_Complaints_2009_2012.csv")
+```
+
+
+```{r tidy, include=FALSE}
+complaints <- complaints %>% 
+    filter(TYPE != "NO MISCONDUCT") %>% 
+    ded_recode(TYPE, "OTHER=NOT CLASSIFIED") %>% 
+    mutate(TYPE = as.factor(TYPE)) %>% 
+    mutate(TYPE = fct_lump(TYPE, n = 8, other_level = "OTHER")) %>%
+    mutate(RACE = fct_lump(RACE, n = 4))
+```
+
+
+```{r types, echo=FALSE, fig.width=9, fig.height=6.5}
+complaints %>% 
+    group_by(TYPE) %>%
+    summarise(count = n(), .groups = "drop") %>% 
+    mutate(TYPE = fct_reorder(TYPE, count)) %>% 
+    ggplot(aes(count, TYPE)) +
+        geom_col(fill = "#cbbedd", color = "black", alpha = 0.8) +
+        labs(x = "", y = "", title = "Complaints by Type (2009-2012)")
+    
+```
+
+
+```{r race, echo=FALSE, fig.width=9, fig.height=6.5}
+complaints %>% 
+    filter(!is.na(RACE)) %>% 
+    group_by(RACE) %>% 
+    summarise(count = n(), .groups = "drop") %>% 
+    mutate(RACE=fct_reorder(RACE, desc(count))) %>% 
+    ggplot(aes(RACE, count)) +
+        geom_col(fill = "#cbbedd", color = "black", alpha = 0.8) +
+        labs(x = "", y = "", title = "Complaint Demographics (2009-2012)")
+    
+```

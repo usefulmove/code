@@ -1,0 +1,182 @@
+---
+title: "Publicly-Supported Symbols of the Confederacy"
+output: html_document
+---
+
+The data is provided by the [Southern Poverty Law Center](https://www.splcenter.org) and can be downloaded in multiple formats [here](https://splcenter.carto.com/tables/confederate_symbols/public).
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  out.width = "100%",
+  fig.asp = .65,
+  fig.align = "center",
+  message = FALSE,
+  warning = FALSE
+)
+library(tidyverse)
+library(RColorBrewer)
+theme_set(theme_minimal())
+confeds <- readr::read_csv("confederate_symbols.csv")
+states <- readr::read_csv("../library/states.csv")
+prim_color <- "#e41a1c"
+```
+
+```{r tidy, include=FALSE}
+confeds <- confeds %>%
+  select(
+    feature_name,
+    city,
+    state,
+    address,
+    category,
+    group_class,
+    year_dedicated,
+    source,
+    notes,
+    latitude,
+    longitude
+  )
+
+# join with u.s. region data and full state name
+confeds <- confeds %>%
+  left_join(states, by = c("state" = "State Code")) %>%
+  mutate(
+    state = as.factor(State),
+    region = as.factor(Region)
+  ) %>%
+  select(-State, -Division, -Region) %>%
+  relocate(state, region, .after = city)
+```
+
+The data contains **`r format(nrow(confeds),big.mark=",")`** publicly-supported Confederate symbols (e.g., monuments, courthouses, schools, state flag, military bases) in `r n_distinct(confeds$state)` states. Of particular note are the large number of Confederate symbols that were dedicated well after the defeat of the Confederacy in the in 1865, ending the American Civil War. This is due, in part, to the efforts of [The United Daughters of the Confederacy](https://en.wikipedia.org/wiki/United_Daughters_of_the_Confederacy) and efforts to control the way the story of the South was told, including demands on the contents of textbooks used in public schools in the South that "told the story of the war and the Confederacy from a definite Southern point of view." ([W. Stuart Towns, 2012](https://www.amazon.com/Enduring-Legacy-Rhetoric-Ritual-Cause-ebook/dp/B007BLO65Q/))
+
+<br>
+
+---
+
+<br>
+
+```{r dedicated, out.width = "90%"}
+clabel_df <- tribble(
+  ~x, ~y, ~label,
+  as.Date("1865-05-09"), 37.5, "American Civil War\n(1861-1865)",
+  as.Date("1945-05-07"), 17.5, "End of World War II",
+  as.Date("1964-07-02"), 14, "Civil Rights Act of 1964",
+)
+
+confeds %>%
+  filter(
+    !is.na(year_dedicated),
+    year_dedicated != "Unknown"
+  ) %>%
+  mutate(year = str_extract(string = year_dedicated, pattern = "[0-9]{4}")) %>%
+  relocate(year, .after = year_dedicated) %>%
+  filter(!is.na(year)) %>%
+  mutate(year = as.Date(paste(year, "-06-30", sep = ""))) %>%
+  group_by(year) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  ggplot(aes(year, count)) +
+    geom_rect(
+      xmin = as.Date("1861-04-12", origin = "1970-01-01"),
+      xmax = as.Date("1865-05-09", origin = "1970-01-01"),
+      ymin = 0,
+      ymax = +Inf,
+      alpha = 0.02, fill = "lightgrey"
+    ) + # civil war
+    geom_vline(
+      xintercept = as.Date("1945-05-07", origin = "1970-01-01"),
+      color = "lightgrey",
+      linetype = "dashed"
+    ) + # world war 2
+    geom_col(
+      width = 365,
+      fill = prim_color
+    ) +
+    labs(
+      subtitle = "Publicly-Supported Confederate Symbols by Year of Dedication",
+      x = "year dedicated", y = "number of publicly-supported symbols"
+    ) +
+    scale_x_date(
+      breaks = seq.Date(as.Date("1860-01-01", origin = "1970-01-01"),
+        as.Date("2020-01-01", origin = "1970-01-01"),
+        by = "20 years"
+      ),
+      date_labels = "%Y"
+    ) +
+    ggrepel::geom_text_repel(
+      data = clabel_df, aes(x = x, y = y, label = label),
+      hjust = "left", nudge_x = 4 * 365,
+      segment.color = "#377eb8"
+    )
+```
+
+<br>
+
+---
+
+<br>
+
+<center>
+<iframe width="500" height="500" src="https://www.youtube.com/embed/55ehKPUm7dc" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</center>
+
+<br>
+
+---
+
+```{r, out.width = "80%"}
+library(maps)
+
+states_map <- map_data("state")
+
+states_map %>% 
+  ggplot(aes(long, lat, group = group)) +
+    geom_path() +
+    coord_map("mercator") +
+    labs(
+      x = "",
+      y = ""
+    ) +
+    theme_void() +
+    geom_point(
+      data = confeds,
+      aes(longitude, latitude),
+      group = NA,
+      color = prim_color,
+      size = 1.5 
+    )
+```
+
+---
+
+<br>
+
+### The United Daughters of the Confederacy
+
+>The United Daughters of the Confederacy (UDC) is an American hereditary association of Southern women established in 1894 in Nashville, Tennessee. The stated purposes of the organization includes the commemoration of Confederate States Army soldiers and the funding of the erection of memorials to these men. Many historians have described the organization's portrayal of the Confederate States of America (CSA), along with its promotion of the Lost Cause movement, as advocacy for white supremacy, and have asserted that promotion of the Confederate tradition has been led by the UDC. Until recent decades, the UDC was also involved in building monuments to commemorate the Ku Klux Klan.
+
+[The United Daughters of the Confederacy (Wikipedia)](https://en.wikipedia.org/wiki/United_Daughters_of_the_Confederacy)
+
+[How Southern Socialites Rewrote Civil War History (YouTube)](https://youtu.be/dOkFXPblLpU)
+
+[Dixie's Daughters: The United Daughters of the Confederacy and the Preservation of Confederate Culture (Karen L. Cox, 2003)](https://archive.org/details/dixiesdaughtersu00coxk)
+
+
+<br>
+
+---
+
+<br>
+
+```{r type, out.width = "80%"}
+confeds %>%
+  group_by(category) %>%
+  count(category) %>%
+  ggplot(aes(n, fct_reorder(category, n))) +
+    geom_col(fill = prim_color) +
+    labs(
+      subtitle = "Publicly-Supported Confederate Symbols by Type",
+      x = "number of publicly-supported symbols", y = "category"
+    )
+```

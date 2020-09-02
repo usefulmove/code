@@ -1,0 +1,25 @@
+"0","library(tidyverse)"
+"0","library(forcats)"
+"0","library(scales)"
+"0","library(ggthemes)"
+"0","library(RColorBrewer)"
+"0",""
+"0","theme_set(theme_minimal())"
+"0",""
+"0","diamonds <- read_csv(""diamonds.csv"")"
+"2","Missing column names filled in: 'X1' [1]"
+"2","Parsed with column specification:
+cols(
+  X1 = [32mcol_double()[39m,
+  carat = [32mcol_double()[39m,
+  cut = [31mcol_character()[39m,
+  color = [31mcol_character()[39m,
+  clarity = [31mcol_character()[39m,
+  depth = [32mcol_double()[39m,
+  table = [32mcol_double()[39m,
+  price = [32mcol_double()[39m,
+  x = [32mcol_double()[39m,
+  y = [32mcol_double()[39m,
+  z = [32mcol_double()[39m
+)
+"

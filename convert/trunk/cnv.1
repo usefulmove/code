@@ -1,0 +1,50 @@
+.TH CNV "1" "September 2007" "cnv 0.0.9" "User Commands"
+.SH NAME
+cnv \- simple text file format converter
+.SH SYNOPSIS
+.B cnv
+[\fIOPTION\fR]... \fIINPUT\fR [\fIOUTPUT\fR]
+.SH DESCRIPTION
+.\" Add any additional description here
+.PP
+Convert file format of INPUT to format specified by OPTION.
+The converted file is stored as OUTPUT.
+If OUTPUT is not specified, INPUT will be overwritten.
+(The default is UNIX conversion.
+The default conversion is used when no \fB\-uUdDmMcCnN\fR conversion type is specified.)
+.PP
+Mandatory arguments to long options are mandatory for short options, too.
+.TP
+\fB\-u\fR, \fB\-\-unix\fR
+convert to unix format (LF) [default]
+.TP
+\fB\-d\fR, \fB\-\-dos\fR
+convert to win/dos format (CR + LF)
+.TP
+\fB\-m\fR, \fB\-\-mac\fR
+convert to mac osx format (CR)
+.TP
+\fB\-c\fR, \fB\-\-clean\fR
+unix clean (remove all CR found in file)
+.TP
+\fB\-n\fR, \fB\-\-copy\-only\fR
+do not convert file format, copy only
+.TP
+\fB\-v\fR, \fB\-\-verbose\fR
+verbose mode
+.TP
+\fB\-\-help\fR
+display this help and exit
+.TP
+\fB\-\-version\fR
+output version information and exit
+.SH AUTHOR
+Written by Robert Duane Edmonds.
+.SH "REPORTING BUGS"
+Report bugs to <duane.edmonds@gmail.com>.
+.SH COPYRIGHT
+Copyright \(co 2007 Robert Duane Edmonds
+.br
+This is free software.  You may redistribute copies of it under the terms of
+the GNU General Public License <http://www.gnu.org/licenses/gpl.html>.
+There is NO WARRANTY, to the extent permitted by law.

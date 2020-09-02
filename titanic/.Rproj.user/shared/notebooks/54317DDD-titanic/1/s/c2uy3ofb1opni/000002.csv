@@ -1,0 +1,2 @@
+"0","titanic <- titanic %>% "
+"0","    mutate(survived=as.factor(survived),pclass=as.factor(pclass),sex=as.factor(sex))"

@@ -1,0 +1,44 @@
+---
+title: "FDA 483s"
+output: html_notebook
+---
+
+## Food and Drug Administration 483 Warnings (2019)
+
+```{r}
+library(tidyverse)
+library(readxl)
+cites <- read_excel("Inspection_Observations_FY19_0.xlsx", sheet="Devices")
+```
+
+### Most Frequent Warnings
+
+```{r,fig.width=10}
+cites %>% 
+    top_n(20,Frequency) %>% 
+    ggplot() +
+        geom_bar(aes(x=reorder(`Short Description`,Frequency),y=Frequency,fill=Frequency),
+                 stat="identity",
+                 show.legend=FALSE,
+                 width=0.6,
+                 alpha=0.8) +
+        coord_flip() +
+        xlab("") + ylab("") +
+        theme_minimal()
+```
+
+```{r}
+cites %>%
+    select(`Long Description`, Frequency) %>% 
+    arrange(desc(Frequency)) %>% 
+    top_n(10,Frequency) %>% 
+    select(`Long Description`)
+```
+
+```{r}
+cites %>%
+    select(`Reference Number`, Frequency) %>% 
+    arrange(desc(Frequency)) %>% 
+    top_n(10,Frequency) %>% 
+    select(`Reference Number`)
+```

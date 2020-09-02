@@ -1,0 +1,7 @@
+0b51e50c07246f77a93f342a61dcf938 *BluetoothChat 1.0.34.apk
+4e2b0fddb71f4c47cfe8d67ad723d729 *Buzzer v3.hex
+2ca927e50d719f8c6b2a19a8c532233e *LanguageTransfer v2.0.exe
+23b03382aa0de182703754905c76e13a *bms v3.5.hex
+63648f6a5e015a12ddf4d63a70c217b8 *languages v39.txt
+d41d8cd98f00b204e9800998ecf8427e *md5periph.txt
+0b3cf9e12e18a0de614207d301b29152 *mkmd5.bat

@@ -1,0 +1,1 @@
+"0","o <- tibble(read.csv(""incarceration_trends.csv""))"

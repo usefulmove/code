@@ -1,0 +1,7 @@
+"0","# import complaint data frame"
+"0",""
+"0","data_file <- ""C:/Users/duane/repos/dedmonds/code/complaints_db/Complaint_Report_20180924_0024.xlsx""  # cora (win)"
+"0","#data_file <- ""/Volumes/persnl/repos/dedmonds/code/complaints_db/Complaint_Report_20180924_0024.xlsx""  # minic (osx)"
+"0",""
+"0","complaints <- read_excel( data_file )"
+"0","#    View( complaints )"

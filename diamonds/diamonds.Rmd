@@ -1,0 +1,43 @@
+---
+title: "diamond data"
+output: html_notebook
+---
+
+(exploratory data analysis of a data set containing detailed data for `r nrow(diamonds)` individual diamonds)
+
+```{r}
+library(tidyverse)
+library(forcats)
+library(scales)
+library(ggthemes)
+library(RColorBrewer)
+
+theme_set(theme_minimal())
+
+diamonds <- read_csv("diamonds.csv")
+```
+
+```{r,fig.width=12}
+diamonds %>%
+    filter(carat<3.125) %>% 
+    mutate(cut=as.factor(cut)) %>% 
+    mutate(cut=fct_relevel(cut,c("Fair","Good","Very Good","Premium","Ideal"))) %>% 
+    ggplot(aes(x=cut(carat,breaks=seq(-0.125,5.5,0.25)),y=price)) +
+        geom_boxplot(aes(fill=cut),width=0.6,alpha=0.8,outlier.size=0.6) +
+        labs(title="diamond prices", x="carat", y="") +
+        scale_fill_brewer(palette="Set3") +
+        scale_y_continuous(labels=dollar)
+
+```
+
+```{r,fig.width=12}
+diamonds %>% 
+    mutate(clarity=fct_relevel(clarity,c("IF","VVS1","VVS2","VS1","VS2","SI1","SI2","I1"))) %>% 
+        ggplot(aes(x=carat,y=price)) +
+        geom_point(aes(color=clarity),alpha=0.7) +
+        scale_x_continuous(trans="log2") + scale_y_continuous(trans="log10",labels=dollar) +
+        labs(x="carat", y="",title="diamond prices") +
+        scale_color_brewer(palette="Spectral")
+        
+```
+

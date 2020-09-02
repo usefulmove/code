@@ -1,0 +1,13 @@
+"0","levels(birth_rates$demographic)"
+"1","NULL
+"
+"0","birth_rates <- birth_rates %>% "
+"0","    mutate(demographic=Race.or.Hispanic.Origin,"
+"0","           birth_rate=Birth.Rate,"
+"0","           year=Year,"
+"0","           age=Age.Group,"
+"0","           demographic=fct_recode(demographic,""Asian / Pac.""=""Asian or Pacific Islander total"","
+"0","                                              ""Black""=""Black total"","
+"0","                                              ""White Non-Hisp.""=""Non-Hispanic white"","
+"0","                                              ""White""=""White total"")"
+"0","           )"

@@ -1,0 +1,16 @@
+"0","```r
+# does the south experience more gun violence?
+gs %>% 
+    group_by(state,year) %>% 
+    summarise(dead_state=sum(dead)) %>%
+    left_join(states,by=c(\"state\"=\"State\")) %>%  # left join with states data frame to associate states with regions
+    mutate(region=Region) %>% 
+    group_by(region,year) %>%  
+    summarise(dead_total=sum(dead_state)) %>% 
+    ggplot(aes(x=reorder(region,dead_total),y=dead_total/1e3,fill=year)) +
+        geom_bar(stat=\"identity\",width=0.6,alpha=0.8) +
+        coord_flip() +
+        theme_minimal() +
+        ylab(\"persons killed by gun violence (in thousands)\") + xlab(\"\") +
+        ggtitle(\"u.s. gun deaths by region\")
+```"

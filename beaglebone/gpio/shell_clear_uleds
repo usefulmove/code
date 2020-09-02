@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# turn off all LEDs
+echo 0 > /sys/devices/platform/leds-gpio/leds/beaglebone::usr1/brightness
+echo 0 > /sys/devices/platform/leds-gpio/leds/beaglebone::usr2/brightness
+echo 0 > /sys/devices/platform/leds-gpio/leds/beaglebone::usr3/brightness

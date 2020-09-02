@@ -1,0 +1,42 @@
+---
+title: "u.s. birth rates for unmarried women"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(RColorBrewer)
+birth_rates <- read.csv("CDC_NCHS_Birth_Rates_for_Unmarried_Women_by_Age__Race__and_Hispanic_Origin__United_States.csv")
+theme_set(theme_minimal())
+```
+
+
+```{r clean_and_tidy, include=FALSE}
+levels(birth_rates$demographic)
+
+birth_rates <- birth_rates %>% 
+    mutate(demographic=Race.or.Hispanic.Origin,
+           birth_rate=Birth.Rate,
+           year=Year,
+           age=Age.Group,
+           demographic=fct_recode(demographic,"Asian / Pac."="Asian or Pacific Islander total",
+                                              "Black"="Black total",
+                                              "White Non-Hisp."="Non-Hispanic white",
+                                              "White"="White total")
+           )
+```
+
+
+```{r chart, echo=FALSE, fig.width=12, fig.height=8}
+birth_rates %>% 
+    filter(year>=1980,
+           birth_rate>0) %>% 
+    ggplot(aes(x=year,y=birth_rate,fill=age)) +
+        geom_col(width=1,alpha=0.8,color="black") +
+        facet_grid(demographic~age) +
+        scale_fill_brewer(palette="Accent") +
+        labs(title="u.s. birth rates for unmarried women (1980-2015)",
+             x="", y="birth rate",
+             caption="(data from CDC National Center for Health Statitics)"
+             )
+```

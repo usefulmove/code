@@ -1,0 +1,4 @@
+"0","library(tidyverse)"
+"0","library(RColorBrewer)"
+"0","birth_rates <- read.csv(""CDC_NCHS_Birth_Rates_for_Unmarried_Women_by_Age__Race__and_Hispanic_Origin__United_States.csv"")"
+"0","theme_set(theme_minimal())"

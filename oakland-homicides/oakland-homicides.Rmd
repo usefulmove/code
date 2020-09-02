@@ -1,0 +1,40 @@
+---
+title: ''
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Homicides in Oakland
+
+Demographic breakdown of victims of homicides in Oakland, California for the year 2017.
+
+\center
+``` {r coffee, echo=FALSE}
+library(ggplot2)
+library(ggthemes)
+
+homicides <- read.csv("/Volumes/persnl/repos/dedmonds/code/oakland-homicides/OaklandHomicides2017.csv")
+
+names(homicides) <- c("demographics","homicides","population","rate","year")
+
+hom <- ggplot( data=homicides, aes( x=demographics ) ) +
+    geom_bar( aes( y=homicides ), stat="identity", fill="#00c0ff", alpha=0.95 ) +
+    xlab( "" ) +
+    ylab( "homicides" ) +
+    ggtitle( "Oakland, California (2017)" ) +
+    theme_economist()
+hom
+
+pop <- ggplot( data=homicides, aes( x=demographics ) ) +
+    geom_bar( aes( y=population/1e3 ), stat="identity", fill="grey", alpha=0.95 ) +
+    xlab( "" ) +
+    xlab( "demographics of victims" ) +
+    ylab( "population (in thousands)" ) +
+    ggtitle( "" ) +
+    theme_economist()
+pop
+```
+\center

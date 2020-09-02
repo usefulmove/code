@@ -1,0 +1,7 @@
+"0",""
+"0","#community_mobility <- readr::read_csv(""./global-mobility-data/Global_Mobility_Report.csv"", guess_max = 1e6)  # global mobility data"
+"0","community_mobility <- readr::read_csv(""https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv"", guess_max = 1e6)  # global mobility data"
+"0",""
+"0","community_mobility <- community_mobility %>%"
+"0","  mutate(date = as.Date(date))"
+"0",""

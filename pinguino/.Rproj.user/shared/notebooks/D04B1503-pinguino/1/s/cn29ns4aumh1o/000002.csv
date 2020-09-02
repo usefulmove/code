@@ -1,0 +1,8 @@
+"0","pinguino_gboost <- boost_tree("
+"0","                     trees = 200,"
+"0","                     mode = ""classification"","
+"0","                     learn_rate = 0.3,"
+"0","                     tree_depth = 6"
+"0","                   ) %>%"
+"0","  set_engine(""xgboost"") %>%"
+"0","  fit(species ~ ., data = pinguino_training)"

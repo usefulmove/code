@@ -1,0 +1,4 @@
+"0","corr_flipper_to_mass <- pinguinos %>%"
+"0","  select(flipper_length, body_mass) %>%"
+"0","  filter(!is.na(flipper_length), !is.na(body_mass)) %>%"
+"0","  cor() %>% .[[2]]"

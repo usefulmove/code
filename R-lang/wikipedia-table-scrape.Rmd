@@ -1,0 +1,19 @@
+---
+title: 'Web Scraping Wikipedia Article for Table'
+output: html_document
+---
+
+```{r}
+library(rvest)
+
+url <- "https://en.wikipedia.org/wiki/List_of_countries_by_GDP_(PPP)_per_capita"
+
+list <- url %>% 
+  read_html() %>% 
+  html_nodes(xpath = '//*[@id="mw-content-text"]/div/table[1]/tbody/tr[2]/td[1]/table') %>%  # xpath copied from google chrome element
+  html_table()
+
+table <- list[[1]]  # remove table from list
+  
+```
+

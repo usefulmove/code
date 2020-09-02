@@ -1,0 +1,67 @@
+---
+title: "linear regression"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(broom)
+data(diamonds)
+```
+
+```{r}
+mod <- lm(formula=diamonds$price~diamonds$carat)
+m <- mod[["coefficients"]]["diamonds$carat"]
+b <- mod[["coefficients"]]["(Intercept)"]
+r2 <- summary(mod)$r.squared
+
+eq <- paste("y =",
+            format( m, digits=2, big.mark="," ),
+            "x + ",
+            format( b, digits=2, big.mark="," ),
+            ", R2 =",
+            format( r2, digits=2 )
+            )
+
+diamonds %>% 
+    filter(cut=="Ideal") %>% 
+    ggplot( aes(x=carat,y=price) ) +
+        geom_smooth(formula="y~x",
+                    method="lm",
+                    se=FALSE,
+                    color="#00c0ff",
+                    linetype="dashed",
+                    size=0.5
+                    ) +
+        geom_point(color="#616161",
+                   size=0.5,
+                   alpha=0.8) +
+        annotate("text",
+                 label=eq,
+                 x=2.4, y=2.35e4,
+                 size=3.3,
+                 color="black") +
+        labs(title="diamond size vs price", y="price ($)") +
+        theme_minimal()
+
+```
+
+```{r, echo=TRUE}
+summary(mod)
+```
+
+```{r, echo=TRUE}
+broom::tidy(mod)
+```
+
+```{r, echo=TRUE}
+broom::glance(mod)
+```
+
+```{r, echo=TRUE}
+cor(diamonds$price, diamonds$carat)
+```
+
+```{r, echo=TRUE}
+cov(diamonds$price, diamonds$carat)
+```

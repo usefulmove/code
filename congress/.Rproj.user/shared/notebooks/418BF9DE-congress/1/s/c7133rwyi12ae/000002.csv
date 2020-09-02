@@ -1,0 +1,2 @@
+"0","total_male <- sum(congress$gender == ""M"")"
+"0","total_female <- sum(congress$gender == ""F"")"

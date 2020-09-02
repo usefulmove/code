@@ -1,0 +1,6 @@
+"0",""
+"0","total_us_cases <- us_live$cases[nrow(us_live)]"
+"0","current_us_ncases <- us$ncases[nrow(us)]"
+"0","total_us_deaths <- us_live$deaths[nrow(us_live)]"
+"0","current_us_ndeaths <- us$ndeaths[nrow(us)]"
+"0",""

@@ -1,0 +1,6 @@
+"0","us_aggregate_mobility %>%"
+"0","  write_csv(""us-aggregate-mobility.csv"")"
+"0",""
+"0","state_aggregate_mobility %>%"
+"0","  write_csv(""states-aggregate-mobility.csv"")"
+"0",""

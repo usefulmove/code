@@ -1,0 +1,37 @@
+---
+title: "cointoss"
+output: html_notebook
+---
+
+```{r}
+library(stringr)
+
+# generate coin toss string
+tosses <- str_c(as.character(round(runif(200e6))),collapse="")
+
+# define match function (counts overlapping matches, not useful for this simulation)
+#matches <- function(match_string,match_pattern) {
+#    gg <- gregexpr(paste0("(?=",match_pattern,")"),match_string,perl=TRUE)[[1]]
+#    if (length(gg)==1 && gg==-1) 0 else length(gg)
+#}
+
+# sona_+=_
+
+
+# strategy - use str_split() to cut up the long results string, then remove the last element in the returned
+# list (remaining left over from no match or null string) and add 3 to the length of each string in the list.
+
+outcomes011 <- unlist(str_split(tosses,"011"))
+outcomes101 <- unlist(str_split(tosses,"101"))
+
+outcomes011[length(outcomes011)] <- NA
+outcomes101[length(outcomes101)] <- NA
+
+outcomes011 <- str_length(outcomes011)+3
+outcomes101 <- str_length(outcomes101)+3
+
+
+summary(outcomes011)["Mean"]
+summary(outcomes101)["Mean"]
+
+```

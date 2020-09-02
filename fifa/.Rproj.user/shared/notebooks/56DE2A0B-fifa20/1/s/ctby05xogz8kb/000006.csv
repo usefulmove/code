@@ -1,0 +1,51 @@
+"0","pros <- read_csv(""players_20.csv"")"
+"2","Parsed with column specification:
+cols(
+  .default = col_double(),
+  player_url = [31mcol_character()[39m,
+  short_name = [31mcol_character()[39m,
+  long_name = [31mcol_character()[39m,
+  dob = [34mcol_date(format = """")[39m,
+  nationality = [31mcol_character()[39m,
+  club = [31mcol_character()[39m,
+  player_positions = [31mcol_character()[39m,
+  preferred_foot = [31mcol_character()[39m,
+  work_rate = [31mcol_character()[39m,
+  body_type = [31mcol_character()[39m,
+  real_face = [31mcol_character()[39m,
+  player_tags = [31mcol_character()[39m,
+  team_position = [31mcol_character()[39m,
+  loaned_from = [31mcol_character()[39m,
+  joined = [34mcol_date(format = """")[39m,
+  nation_position = [31mcol_character()[39m,
+  player_traits = [31mcol_character()[39m,
+  ls = [31mcol_character()[39m,
+  st = [31mcol_character()[39m,
+  rs = [31mcol_character()[39m
+  # ... with 23 more columns
+)
+"
+"2","See spec(...) for full column specifications.
+"
+"0","pros <- pros %>% "
+"0","    mutate(name=short_name,"
+"0","           cost=value_eur,"
+"0","           wage=wage_eur,"
+"0","           positions=player_positions,"
+"0","    )"
+"0",""
+"0","pros_position_longer <- pros %>% "
+"0","    separate(col=positions,"
+"0","             sep="","","
+"0","             into=c(""pos1"",""pos2"",""pos3"")"
+"0","    ) %>% "
+"0","    mutate(pos1=str_trim(pos1),"
+"0","           pos2=str_trim(pos2),"
+"0","           pos3=str_trim(pos3),"
+"0","    ) %>% "
+"0","    pivot_longer(cols=c(pos1,pos2,pos3),"
+"0","                 names_to=""position_rank"","
+"0","                 values_to=""position"","
+"0","                 values_drop_na=TRUE"
+"0","    )"
+"2","Expected 3 pieces. Missing pieces filled with `NA` in 15797 rows [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, ...]."

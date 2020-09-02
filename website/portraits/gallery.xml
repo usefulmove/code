@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simpleviewerGallery maxImageWidth="800" maxImageHeight="800" textColor="0xDFDEDC" frameColor="0xC0C0C0" frameWidth="1" stagePadding="40" thumbnailColumns="3" thumbnailRows="3" navPosition="left" title="portraits" enableRightClickOpen="false" backgroundImagePath="" imagePath="" thumbPath="">
+<image>
+	<filename>tiffany.jpg</filename>
+	<caption><![CDATA[<i>(i)  Copyright © D. Edmonds</i>]]></caption>
+</image>
+<image>
+	<filename>tomeka_headshot.jpg</filename>
+	<caption><![CDATA[<i>(ii)  Copyright © D. Edmonds</i>]]></caption>
+</image>
+<image>
+	<filename>tomeka_puma.jpg</filename>
+	<caption><![CDATA[<i>(iii)  Copyright © D. Edmonds</i>]]></caption>
+</image>
+<image>
+	<filename>jasmine.jpg</filename>
+	<caption><![CDATA[<i>(iv)  Copyright © D. Edmonds</i>]]></caption>
+</image>
+<image>
+	<filename>sonia_asleep.jpg</filename>
+	<caption><![CDATA[<i>(v)  Copyright © D. Edmonds</i>]]></caption>
+</image>
+<image>
+	<filename>looking_up.jpg</filename>
+	<caption><![CDATA[<i>(vi)  Copyright © D. Edmonds</i>]]></caption>
+</image>
+<image>
+	<filename>sb_headshot.jpg</filename>
+	<caption><![CDATA[<i>(vii)  Copyright © D. Edmonds</i>]]></caption>
+</image>
+<image>
+	<filename>boy.jpg</filename>
+	<caption><![CDATA[<i>(viii)  Copyright © D. Edmonds</i>]]></caption>
+</image>
+<image>
+	<filename>td_up.jpg</filename>
+	<caption><![CDATA[<i>(ix)  Copyright © D. Edmonds</i>]]></caption>
+</image>
+</simpleviewerGallery>

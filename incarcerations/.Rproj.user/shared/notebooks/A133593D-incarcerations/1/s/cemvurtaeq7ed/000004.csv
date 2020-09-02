@@ -1,0 +1,15 @@
+"0",""
+"0","# top by state"
+"0","o %>%"
+"0","    filter(year==2010) %>% "
+"0","    group_by(year,state) %>% "
+"0","    summarise(total_black=sum(black_prison_pop,na.rm=TRUE)) %>% "
+"0","    arrange(desc(total_black)) %>% "
+"0","    top_n(4,total_black) %>% "
+"0","    kable()"
+"2","Registered S3 methods overwritten by 'htmltools':
+  method               from         
+  print.html           tools:rstudio
+  print.shiny.tag      tools:rstudio
+  print.shiny.tag.list tools:rstudio
+"

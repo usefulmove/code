@@ -1,0 +1,16 @@
+"0","```r
+gs %>% 
+    group_by(state,year) %>% 
+    left_join(murders,by=\"state\") %>% 
+    summarise(gun_death_rate=sum(dead)/mean(population)) %>% 
+    filter(sum(gun_death_rate)<divide) %>% 
+    ggplot(aes(x=reorder(state,desc(gun_death_rate)),y=gun_death_rate*1e5)) +
+        geom_bar(stat=\"identity\",width=0.8,alpha=0.8,fill=\"#78c1f9\") +
+        scale_y_continuous(limits=c(0,80)) +
+        coord_flip() +
+        theme_minimal() +
+        ylab(\"people killed by gun violence (per 100,000)\") + xlab(\"\") +
+        ggtitle(\"least gun deaths by state\")
+```"
+"1","Column `state` joining factor and character vector, coercing into character vector
+"

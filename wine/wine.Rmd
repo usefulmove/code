@@ -1,0 +1,64 @@
+---
+title: "Wine Reviews"
+author: "Duane Edmonds"
+date: "4/28/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, message=FALSE}
+library(tidyverse)
+library(forcats)
+library(ggthemes)
+library(RColorBrewer)
+
+wine <- read.csv("C:/Users/duane/repos/dedmonds/code/wine/wine-reviews/winemag-data_first150k.csv")
+```
+
+```{r}
+# number of wine reviews
+nrow(wine)
+
+winestats <- wine %>%
+    group_by(country) %>%
+    summarise(count=n(),mu_rating=mean(points))
+
+# top 10 in production
+winestats %>%
+    arrange(desc(count)) %>% 
+    top_n(10,count) %>% 
+    select(-mu_rating)
+```
+
+
+```{r}
+# top 10 in quality
+winestats %>% 
+    arrange(desc(mu_rating)) %>% 
+    top_n(10,mu_rating) %>% 
+    select(-count)
+```
+
+
+```{r}
+# generate box plot wine ratings for the top 10 wine producing countries
+# note: these are the countries with the most wines, rather than the countries with the most wine.
+
+c_list <- wine %>% 
+              group_by(country) %>% 
+              summarise(count=n()) %>% 
+              top_n(10,count) %>% 
+              pull(country)  # list of global top ten wine producers
+
+wine %>% filter(country %in% c_list) %>% group_by(country) %>% ggplot( aes(x=factor(country), y=points) ) +
+    geom_boxplot( aes(fill=country), show.legend=FALSE ) +
+    xlab( "" ) + ylab( "wine ratings" ) +
+    scale_fill_discrete( name="" ) +
+    ggtitle( "Wine Ratings for the Top 10 Wine-Producing Countries" ) +
+    scale_fill_brewer(palette="Set3") +
+    theme_hc()
+
+```

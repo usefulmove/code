@@ -1,0 +1,88 @@
+---
+title: "CollegeBoard SAT by State"
+author: ""
+date: "5/4/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r, include=FALSE}
+
+library(tidyverse)
+library(readxl)
+library(stringr)
+library(ggthemes)
+library(RColorBrewer)
+
+``` 
+
+
+```{r, include=FALSE}
+
+# import data frames
+edu <- read_excel("C:/Users/duane/repos/dedmonds/code/SAT/tabn226.40.xls", skip = 4)  # education data file
+states <- read.csv("C:/Users/duane/repos/dedmonds/code/library/states.csv")  # state and region file
+                  
+# tidy and prep data frame
+edu <- edu %>% filter( !is.na(`1`) )  # blank rows (unique to data)
+
+edu <- edu %>% filter( !is.na(`2`), !is.na(`14`) )  # footer rows at bottom
+
+edu$`1` <- str_trim( str_extract( edu$`1`, "[a-zA-Z ]+" ) )  # clean state names (regex)
+
+edu <- edu %>% mutate( State=`1`, p=`14` ) %>% select( State, p )  # state and percentage variables
+
+edu <- edu %>% filter( State != "United States" )  # remove summary observation
+
+edu$State[which(edu$State=="Columbia")] <- "District of Columbia"  # correct error caused by structure of data import
+
+edu$State <- as.factor(edu$State)  # convert to factor vector
+           
+```
+
+```{r, include=FALSE}
+
+# join data frames
+edu <- edu %>% left_join( states, by="State" )
+
+```
+
+
+```{r, echo=FALSE}
+
+# explore percentage of students per state who took the SAT
+
+p_dot <- edu %>%
+     ggplot( aes(x=p, y=reorder(State,p)) ) +
+        geom_point( size=3.5 ) +
+        xlab( "SAT percentage" ) + ylab( "" ) +
+        theme_hc() +
+        theme(panel.grid.major.x = element_blank(),
+              panel.grid.minor.x = element_blank(),
+              panel.grid.major.y = element_line(colour="grey60", linetype="dashed"))
+p_dot
+
+```
+
+
+```{r, echo=FALSE}
+
+p_box <- edu %>%
+    group_by(Region) %>%
+    ggplot( aes(x=Region, y=p, fill=Region) ) +
+        geom_boxplot( show.legend=FALSE ) +
+        xlab( "" ) + ylab( "percentage" ) +
+        ggtitle( "U.S. students who took the SAT" ) +
+        theme_hc() +
+        scale_fill_brewer( palette="Set3" )
+p_box
+
+```
+
+
+
+

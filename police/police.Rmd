@@ -1,0 +1,195 @@
+---
+title: "police-involved deaths"
+output:
+  html_document:
+    df_print: paged
+---
+
+data source: [US Police Involved Fatalities](https://data.world/awram/us-police-involved-fatalities)
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(dslabs)
+library(RColorBrewer)
+theme_set(theme_minimal())
+prim_color <- "#8fc224"
+```
+
+
+```{r data, include=FALSE}
+# import data
+# police fatality data
+deaths <- readr::read_csv("./awram-us-police-involved-fatalities/data/police_fatalities.csv")
+# census population data
+state_pop <- readr::read_csv("./awram-us-police-involved-fatalities/data/censusstatepopulations2014.csv")
+us_pop <- readr::read_csv("./awram-us-police-involved-fatalities/data/ACSDP1Y2014.DP05_data_with_overlays_2020-06-02T011259.csv")
+
+# clean and tidy 
+us_pop <- us_pop %>% 
+    select(Total=DP05_0028PE,
+           White=DP05_0032E,
+           Black=DP05_0033E,
+           Native=DP05_0034E,
+           Asian=DP05_0039E,
+           Hispanic=DP05_0066E
+    ) %>% 
+    slice(2) %>% 
+    mutate(Total=as.numeric(Total),
+           White=as.numeric(White),
+           Black=as.numeric(Black),
+           Native=as.numeric(Native),
+           Asian=as.numeric(Asian),
+           Hispanic=as.numeric(Hispanic)
+    )
+```
+
+
+The data set represents data from the years **`r lubridate::year(min(as.Date(deaths$date)))`** through **`r lubridate::year(max(as.Date(deaths$date)))`**, representing **`r format(length(deaths$uid),big.mark=",")`** police-involved deaths across the United States. 
+
+---
+
+### reported circumstances
+
+```{r flee, echo=FALSE}
+# suspect fleeing
+deaths %>% 
+    count(flee) %>% 
+    ggplot(aes(flee,n)) +
+        geom_col(fill=prim_color,color="black",alpha=0.8,width=0.6) +
+        scale_y_continuous(labels=scales::comma) +
+        labs(title="fleeing?",x="",y="")
+```
+
+
+```{r armed, include=FALSE}
+# suspect armed
+deaths %>% 
+    count(armed) %>% 
+    filter(is.na(armed)) %>% 
+    .$n -> n_na
+
+n_na / nrow(deaths)  # percentage of missing data
+
+```
+
+---
+
+### human details
+
+```{r age, echo=FALSE}
+# age
+deaths %>% 
+    filter(!is.na(age)) %>% 
+    ggplot(aes(age)) +
+        geom_histogram(breaks=seq(0,110,10),fill=prim_color,color="black",alpha=0.8) +
+        labs(title="age distribution",x="",y="") +
+        scale_y_continuous(labels=scales::comma)
+```
+
+The age range represented in the data set is from **`r min(deaths$age,na.rm=TRUE)`** to **`r max(deaths$age,na.rm=TRUE)`**. The average age is **`r signif(mean(deaths$age,na.rm=TRUE),digits=2)`**.
+
+
+```{r gender, echo=FALSE}
+# gender
+genders <- deaths %>%
+    count(gender)
+
+males <- genders$n[which(genders$gender=="Male")]
+females <- genders$n[which(genders$gender=="Female")]
+gender_nas <- genders$n[is.na(genders$gender)]
+
+perc_male <- males/(males+females)
+perc_na <- gender_nas/sum(genders$n)
+
+genders %>% 
+    mutate(gender=replace_na(gender,"Unknown")) %>% 
+    ggplot(aes(gender,n)) +
+        geom_col(fill=prim_color,color="black",alpha=0.8,width=0.8) +
+        labs(title="gender",x="",y="") +
+        scale_y_continuous(labels=scales::comma)
+
+```
+
+The people represented in the data were **`r signif(perc_male*100,digits=3)`%** males. Gender was unspecified for `r signif(perc_na*100,digits=2)`% of the people represented.
+
+
+```{r capita_demographics, echo=FALSE}
+us_pop_transpose <- us_pop %>% 
+    pivot_longer(cols=Total:Hispanic,names_to="race",values_to="population")
+
+deaths %>% 
+    filter(!is.na(race),race!="Other") %>% 
+    group_by(race) %>% 
+    summarise(count=n(),.groups="drop") %>% 
+    left_join(us_pop_transpose,by="race") %>% 
+    mutate(rate=count/population) %>% 
+    ggplot(aes(fct_reorder(race,desc(rate)),rate*1e6)) +
+        geom_col(fill=prim_color,color="black",alpha=0.8) +
+        labs(title="per capita police-involved deaths",subtitle="(all ages and all causes)",x="",y="(deaths per million)")
+```
+
+
+```{r capita_demographics_under20, echo=FALSE}
+deaths %>% 
+    filter(!is.na(race),race!="Other",age<=20) %>% 
+    group_by(race) %>% 
+    summarise(count=n(),.groups="drop") %>% 
+    left_join(us_pop_transpose,by="race") %>% 
+    mutate(rate=count/population) %>% 
+    ggplot(aes(fct_reorder(race,desc(rate)),rate*1e6)) +
+        geom_col(fill=prim_color,color="black",alpha=0.8) +
+        labs(title="per capita police-involved deaths",subtitle="(under the age of 20)",x="",y="(deaths per million)")
+```
+
+
+```{r capita_demographics_notshot, echo=FALSE}
+deaths %>% 
+    filter(!is.na(race),race!="Other",manner_of_death!="Shot") %>% 
+    group_by(race) %>% 
+    summarise(count=n(),.groups="drop") %>% 
+    left_join(us_pop_transpose,by="race") %>% 
+    mutate(rate=count/population) %>% 
+    ggplot(aes(fct_reorder(race,desc(rate)),rate*1e6)) +
+        geom_col(fill=prim_color,color="black",alpha=0.8) +
+        labs(title="per capita police-involved deaths",subtitle="(manner of death other than gunshot)",x="",y="(deaths per million)")
+```
+
+
+```{r age_demographics, echo=FALSE, fig.width=9}
+deaths %>% 
+    filter(!is.na(age),!is.na(race),race!="Other") %>% 
+    group_by(race) %>% 
+    summarise(average_age=mean(age),.groups="drop") %>% 
+    ggplot(aes(fct_reorder(race,average_age),average_age)) +
+        geom_col(color="black",fill=prim_color,alpha=0.8,width=0.5) +
+        labs(title="age demographics",x="",y="average age") +
+        geom_text(aes(label=signif(average_age,digits=3)),size=3.5,nudge_y=-2) +
+        coord_flip()
+
+```
+
+---
+
+### u.s. national trend (2000-2016)
+
+```{r echo=FALSE, fig.width=10, fig.height=7}
+deaths %>% 
+    ggplot(aes(date)) +
+        geom_histogram(aes(fill=manner_of_death),breaks=seq(as.Date("2000-01-01"),as.Date("2017-01-01"),"years"),
+                       color="black",alpha=0.8) +
+        labs(title="",x="",y="police-involved deaths",fill="manner of death") +
+        annotate(geom="text",x=as.Date("2014-03-01"),y=2160,hjust="right",
+                 label="increases in agressive policing?*",size=3.5
+                 ) +
+        annotate(geom="segment",
+                 x=as.Date("2014-04-01"),xend=as.Date("2014-11-01"),
+                 y=2150,yend=2120,
+                 size=0.3
+                 ) +
+        scale_y_continuous(labels=scales::comma)
+
+```
+
+*Reference: Are Police Pulling the Trigger Too Fast? (All Things Considered)[^1]
+
+[^1]:https://www.npr.org/2016/07/15/486150716/are-police-being-taught-to-pull-the-trigger-too-fast

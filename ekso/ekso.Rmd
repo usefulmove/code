@@ -1,0 +1,74 @@
+---
+title: ""
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(lubridate)
+library(ggthemes)
+library(ggrepel)
+theme_set(theme_wsj())
+ekso <- read_csv("EKSO.csv")
+```
+
+```{r clean_and_tidy, include=FALSE}
+ekso <- ekso %>% 
+    mutate(Year=year(Date))
+```
+
+
+```{r chart, echo=FALSE, fig.width=9, fig.height=6.5}
+sa_label <- "SmartAssist(TM) Software"
+sa_date <- as.Date("2015-06-25")
+sa_price <- ekso$Close[which(ekso$Date==sa_date)]
+
+socom_label <- "Special Operations Contract"
+socom_date <- as.Date("2015-05-20")
+socom_price <- ekso$Close[which(ekso$Date==socom_date)]
+
+fes_label <- "Functional Electrical Stimulation (FES)"
+fes_date <- as.Date("2017-12-14")
+fes_price <- ekso$Close[which(ekso$Date==fes_date)]
+
+po_label <- "Public Offering"
+po_date <- as.Date("2014-01-17")
+po_price <- ekso$Close[which(ekso$Date==po_date)]
+
+mt_label <- "\"5 Startups Poised to Change MedTech\""
+mt_date <- as.Date("2014-02-13")
+mt_price <- ekso$Close[which(ekso$Date==mt_date)]
+
+label_df <- tibble(date=c(sa_date,
+                          socom_date,
+                          fes_date,
+                          po_date,
+                          mt_date
+                          ),
+                   price=c(sa_price,
+                           socom_price,
+                           fes_price,
+                           po_price,
+                           mt_price
+                           ), 
+                   label=c(sa_label,
+                           socom_label,
+                           fes_label,
+                           po_label,
+                           mt_label
+                           )
+                   )
+
+ekso %>% 
+    ggplot(aes(x=Date,y=Close)) +
+        geom_point(data=label_df,aes(x=date,y=price),color="darkred",size=2.5) +
+        geom_label_repel(data=label_df,aes(x=date,y=price,label=label),box.padding=1) +
+        geom_line(size=0.5) +
+        labs(title="Ekso Bionics Holdings, Inc. (EKSO)",
+             x="", y="price ($)",
+             caption="(data from Yahoo! Finance)"
+        )
+```
+

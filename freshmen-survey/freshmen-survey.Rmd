@@ -1,0 +1,40 @@
+---
+title: "freshmen survey (2014)"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(magrittr)
+
+theme_set(theme_minimal())
+
+s <- read_csv("freshmen-survey_csv.csv")
+s %<>%
+    slice(27:34) %>%  # slice to isolate grade data
+    mutate( grade = Survey,
+            percent =`Universities(Baccalaureate Institutions)`) %>% 
+    select( grade, percent )
+
+s$grade[1:2] <- "A"
+s$grade[3:5] <- "B"
+s$grade[6:7] <- "C"
+
+s %>% 
+    group_by( grade ) %>% 
+    summarise( total = sum( percent ) ) %>% 
+    ggplot( aes(x = fct_reorder( grade, total ), y = total ) ) +
+        geom_bar( stat = "identity",
+                  color = "black",
+                  fill = "#00c0ff",
+                  alpha = 0.8,
+                  width = 0.5,
+                  ) +
+        coord_flip() +
+        labs( y = "students enrolled (%)",
+              x = "",
+              title = "high school grade average for incoming university freshmen"
+              )
+
+```
+

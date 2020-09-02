@@ -1,0 +1,94 @@
+---
+title: "Detroit Police Department Citizen Complaints"
+output: html_document
+---
+
+https://data.detroitmi.gov/datasets/dpd-citizen-complaints
+
+>This dataset reflects all citizen complaints received by the Detroit Police Department (DPD) and the Board of Police Commissioners from January 1, 2016 to December 31, 2018. The data are provided by the Office of the Chief Investigator (OCI), under the direction of the Board of Police Commissioners. The OCI receives, investigates, and resolves complaints regarding non-criminal allegations of misconduct against the DPD and its personnel. 
+>
+>This dataset contains information about the nature of individual complaints, demographics for both the citizen filing the complaint and the officer against which the complaint is filed, and the resulting finding from the OCI investigation. In order to protect the privacy of both the officer and the citizen filing the complaint, no personally-identifiable information is displayed.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(RColorBrewer)
+source("../library/ded/ded.R")
+theme_set(theme_minimal())
+```
+
+
+```{r tidy, include=FALSE}
+complaints <- readr::read_csv("DPD_Citizen_Complaints.csv")
+
+complaints <- complaints %>% 
+    #filter(Finding!="**Pending**", ) %>% 
+    ded_recode(ctznRace,
+               "Other=Select",
+               "Other=Unknown"
+               ) %>% 
+    mutate(ctznRace=fct_lump(ctznRace, n=7)) %>% 
+    ded_recode(Allegation,
+               "Arrest=arrest",
+               "Force=force",
+               "Procedure=procedure",
+               "Procedure=PROcedure",
+               "Search=search"
+               ) %>% 
+    mutate(Result=ifelse(Finding %in% c("Admin. Closure",
+                                        "Exonerated",
+                                        "Inconclusive",
+                                        "No Charge",
+                                        "Not Sustained",
+                                        "Unfounded",
+                                        "Void"
+                                        ),
+                         "Dismissed", "Sustained"
+                         )
+           ) %>% 
+    ded_recode(ofcrSex,
+               "Male=M",
+               "Male=MALE",
+               "Female=F",
+               "Female=FEMALE",
+               "Unknown=UNKNOWN"
+               )
+
+```
+
+
+```{r race, echo=FALSE, fig.width=9, fig.height=6.5}
+complaints %>%
+    filter(!is.na(ctznRace)) %>% 
+    group_by(ctznRace) %>% 
+    summarise(count=n(), .groups="drop") %>% 
+    mutate(ctznRace=fct_reorder(ctznRace, desc(count))) %>% 
+    ggplot(aes(ctznRace, count)) +
+        geom_col(fill="#cbbedd", color="black", alpha=0.8) +
+        scale_y_continuous(labels=scales::comma) +
+        labs(x="", y="", title="Complaint Demographics")
+
+```
+
+
+```{r officer_gender, include=FALSE, fig.width=9, fig.height=6.5}
+complaints %>% 
+    ggplot(aes(ofcrSex)) +
+        geom_bar(fill="#cbbedd", color="black", alpha = 0.8) +
+        scale_y_continuous(labels=scales::comma) +
+        labs(x="", y="", title="Officer Gender")
+
+```
+
+
+```{r complaint_result, echo=FALSE, fig.width=9, fig.height=6.5}
+complaints %>% 
+    filter(Finding!="**Pending**") %>% 
+    ggplot(aes(Result)) +
+        geom_bar(aes(fill=Finding), color="black", alpha=0.8) +
+        scale_y_continuous(labels=scales::comma) +
+        scale_fill_brewer(palette="Accent") +
+        labs(x="", y="", title="Complaint Result")
+
+```
+

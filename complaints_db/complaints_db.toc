@@ -1,0 +1,19 @@
+\contentsline {section}{Purpose and Scope}{2}{section*.3}%
+\contentsline {section}{Background}{2}{section*.4}%
+\contentsline {subsection}{Business Needs Assessment}{2}{section*.5}%
+\contentsline {section}{Customer Complaints Database}{2}{section*.6}%
+\contentsline {subsection}{Data Dictionary}{3}{section*.7}%
+\contentsline {subsection}{Complaints Data Frame}{3}{section*.8}%
+\contentsline {section}{Data Analysis}{4}{section*.9}%
+\contentsline {subsection}{Open Complaints}{4}{section*.10}%
+\contentsline {paragraph}{Product Reliability}{6}{section*.11}%
+\contentsline {paragraph}{Complaint Aging}{7}{figure.6}%
+\contentsline {subsection}{Reported Injuries}{7}{section*.13}%
+\contentsline {subsection}{Component Failures}{7}{section*.14}%
+\contentsline {subsection}{Data from Root Cause Analyses}{9}{section*.15}%
+\contentsline {section}{Recommendations}{10}{section*.16}%
+\contentsline {subsection}{Data Integrity}{10}{section*.17}%
+\contentsline {subsection}{Data Backlog}{10}{section*.18}%
+\contentsline {subsection}{Complaint Handling Tool}{11}{section*.19}%
+\contentsline {section}{Conclusion}{11}{section*.20}%
+\contentsline {section}{References}{11}{section*.21}%

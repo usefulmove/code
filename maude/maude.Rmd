@@ -1,0 +1,109 @@
+---
+title: "Computer-Controlled Surgical Instrument MAUDE"
+date: "19 Aug 2020"
+author: "Duane Edmonds"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  out.width = "100%"
+)
+library(tidyverse)
+library(tidymodels)
+theme_set(theme_minimal())
+```
+
+```{r data_tidy, include = FALSE}
+maude <- readxl::read_excel("nay_maude_20200819.xls")
+
+rpts <- maude %>% 
+  transmute(
+    id = as.factor(`Report Number`),
+    event_type = as.factor(`Event Type`),
+    manufacturer = as.factor(`Manufacturer`),
+    prod_code = as.character(`Product Code`),
+    event_date = as.integer(`Event Date`),
+    event_date = as.Date(event_date, origin = "1899-12-30"),
+    brand = `Brand Name`,
+    problem = Device_Problem,
+    event_text = `Event text`
+  ) %>% 
+  filter(
+    str_detect(manufacturer, "INTUITIVE")
+  )
+
+fdaprods <- readr::read_delim(
+                     "../library/fda/fda_product_classification_foiclass20200819.dsv",
+                     delim = "|"
+                   )
+  
+fdaprods %>% 
+  filter(
+    PRODUCTCODE %in% (rpts %>% distinct(prod_code))$prod_code
+  )
+
+problems <- rpts %>% 
+  mutate(
+    problem = str_split(problem, pattern = ";")
+  ) %>% 
+  select(problem) %>% 
+  unnest(
+    cols = c(problem)
+  ) %>% 
+  filter(
+    !is.na(problem)
+  ) %>% 
+  mutate(
+    problem = str_trim(problem, side = "both")
+  )
+
+```
+
+```{r}
+problems %>% 
+  group_by(problem) %>% 
+  summarise(
+    count = n(),
+    .groups = "drop"
+  ) %>% 
+  ggplot() +
+    geom_col(
+      aes(
+        count,
+        fct_reorder(problem, count)
+      ),
+      fill = ggsci::pal_jco()(1),
+      color = "black",
+      width = 0.8,
+      alpha = 0.8
+    ) +
+    labs(
+      x = "",
+      y = "",
+      subtitle = "cagetories"
+    )
+```
+
+```{r}
+rpts %>% 
+  count(event_type) %>% 
+  ggplot() +
+    geom_col(
+      aes(event_type,
+          n,
+          fill = event_type
+      ),
+      alpha = 0.8,
+      color = "black",
+      show.legend = FALSE
+    ) +
+    labs(
+      x = "",
+      y = "",
+      subtitle = "event types"
+    ) +
+    ggsci::scale_fill_jco()
+```
+

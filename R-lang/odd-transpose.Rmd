@@ -1,0 +1,41 @@
+---
+output: html_document
+---
+
+[stackoverflow: R dates as column names containing duplicate values (need to retain original date)](https://stackoverflow.com/questions/62567018/r-dates-as-column-names-containing-duplicate-values-need-to-retain-original-dat)
+
+```{r}
+library(tidyverse)
+
+df <- structure(
+  list(
+    Date = c("Contract", "Org1", "Org2", "Org3", "Org4"), 
+    '12/16/18' = c("111", "pending", "complete", "complete", "pending"), 
+    '12/16/18' = c("222", "pending", "complete", "pending", "complete"),
+    '1/18/18' = c("222", "pending", "complete", "pending", "complete")
+  ), 
+  class = "data.frame", 
+  .Names = c("Date", "12/16/18", "12/16/18",'1/18/18'), 
+  row.names = c(NA, -5L)
+)
+
+df_transposed <- df %>% 
+  tibble::rownames_to_column() %>%  
+  pivot_longer(-rowname) %>% 
+  pivot_wider(names_from=rowname, values_from=value) %>% 
+  slice(2:nrow(.)) %>% 
+  rename(
+    Date = name,
+    Contract = `1`,
+    Org1 = `2`,
+    Org2 = `3`,
+    Org3 = `4`,
+    Org4 = `5`
+  ) %>% 
+  mutate(Date = as.Date.character(Date, format = "%m/%d/%y")) %>% 
+  pivot_longer(cols = Org1:Org4, names_to = "ORG", values_to = "status")
+  
+df_transposed
+
+```
+

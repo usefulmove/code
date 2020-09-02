@@ -1,0 +1,529 @@
+---
+title: "**Complaints Database -- A Detailed Analysis**"
+author: "D. Edmonds (Dir., Medical Products & Systems)"
+date: "27 April 2020"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r, include=FALSE}
+library(ggplot2)
+library(ggthemes)
+library(dplyr)
+library(lubridate)
+library(readxl)
+library(grid)
+library(gridExtra)
+```
+
+
+```{r, include=FALSE}
+program_time <- c(15.5,10,7)
+#origin="2020-04-25 01:55"
+
+doc_theme <- theme_minimal()  # document theme
+```
+
+
+\tableofcontents
+
+\listoffigures
+
+\newpage
+
+
+# Purpose and Scope
+
+This report documents the exploratory data analysis performed on the company Customer Complaints database for the EksoGT\textsuperscript{TM} robotic exoskeleton and associated legacy products. The analysis was performed using the database field definitions captured in the customer complaints exported from the database on 24 September 2018. It contains conclusions about the current use of the database and recommendations for future improvement. This report is limited to the analysis of business needs and practices and does not address any open audit findings or other improvement requests, and this report does not include any portion of a Quality System audit for the purpose of evaluating regulatory compliance.
+
+
+# Background
+
+The process for receiving, recording, and evaluating customer complaints in accordance with current company business practices and applicable regulatory requirements---21 CFR 820.198 and ISO 13485:2016---is established in **QS, Complaint Handling Procedure** (D100019). The Complaint Handling system is one of the key business processes for understanding opportunities for improving the company's processes and systems. The definition of complaint that is used by the organization is copied below.
+
+&nbsp;
+
+>> **complaint**[^1]: written, electronic or oral communication that alleges deficiencies related to the identity, quality, durability, reliability, usability, safety or performance of a medical device that has been released from the organization's control or related to a service that affects the performance of such medical devices
+
+[^1]: EN ISO 13485:2016
+
+&nbsp;
+
+The company currently uses an open-source, web-based bug tracking software product, Trac, for tracking and managing all complaint handling tickets.
+
+
+## Business Needs Assessment
+
+As part of this exploratory effort a needs assessment was performed by brainstorming unanswered questions that might find answers in the complaints data. The brainstorming effort was performed specifically without regard to what data was known to be present in the export from the Customer Complaints database in order not to limit the discussion to what could be reported easily. These questions were then narrowed to those of most importance to the business, and compared with the existing key process indicators (KPIs) related to customer complaints within the Quality Assurance and Regulatory Affairs department.
+
+The key metrics desired had to do with the number of open customer complaints and how this number is trending, complaint time-to-closure, product reliability, most common failures and the components associated with those failures, and the status of complaints in the overall complaint handling workflow in order to gauge the health of the process.
+
+
+# Customer Complaints Database
+
+```{r, echo=FALSE}
+# import complaint data frame
+
+data_file <- "C:/Users/duane/repos/dedmonds/code/complaints_db/Complaint_Report_20180924_0024.xlsx"  # cora (win)
+#data_file <- "/Volumes/persnl/repos/dedmonds/code/complaints_db/Complaint_Report_20180924_0024.xlsx"  # minic (osx)
+
+complaints <- read_excel( data_file )
+#    View( complaints )
+```
+
+An assessment of all available data fields in the Customer Complaints database was performed with respect to the business needs explored in the previous section. Based on this assessment, a data dictionary was generated to reflect the selected data fields and their formats within the internal data frame structure. The specific report used for this analysis is the *Complaint_Report_20180924_0024.xlsx* report, dated 24 September 2018. Data from this report was reported the following Tuesday at the Operations and R&D weekly status meeting, and portions of this data were presented to the Executive Team on Wednesday of the same week.
+
+\newpage
+
+
+## Data Dictionary
+
+```{r, echo=FALSE, warning=FALSE}
+
+# working data frame
+c <- complaints %>% select(  # select and rename variables
+                           id,
+                           short_desc = summary,
+                           status,
+                           owner,
+                           component,
+                           resolution_status = resolution,
+                           date = cf_occur_date,
+                           step_count = cf_step_count,
+                           account = cf_affected_units,
+                           sn = cf_affected_units,
+                           country = cf_country,
+                           injury = cf_injury_description,
+                           product = cf_product,
+                           reportable = cf_reportable_event,
+                           service_type = cf_service_type,
+                           category = cf_complaint_category,
+                           rca_category = cf_root_cause_type,
+                           description,
+                           resolution = cf_resolution,
+                           root_cause = cf_root_cause,
+                           investigation_status = cf_investigation_type,
+                           investigation = cf_investigation_summary
+                           )
+    
+# coerce factors
+c <- c %>% mutate(   
+             id = as.integer(id),
+             status = as.factor(status),
+             owner = as.factor(owner),
+             component = as.factor(component),
+             resolution_status = as.factor(resolution_status),
+             date = as.Date(date),
+             step_count = as.integer(step_count),
+             account = as.factor(account),
+             sn = as.factor(sn),
+             country = as.factor(country),
+             injury = as.factor(injury),
+             product = as.factor(product),
+             reportable = as.logical(reportable),
+             service_type = as.factor(service_type),
+             category = as.factor(category),
+             investigation_status = as.factor(investigation_status),
+             rca_category = as.factor(rca_category)  # root cause analysis type
+             )
+
+levels(c$product) <- c("Ekso 1.1", "EksoGT", "Pick an option", "Ekso (1.0)")  # rename factors (levels)
+
+```
+
+
+```{r, include=FALSE}
+
+# data cleaning
+
+# add region variable and fill observations
+c <- c %>% mutate(region="Unassigned")
+
+c$region[c$country=="Austria"] <- "Europe"
+c$region[c$country=="Denmark"] <- "Europe"
+c$region[c$country=="FRANCE"] <- "Europe"
+c$region[c$country=="Italy"] <- "Europe"
+c$region[c$country=="Portugal"] <- "Europe"
+c$region[c$country=="Spain"] <- "Europe"
+c$region[c$country=="Belgium"] <- "Europe"
+c$region[c$country=="EMEA Region"] <- "Europe"
+c$region[c$country=="Germany"] <- "Europe"
+c$region[c$country=="ITALY"] <- "Europe"
+c$region[c$country=="Russia"] <- "Europe"
+c$region[c$country=="Sweden"] <- "Europe"
+c$region[c$country=="EMEA Region-Germany"] <- "Europe"
+c$region[c$country=="Greece"] <- "Europe"
+c$region[c$country=="Russian Federation"] <- "Europe"
+c$region[c$country=="Switzerland"] <- "Europe"
+c$region[c$country=="EMEA Region-Poland"] <- "Europe"
+c$region[c$country=="GREECE"] <- "Europe"
+c$region[c$country=="Poland"] <- "Europe"
+c$region[c$country=="United Kingdom"] <- "Europe"
+c$region[c$country=="Czech Republic"] <- "Europe"
+c$region[c$country=="France"] <- "Europe"
+c$region[c$country=="Ireland"] <- "Europe"
+c$region[c$country=="POLAND"] <- "Europe"
+
+c$region[c$country=="United States"] <- "Americas"
+c$region[c$country=="usa"] <- "Americas"
+c$region[c$country=="USA"] <- "Europe"
+c$region[c$country=="Canada"] <- "Europe"
+c$region[c$country=="Mexico"] <- "Europe"
+
+c$region[c$country=="China"] <- "Asia"
+
+c$region[c$country=="Saudi Arabia"] <- "Middle East"
+
+c$region[c$country=="South Africa"] <- "Africa"
+
+```
+
+
+
+| name | data type | description |
+|----:|:----|-----|----|
+| id | integer | unique complaint identifier |
+| status | Factor | complaint workflow status |
+| short_desc | character | short description of complaint  |
+| owner | Factor | internal complaint owner (accountable for resolution) |
+| component | Factor | device component |
+| resolution_status | Factor | status of resolution of customer issue |
+| date | Date | date of complaint |
+| step_count | integer | device step count when the complaint event occurred |
+| sn | Factor | unique device identifier (UDI) or serial number |
+| country | Factor | country the device was being used in |
+| product | Factor | device product identifier |
+| reportable | Factor | Is this event reportable to a regulatory agency? |
+| service_type | Factor | service category |
+| category | Factor | complaint category (e.g., major, minor) |
+| rca_category | Factor | root cause analysis classification |
+| description | character | detailed description of customer complaint |
+| resolution | Factor | complaint resolution |
+| root_cause | character | root cause analysis detailed description |
+| investigation_status | Factor | status of internal investigation |
+| investigation | character | investigation details |
+
+
+## Complaints Data Frame
+
+```{r, echo=TRUE, tidy=TRUE}
+str( c, vec.len=0 )
+```
+
+
+```{r, echo=FALSE}
+#TODO (p3) randomize
+```
+
+    
+# Data Analysis    
+
+The general process followed for this analysis was to use the key business metrics identified in the Business Needs Assessment to guide which data variables would be useful for computing the desired metrics. In cases where the utility was uncertain, the variables were included. In this case, a considerable amount of time was necessary to "clean" the observations reflected in the data pull. Many of fields on the data entry form in Trac are currently configured as free text fields. As a result, there are many cases where the same observational data is captured in several ways. A good example of this can be found the entries in the country field shown below.
+
+&nbsp;
+
+```{r, echo=TRUE, warning=FALSE}
+levels( c$country )
+```
+
+&nbsp;
+
+For this reason, some of the analysis[^2] was limited by the quality of the data entered into the system. In this particular case, a region was assigned to each observation, and region was used for some of the analysis, rather than country. Overall, data preparation was a significant proportion of the time involved in data analysis. Once data preparation was completed, the more detailed analysis of the data began.
+
+The trend of customer complaints over the life of the EksoGT product is shown in **Figure 1**. There is a notable increase in the number of complaints received in Q2 2018. This increase was due to a series of failures of the amplifier printed circuit board assembly (102284--ASSY, AMPLIFIER, EKSO 1.2) in the device in the United States and Europe.
+
+**Figure 2** shows the breakdown of global complaints by region. Europe represents the vast majority of complaints that have been properly catergorized. However, 48% of the data observations do not have country or region data properly entered. It might be possible to make assumptions about region information based on data in the ``owner`` variable. This effort was not undertaken.
+
+[^2]: RStudio and the tidyverse packages were used for this analysis.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="GT, Global Complaints by Quarter", fig.width=4.5, fig.height=2.8}
+
+p <- ggplot( data = c %>% filter( product == "EksoGT" ) ) +
+         geom_histogram( aes(x=date),
+                         breaks=seq(as.Date("2014-1-1"),as.Date("2018-10-1"), by="quarter"),
+                         colour="black", fill="#00c0ff", alpha=0.8) +
+                        xlab("") + ylab("") +
+                        doc_theme
+p
+
+```
+
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="Complaints by Region", fig.width=4.5, fig.height=2.8}
+
+region_df <- c %>% filter( region != "Unassigned" ) %>% group_by(region) %>% summarise(count=n()) %>% arrange(desc(count)) 
+
+p <- region_df %>% ggplot() +
+    geom_bar( aes(x=reorder(region, count), y=count), stat="identity", colour="black", fill="#00c0ff", alpha=0.8 ) +
+    coord_flip() +
+    xlab( "" ) + ylab( "" ) +
+    doc_theme
+p
+
+```
+
+
+## Open Complaints
+
+```{r, include=FALSE, fig.cap="Open Complaints by Status", warning=FALSE, fig.width=5, fig.height=2.8}
+
+c_open <- c %>% filter( c$status != "closed" )  # open complaints
+
+c_open %>% nrow()  # number of open complaints
+c_open %>% filter( status=="new" | status=="assigned") %>% nrow()  # number of complaints not resolved or verified
+
+# reorder product levels in order of representation in the data frame
+c_open <- within(c_open,
+            product <- factor(product,
+                              levels=names(sort(table(product),
+                                                decreasing=TRUE))))
+```
+
+There are 110 open complaints represented in the data set. Unfortunately, it is not possible to generate a graph of open complaints over time because only one snapshot is available. **Figure 3** shows the breakdown of open complaints by complaint status. Within the complaint handling workflow, there is no significant distinction between the "assigned" and "new" categories. Of the 110 open complaints, 108 are "new" or "assigned". None of the open complaints are in the "verified" stage, and only 2 are "resolved" and are waiting for review for closure by Quality and Regulatory.
+
+The number of open complaints represents a fairly significant backlog for the complaint handling team, and the fact that the vast majority of open complaints are "new" or "assigned" suggests that the complaint handling tool is not being updated throughout the complaint lifecycle, but, instead, is generally updated once the customer issue has already been addressed, limiting more granular visibility into the process.
+
+```{r, echo=FALSE, fig.cap="Open Complaints by Complaint Status", warning=FALSE, fig.width=5, fig.height=2.8}
+
+p <- ggplot( data=c_open ) +
+         geom_histogram( aes(x=status), stat="count", colour="black", fill="#00c0ff", alpha=0.8 ) +
+         ylab( "" ) + xlab( "" ) +
+         doc_theme
+  
+p
+```
+
+```{r, include=FALSE}
+
+c_open_steps <- c_open %>% filter( !is.na(step_count), step_count>0 )  # filter out observations with no step count and no data
+
+sc <- round(mean(c_open_steps$step_count),0)  # average number of steps on device represented by open tickets
+sc
+sc/1.2e6  # percent of the estimated device life
+
+```
+
+
+All of the open complaints that have been classified are now entered against the current version of the product, EksoGT (see **Figure 4**). There are no legacy systems currently represented in the open complaint data. However, it is worth noting that 22.7% of the open complaint tickets have not been assigned to a product at all. This, too, reflects the current tendency to wait until a full resolution has been reached before the complaint ticket is updated. The tracking of progress between the opening of the complaint in the database and reaching resolution is being tracked in other ways (e.g., service records, employee memories, other systems).
+
+
+```{r, include=FALSE}
+
+prod_tab <- table(c_open$product)  # generate show breakdown of open complaints by product
+print( prod_tab )
+prod_tab["Pick an option"] / nrow(c_open)  # calculate percentage of unassigned product observations
+
+```
+
+```{r, echo=FALSE, fig.cap="Open Complaints by Product", warning=FALSE, fig.width=5, fig.height=2.8}
+
+p <- ggplot( data=c_open ) +
+         geom_bar( aes(x=product), colour="black", fill="#00c0ff", alpha=0.8 ) +
+         ylab( "" ) + xlab( "" ) +
+         scale_x_discrete( drop=FALSE ) +
+         doc_theme
+
+p
+
+```
+
+
+
+#### Product Reliability
+
+The average step count at failure (across all failures) for devices represented by the open complaint tickets is approximately 584,000 steps, which is 48.6% of the estimated useful device life. It is advisable to further clean up the data and look at this analysis broken out by Major and Minor complaint categories. **Figure 5** shows the distribution of device step counts at failure of the EksoGT product compared with legacy systems (labeled 'other' on the chart). It is worth noting that EksoGT has an initial peak at a lower step count than legacy systems. This is worthy further exploration by the R&D and Service teams, with support from Production.
+
+
+```{r, echo=FALSE, fig.cap="Smoothed Density, Reported Step Counts", fig.height=4.0, fig.width=4.5, warning=FALSE}
+
+p <- ggplot( data = c %>% filter(category=="Major") ) +
+         geom_density( aes(x=step_count, fill=product=="EksoGT"), colour="black", alpha=0.6 ) +
+         coord_cartesian( xlim=c(0,1.5e6) ) +
+         scale_fill_manual( values=c("grey","#00c0ff"), labels=c("other","EksoGT"), name="" ) +
+         xlab( "" ) + ylab( "" ) +
+         doc_theme
+p
+
+```
+
+#### Complaint Aging
+
+```{r, echo=FALSE, fig.cap="GT, Complaint Aging in Days", warning=FALSE, fig.width=5, fig.height=2.8}
+c_temp <- c %>% filter( status!="closed", product=="EksoGT", !is.na(date) )
+
+c_temp <- c_temp %>% mutate( age=as.numeric(as.Date("2018-09-24")-date) ) %>% select( age, -date, region )
+
+p <- c_temp %>% ggplot() +
+                geom_histogram( aes(x=age, fill=region), binwidth=100, colour="black", alpha=0.8 ) +
+                xlab( "" ) + ylab( "" ) +
+                scale_fill_manual( name="", values=c("white","grey","#00c0ff","#555555") ) +
+                doc_theme
+p
+```
+
+**Figure 6** shows a chart of complaint aging. There is a very large quantity of complaints that are between 100 and 200 days old. This is directly related to the amplifier board issues in Q2 2018 and the resulting backlog. In addition, the number of complaints between zero and 100 days old is smaller than expected. This, I believe, is due to the Customer Experience and Service teams being overrun. I suspect that another method of tracking open customer issues is being used, resulting in the data in the Customer Complaint database being out-of-date while the team attempts to make up ground.
+
+It is also worth noting that though the aging chart shows similar numbers in backlog for the Americas and Europe, the European service team is roughly a quarter the size of the U.S. service team. It may be worthwhile to discuss methods of load balancing in the short-term in order to draw down the backlog in a more sustainable way.
+
+
+## Reported Injuries
+
+The rate of injury in the device is relatively low according to the data. Of the complaints received, a small fraction involve injury to the patient or physical therapist. **Figure 7** shows the breakdown over the life of the EksoGT product.
+
+```{r, echo=FALSE, fig.cap="GT, Reported Injuries, Life of Product", warning=FALSE, fig.width=5, fig.height=2.8}
+c_temp <- c %>% filter(product=="EksoGT", injury!="No injury", injury!="TBD")
+
+# collapse ankle injuries and "no" injuries then rename levels
+
+c_temp <- c_temp %>% mutate( injury=as.character(injury) )  # mutate injury column to character class
+
+c_temp$injury[c_temp$injury=="ankle fracture"] <- "ankle"
+c_temp$injury[c_temp$injury=="No injury"] <- "no injury"
+c_temp$injury[c_temp$injury=="bruised ankle"] <- "ankle"
+c_temp$injury[c_temp$injury=="ankle sprain"] <- "ankle"
+c_temp$injury[c_temp$injury=="Orthostatic Hypotension"] <- "o. hypotension"
+c_temp$injury[c_temp$injury=="Slight redness at tibias and mild indentations on shins"] <- "shin"
+c_temp$injury[c_temp$injury=="Electric shock to PT"] <- "shock"
+
+c_temp <- c_temp %>% mutate( injury=as.factor(injury) )  # mutate column back to Factor
+
+
+# reorder product levels in order of representation in the data frame
+c_temp <- within(c_temp,
+            injury <- factor(injury,
+                              levels=names(sort(table(injury),
+                                                decreasing=TRUE))))
+
+p <- c_temp %>% ggplot() +
+                geom_bar( aes(x=injury), colour="black", fill="#00c0ff", alpha=0.8 ) +
+                xlab( "" ) + ylab( "" ) +
+                doc_theme
+p
+```
+
+
+## Component Failures
+
+The most frequent component failures are shown in **Figure 8**. Foot sensors remain the most common failure on the device, followed by hip adjustment parts and actuator assemblies. As we've seen in other categories, there are a large number of observations in the data in which no component was chosen ('Pick and option') prior to closing the complaint ticket.
+
+```{r, echo=FALSE, fig.cap="GT, Top Component Failures (since 2016 Q1)", warning=FALSE, fig.width=5, fig.height=2.8}
+
+component_df <- c %>%
+                  filter(product=="EksoGT") %>%
+                  filter(date > as.Date("2016-1-1")) %>%
+                  group_by(component) %>%
+                  summarise(count=n()) %>%
+                  arrange(desc(count)) %>%
+                  top_n(10,count)
+
+p <- component_df %>% ggplot() +
+                        geom_bar( aes(x=reorder(component, count), y=count), stat="identity", colour="black", fill="#00c0ff", alpha=0.8 ) +
+                        coord_flip() +
+                        xlab( "" ) + ylab( "" ) +
+                        doc_theme
+p
+    
+```
+
+
+## Data from Root Cause Analyses
+
+The most common failure modes, as determined by root cause analysis, are displayed in **Figure 9**. Softgood wear represents the most common type of complaint, followed by what is classified in the system as 'Design'. It is worth consulting with the Service and Customer Experience teams to better understand what these issues are and what might be done to improve the device such that these are experienced by our customers less in the future. Similarly, 'Materials' does not immediately point to a next action for resolution.
+
+```{r, echo=FALSE, fig.cap="GT, Failure Analysis (since 2016 Q1)", warning=FALSE, fig.width=5, fig.height=2.8}
+
+rc_df <- c %>%
+           filter(product=="EksoGT") %>%
+           filter(date > as.Date("2016-1-1")) %>%
+           group_by(rca_category) %>%
+           summarise(count=n()) %>%
+           arrange(desc(count))
+
+p <- rc_df %>% ggplot() +
+    geom_bar( aes(x=reorder(rca_category, count), y=count), stat="identity", colour="black", fill="#00c0ff", alpha=0.8 ) +
+    coord_flip() +
+    xlab( "" ) + ylab( "" ) +
+    doc_theme
+p
+
+```
+
+\newpage
+
+# Recommendations
+
+## Data Integrity
+
+Based on the activities of this analysis, I highly recommend that a cross-functional effort be undertaken to review the complaint handling system interface and process flow to determine actions that will result in better data integrity. In almost every step of the analysis, difficultly in obtaining the data to support the business was encountered due to poor data quality and consistency. I recommend a CAPA be opened to address this due to the importance of this to the business---both in terms of enabling improvements in efficiency and in terms of compliance.
+
+An example of where improvements can be made can be found in **Figure 10** where the same complaints by quarter data is presented differently than it was shown in Figure 1. In this case, the bars showing the number of complaints are overlaid with the complaint category (e.g., Major, Minor, Critical). The percentage of complaints for which the category has not been entered has risen significantly over time as shown by the grey sections of the bars.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="GT, Complaints by Complaint Category", fig.width=4.5, fig.height=2.8}
+
+c_temp <- c %>% filter(product=="EksoGT")
+
+c_temp$category[is.na(c_temp$category)] <- "Unassigned"  # replace all NA entries with unassigned
+
+p <- ggplot( data = c_temp ) +
+         geom_histogram(aes(x=date, fill=category),
+                        breaks=seq(as.Date("2014-1-1"),as.Date("2018-10-1"), by="quarter"),
+                        colour="black", alpha=0.8) +
+                        xlab("") + ylab("") +
+                        scale_fill_manual( values=c("grey","#00c0ff","#555555"), name="",  ) +
+                        scale_x_date( date_labels="%Y H" ) +
+                        coord_cartesian( xlim=c(as.Date("2016-4-1"),NA) ) +
+                        doc_theme
+
+p
+
+```
+
+
+A second example is shown in the table below where the number of entries where the country has not been specified dominates the data. 48.4% of the data is unavailable.
+
+
+```{r, include=FALSE}
+c %>% group_by(region) %>% summarise(count=n()) %>% arrange(desc(count))
+```
+
+| region | no. of complaints |
+|----:|:----|-----|
+| Unassigned | 532 |
+| Europe | 447 |
+| Americas | 111 |
+| Africa | 5 |
+| Middle East | 3 |
+| Asia | 1 |
+
+
+## Data Backlog
+
+I also recommend opening a CAPA to address the significant backlog observed in the data. There is a significant backlog in addressing customer issues and the aging metrics are not favorable. A CAPA team dedicated to addressing these issues will be more effective at identifying ways to address the backlog and improvements that can be made in the relevant procedures and systems that are used for this effort.
+
+
+## Complaint Handling Tool
+
+The current complaint handling software, Trac, was implemented in 2012. It was chosen for reasons of cost and familiarity because it was in use at the time as the Software Development issue tracking system. It is no longer sufficient as the software for complaint management. It's limitations include difficulty in exporting data, limitations in configuring certain fields as desired, and the inability to design a more user-friendly and purpose-driven user interface. An exploration into more suitable tools should be undertaken for comparison.
+
+A more dedicated complaint handling tool also has the potential advantages of integrating into the Enterprise Resource Planning (ERP) system, Salesforce CRM and risk management tools, enabling additional efficiencies for the organization.
+
+
+# Conclusion
+
+The Customer Complaints database represents a significant opportunity to understand and improve the company's Customer Experience and Service operations, as well as to understand ways in which the product itself can be improved. There is a wealth of information available within this data. However, systematically processing this data and extracting meaning from it will be difficult without additional investment in improving the quality of the data entered into the system. These investments will pay for themselves relatively quickly.
+
+
+# References
+
+* Quality Manual (108198, rev. J)
+* QS, Complaint Handling Procedure (D100019, rev. A)
+* QS, Quality Record Retention Procedure (D100028, rev. J)
+* EN ISO 13486:2016 Medical Devices--Quality Management Systems--Req. for Regulatory Purposes
+* R for Data Science, Hadley Wickham and Garrett Grolemund

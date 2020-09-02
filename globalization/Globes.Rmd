@@ -1,0 +1,114 @@
+---
+title: "Globals"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+All values of Gross Domestic Product (GDP) shown are per capita per day in inflation-adjusted U.S. dollars.
+
+```{r, include=FALSE}
+
+library(tidyverse)
+library(dslabs)
+library(ggthemes)
+library(RColorBrewer)
+library(knitr)
+library(gganimate)
+library(gifski)
+library(ggrepel)
+
+data(gapminder)
+gap <- gapminder
+#View(gap)
+
+```
+
+```{r, include=FALSE}
+
+# add gdp per person per day for each country to the data frame
+gap <- gap %>%
+    mutate( gdpr = gdp / population / 365 )
+
+# add alternate continent categories
+gap <- gap %>% 
+    mutate( alt_continent="" )
+    
+gap <- gap %>% mutate( alt_continent = ifelse( continent!="Americas", as.character(continent), alt_continent ) )
+gap <- gap %>% mutate( alt_continent = ifelse( continent=="Americas", as.character(region), alt_continent ) )
+gap <- gap %>% mutate( alt_continent = ifelse( alt_continent=="Central America" | alt_continent=="Caribbean" | alt_continent=="Northern America", "North America", alt_continent ) )
+
+gap <- gap %>% mutate( alt_continent = as.factor(alt_continent) )
+
+levels(gap$region)
+levels(gap$continent)
+levels(gap$alt_continent)
+
+```
+
+```{r, include=FALSE}
+
+gap_lab <- gap %>% filter(country=="Gabon" |
+                          country=="China" |
+                          country=="United States" |
+                          country=="India" |
+                          country=="Mexico" |
+                          country=="Canada" |
+                          country=="South Africa" |
+                          country=="United Kingdom" |
+                          country=="Brazil" |
+                          country=="Japan" |
+                          country=="Nigeria" |
+                          country=="Ethiopia" |
+                          country=="New Zealand" |
+                          country=="Argentina" |
+                          country=="Spain" |
+                          country=="Russia" |
+                          country=="Ukraine" |
+                          country=="Samoa" |
+                          country=="Haiti" |
+                          country=="Seychelles" |
+                          country=="Israel" |
+                          country=="Bolivia" |
+                          country=="Venezuela" |
+                          country=="Nicaragua" |
+                          country=="Papua New Guinea" |
+                          country=="Australia",
+                          year %in% seq(1962,2011)
+                          )
+
+    
+
+p <- gap %>%
+     filter(year %in% seq(1962,2011)) %>%
+         ggplot( aes(x=gdpr, y=life_expectancy, fill=alt_continent, size=population) ) +
+             geom_point(shape=21,colour="lightgrey",stroke=1,show.legend=FALSE) +
+             xlab( "per capita GDP (U.S. dollars per day)" ) + ylab( "life expectancy (years)" ) +
+             ylim(35,85) +
+             scale_x_continuous( trans='log2' ) +
+             scale_size_continuous(range = c(4, 20), labels=NULL) +
+             geom_text_repel( data=gap_lab,
+                               aes(label=country),
+                               colour="#000000",
+                               nudge_x=-1, nudge_y=2,
+                               show.legend=FALSE) +
+             ggtitle( "Life Expectancy vs Gross Domestic Product" ) +
+             theme(text = element_text(size=20)) +
+             facet_wrap( vars(alt_continent) )
+
+```
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+p2 <- p + labs(title='.{frame_time}.') +
+          transition_time(year) +
+          ease_aes('linear')
+
+animate(p2, nframes=60, duration=12,
+        renderer=gifski_renderer("GDP.gif"),
+        height = 900, width = 984)
+
+```

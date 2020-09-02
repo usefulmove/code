@@ -1,0 +1,5 @@
+"0","cites %>%"
+"0","    select(`Long Description`, Frequency) %>% "
+"0","    arrange(desc(Frequency)) %>% "
+"0","    top_n(10,Frequency) %>% "
+"0","    select(`Long Description`)"

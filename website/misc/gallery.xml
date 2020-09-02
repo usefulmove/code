@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simpleviewerGallery maxImageWidth="800" maxImageHeight="800" textColor="0xDFDEDC" frameColor="0xC0C0C0" frameWidth="1" stagePadding="40" thumbnailColumns="3" thumbnailRows="3" navPosition="left" title="miscellaneous" enableRightClickOpen="false" backgroundImagePath="" imagePath="" thumbPath="">
+<image>
+	<filename>sink.jpg</filename>
+	<caption><![CDATA[<i>(i)  Copyright © D. Edmonds</i>]]></caption>
+</image>
+<image>
+	<filename>london_statue.jpg</filename>
+	<caption><![CDATA[<i>(ii)  Copyright © D. Edmonds</i>]]></caption>
+</image>
+<image>
+	<filename>blackboard.jpg</filename>
+	<caption><![CDATA[<i>(iii)  Copyright © D. Edmonds</i>]]></caption>
+</image>
+<image>
+	<filename>lily.jpg</filename>
+	<caption><![CDATA[<i>(iv)  Copyright © D. Edmonds</i>]]></caption>
+</image>
+<image>
+	<filename>eggs.jpg</filename>
+	<caption><![CDATA[<i>(v)  Copyright © D. Edmonds</i>]]></caption>
+</image>
+<image>
+	<filename>leaves.jpg</filename>
+	<caption><![CDATA[<i>(vi)  Copyright © D. Edmonds</i>]]></caption>
+</image>
+<image>
+	<filename>parking_meter.jpg</filename>
+	<caption><![CDATA[<i>(vii)  Copyright © D. Edmonds</i>]]></caption>
+</image>
+<image>
+	<filename>memorial.jpg</filename>
+	<caption><![CDATA[<i>(viii)  Copyright © D. Edmonds</i>]]></caption>
+</image>
+<image>
+	<filename>tulips.jpg</filename>
+	<caption><![CDATA[<i>(ix)  Copyright © D. Edmonds</i>]]></caption>
+</image>
+</simpleviewerGallery>

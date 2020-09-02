@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# declare LED on time
+ONTIME=0.1
+
+# turn off all LEDs
+echo 0 > /sys/devices/platform/leds-gpio/leds/beaglebone::usr1/brightness
+echo 0 > /sys/devices/platform/leds-gpio/leds/beaglebone::usr2/brightness
+echo 0 > /sys/devices/platform/leds-gpio/leds/beaglebone::usr3/brightness
+sleep 1
+
+# cycle through each LED in order
+while true
+do
+    echo 1 > /sys/devices/platform/leds-gpio/leds/beaglebone::usr1/brightness
+    sleep $ONTIME
+    echo 0 > /sys/devices/platform/leds-gpio/leds/beaglebone::usr1/brightness
+
+    echo 1 > /sys/devices/platform/leds-gpio/leds/beaglebone::usr2/brightness
+    sleep $ONTIME
+    echo 0 > /sys/devices/platform/leds-gpio/leds/beaglebone::usr2/brightness
+
+    echo 1 > /sys/devices/platform/leds-gpio/leds/beaglebone::usr3/brightness
+    sleep $ONTIME
+    echo 0 > /sys/devices/platform/leds-gpio/leds/beaglebone::usr3/brightness
+
+    echo 1 > /sys/devices/platform/leds-gpio/leds/beaglebone::usr2/brightness
+    sleep $ONTIME
+    echo 0 > /sys/devices/platform/leds-gpio/leds/beaglebone::usr2/brightness
+done

@@ -1,0 +1,7 @@
+"0","# age"
+"0","deaths %>% "
+"0","    filter(!is.na(age)) %>% "
+"0","    ggplot(aes(age)) +"
+"0","        geom_histogram(breaks=seq(0,110,10),fill=""#5fa052"",color=""black"",alpha=0.8) +"
+"0","        labs(title=""age distribution"",x="""",y="""") +"
+"0","        scale_y_continuous(labels=scales::comma)"

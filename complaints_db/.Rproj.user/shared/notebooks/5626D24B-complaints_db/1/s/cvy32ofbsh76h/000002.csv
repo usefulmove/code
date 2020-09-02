@@ -1,0 +1,7 @@
+"0",""
+"0","p <- ggplot( data=c ) +"
+"0","         geom_histogram( aes(x=wday(date,label=TRUE)), stat=""count"", color=""black"", fill=""#00c0ff"", alpha=0.8 ) +"
+"0","         ylab( """" ) +"
+"0","         doc_theme"
+"0","  "
+"0","p"

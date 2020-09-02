@@ -1,0 +1,80 @@
+---
+title: "world suicides"
+output: html_document
+---
+
+data source: [World Health Organization (WHO) Suicide Statistics](https://www.kaggle.com/szamil/who-suicide-statistics)
+
+
+```{r source, include=FALSE}
+library(tidyverse)
+library(RColorBrewer)
+source("../library/ded/ded.R")
+suicides <- readr::read_csv("./who_suicide_statistics.csv")
+regions <- readr::read_csv("../library/regions.csv")
+theme_set(theme_minimal())
+```
+
+
+```{r tidy, include=FALSE}
+suicides <- suicides %>%
+    ded_recode(country,
+               "South Korea=Republic of Korea",
+               "Russia=Russian Federation",
+               "Moldova=Republic of Moldova",
+               "United States=United States of America",
+               "Hong Kong, China=Hong Kong SAR",
+               "Slovak Republic=Slovakia",
+               "Brunei Darussalam=Brunei",
+               "Venezuela=Venezuela (Bolivarian Republic of",
+               "Macedonia, FYR=TFYR Macedonia",
+               "Syria=Syrian Arab Republic",
+               "Slovak Republic=Slovakia",
+               "Iran=Iran (Islamic Rep of",
+               "Kyrgyz Republic=Kyrgyzstan",
+               "Macao, China=Macau",
+               "St. Lucia=Saint Lucia",
+               "St. Vincent and the Grenadines=Saint Vincent and Grenadines"
+               )
+
+suicides <- suicides %>% 
+    left_join(regions,by="country")
+```
+
+
+```{r top_countries, echo=FALSE, fig.height=9}
+suicides %>% 
+    filter(!is.na(suicides_no),
+           year %in% c(2013,2014,2015),
+           !is.na(population)
+           ) %>% 
+    group_by(country,continent) %>% 
+    summarise(count=sum(suicides_no),pop=sum(population),.groups="drop") %>% 
+    mutate(suicide_rate=count/pop*1e6) %>% 
+    top_n(49,suicide_rate) %>% 
+    ggplot(aes(suicide_rate,fct_reorder(country,suicide_rate))) +
+        geom_col(aes(fill=continent),color="black",width=0.8) +
+        coord_cartesian(xlim=c(0,350)) +
+        labs(titles="highest global suicides rates",x="suicide rate (deaths per million)",y="") +
+        scale_fill_brewer(palette="Set1")
+        
+```
+
+
+```{r bottom_countries, echo=FALSE, fig.height=9}
+suicides %>% 
+    filter(!is.na(suicides_no),
+           year %in% c(2013,2014,2015),
+           !is.na(population)
+           ) %>% 
+    group_by(country,continent) %>% 
+    summarise(count=sum(suicides_no),pop=sum(population),.groups="drop") %>% 
+    mutate(suicide_rate=count/pop*1e6) %>% 
+    top_n(-49,suicide_rate) %>% 
+    ggplot(aes(suicide_rate,fct_reorder(country,suicide_rate))) +
+        geom_col(aes(fill=continent),color="black",width=0.8) +
+        coord_cartesian(xlim=c(0,350)) +
+        labs(titles="lowest global suicides rates",x="suicide rate (deaths per million)",y="") +
+        scale_fill_brewer(palette="Set1")
+        
+```

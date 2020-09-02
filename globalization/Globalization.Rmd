@@ -1,0 +1,94 @@
+---
+title: "Global Distribution of Wealth"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+All values of Gross Domestic Product (GDP) shown are per capita per day in inflation-adjusted U.S. dollars.
+
+```{r, include=FALSE}
+
+library(tidyverse)
+library(dslabs)
+library(ggthemes)
+library(RColorBrewer)
+library(knitr)
+
+data(gapminder)
+gap <- gapminder
+#View(gap)
+
+```
+
+```{r, include=FALSE}
+
+# add gdp per person per day for each country to the data frame
+gap <- gap %>%
+    mutate( gdpr = gdp / population / 365 )
+
+# add alternate continent categories
+gap <- gap %>% 
+    mutate( alt_continent="" )
+    
+gap <- gap %>% mutate( alt_continent = ifelse( continent!="Americas", as.character(continent), alt_continent ) )
+gap <- gap %>% mutate( alt_continent = ifelse( continent=="Americas", as.character(region), alt_continent ) )
+gap <- gap %>% mutate( alt_continent = ifelse( alt_continent=="Central America" | alt_continent=="Caribbean" | alt_continent=="Northern America",
+                                               "North America", alt_continent ) )
+
+gap <- gap %>% mutate( alt_continent = as.factor(alt_continent) )
+
+levels(gap$region)
+levels(gap$continent)
+levels(gap$alt_continent)
+
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width=8, fig.height=8}
+
+doc_theme <- theme_few()
+
+# box plot for each region for specific years (1962 and 2011)
+gap %>% group_by(alt_continent) %>% filter(year %in% c(1962, 2011)) %>%
+    ggplot( aes(x=alt_continent, y=gdpr, fill=alt_continent) ) +
+        geom_boxplot( size=0.75, show.legend=FALSE ) +
+        geom_point( show.legend=FALSE ) + geom_jitter( show.legend=FALSE ) +
+        xlab( "" ) + ylab( "GDP" ) +
+        ylim(0,100) +
+        ggtitle( "Per Capita Gross Domestic Product" ) +
+        doc_theme +
+        facet_grid( year ~ . )
+
+```
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.width=7.5, fig.height=8}
+
+gap %>% filter(year==2011) %>%
+    ggplot() +
+    geom_point( aes(x=log(gdpr,2), y=life_expectancy, fill=alt_continent), shape=21, stroke=1, colour="black", size=3, show.legend = FALSE ) +
+    doc_theme +
+    xlab( "GDP (log2)" ) + ylab( "life expectancy (years)" ) +
+    ggtitle( "Life Expectancy versus Gross Domestic Product (2011)") +
+    facet_wrap( vars(alt_continent) )
+
+```
+
+### Top 10 -- Per Capita GDP (2011)
+
+```{r, echo=FALSE, results="asis"}
+
+# top n
+kable( gap %>% filter(year==2011) %>% arrange(desc(gdpr)) %>% select(country,population,gdpr,alt_continent) %>% top_n(10,gdpr) )
+
+```
+
+### Bottom 10 -- Per Capita GDP (2011)
+
+```{r, echo=FALSE, results="asis"}
+
+# bottom n
+kable( gap %>% filter(year==2011) %>% arrange(gdpr) %>% select(country,population,gdpr,alt_continent) %>% top_n(-10,gdpr) )
+
+```

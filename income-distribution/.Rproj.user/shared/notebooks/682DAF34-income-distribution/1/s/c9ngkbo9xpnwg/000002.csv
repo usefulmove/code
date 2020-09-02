@@ -1,0 +1,5 @@
+"0",""
+"0","income_stats <- household_incomes %>%"
+"0","    group_by(demographic) %>%"
+"0","    summarise( count=n(), average=mean(income), top=max(income), bottom=min(income) )"
+"0",""

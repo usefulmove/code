@@ -1,0 +1,8 @@
+---
+title: "The General Social Survey (GSS)"
+output: html_notebook
+---
+
+
+http://gss.norc.org/get-the-data/spss
+

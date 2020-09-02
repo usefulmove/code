@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta name="description" content="UTC clock" />
+        <title>UTC Clock</title></font>
+
+        <script type="text/javascript">
+            if (screen.width<600) window.location = "./m/";
+        </script>
+
+        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Vollkorn">
+
+        <style>
+            body {
+                font-family: 'Vollkorn', sans-serif;
+                font-size: 48px;
+                text-shadow: 4px 4px 4px #ddd;
+            }
+
+            a:link {text-decoration:none; color:#00c0ff;}     /* unvisited link */
+            a:visited {text-decoration:none; color:#00c0ff;}  /* visited link */
+            a:hover {text-decoration:none; color:#f27490;}    /* mouse over link */
+            a:active {text-decoration:none; color:#888888;}   /* selected link */
+        </style>
+    </head>
+
+    <body>
+        <center>
+            <a href="http://time.is/UTC" id="time_is_link" style="font-size:36px">UTC Time:<br/></a>
+            <span id="UTC_za00"></span>
+            <script src="http://widget.time.is/en.js"></script>
+            <script>
+                time_is_widget.init({UTC_za00:{template:"TIME<br/>DATE", date_format:"mnum-daynum-year"}});
+            </script>
+        </center>
+    </body>
+</html>

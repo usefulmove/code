@@ -1,0 +1,7 @@
+"0","tribble("
+"0","  ~model, ~accuracy,"
+"0","  ""random forest"", 0.98789,"
+"0","  ""k-nearest neighbors"", 0.99417,"
+"0","  ""gradient boost"", 0.99102"
+"0",") %>%"
+"0","  knitr::kable()"

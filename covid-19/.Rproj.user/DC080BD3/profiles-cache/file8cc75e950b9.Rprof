@@ -1,0 +1,14 @@
+memory profiling: GC profiling: line profiling: sample.interval=10000
+#File 1: <expr>
+:2424823:4173832:149867032:244:"guess_header" "col_spec_standardise" "read_delimited" "read_csv" 1#3 "force" "doTryCatch" "tryCatchOne" "tryCatchList" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" "profvis::profvis" 
+:2434817:4233292:152299952:1006:"check_path" "datasource_file" "datasource" "col_spec_standardise" "read_delimited" "read_csv" 1#10 "force" "doTryCatch" "tryCatchOne" "tryCatchList" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" "profvis::profvis" 
+:2446364:5071165:154849352:1035:"read_tokens" "read_delimited" "read_csv" 1#16 "force" "doTryCatch" "tryCatchOne" "tryCatchList" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" "profvis::profvis" 
+:2446364:5794561:154849744:0:"read_tokens" "read_delimited" "read_csv" 1#16 "force" "doTryCatch" "tryCatchOne" "tryCatchList" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" "profvis::profvis" 
+:2446364:5794561:154849744:0:"read_tokens" "read_delimited" "read_csv" 1#16 "force" "doTryCatch" "tryCatchOne" "tryCatchList" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" "profvis::profvis" 
+:2446364:5794561:154849744:0:"read_tokens" "read_delimited" "read_csv" 1#16 "force" "doTryCatch" "tryCatchOne" "tryCatchList" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" "profvis::profvis" 
+:2446364:5794561:154849744:0:"read_tokens" "read_delimited" "read_csv" 1#16 "force" "doTryCatch" "tryCatchOne" "tryCatchList" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" "profvis::profvis" 
+:2446364:5794561:154849744:0:"read_tokens" "read_delimited" "read_csv" 1#16 "force" "doTryCatch" "tryCatchOne" "tryCatchList" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" "profvis::profvis" 
+:2446364:5794561:154849744:0:"read_tokens" "read_delimited" "read_csv" 1#16 "force" "doTryCatch" "tryCatchOne" "tryCatchList" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" "profvis::profvis" 
+:2446364:5794561:154849744:0:"read_tokens" "read_delimited" "read_csv" 1#16 "force" "doTryCatch" "tryCatchOne" "tryCatchList" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" "profvis::profvis" 
+:2446364:5794561:154849744:0:"read_tokens" "read_delimited" "read_csv" 1#16 "force" "doTryCatch" "tryCatchOne" "tryCatchList" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" "profvis::profvis" 
+:2446364:5794561:154849744:0:"read_tokens" "read_delimited" "read_csv" 1#16 "force" "doTryCatch" "tryCatchOne" "tryCatchList" "doTryCatch" "tryCatchOne" "tryCatchList" "tryCatch" "profvis::profvis" 
