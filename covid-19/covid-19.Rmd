@@ -132,7 +132,7 @@ eu_combined_cases <- eu_cases %>%
 
 ```{r nytimes_tidy, include = FALSE}
 
-#data_path <- "../../../covid-19-data/"
+#data_path <- "../../covid-19-data/"
 data_path <- "https://raw.githubusercontent.com/nytimes/covid-19-data/master/"
 
 # united states
@@ -149,7 +149,7 @@ counties <- read_csv(str_glue("{data_path}us-counties.csv"))
 
 ```{r mask_use_tidy, include = FALSE}
 
-mask_data_path <- "../../../covid-19-data/mask-use/mask-use-by-county.csv"
+mask_data_path <- "../../covid-19-data/mask-use/mask-use-by-county.csv"
 
 # mask use
 mask_use_estimates <- read_csv(mask_data_path)
