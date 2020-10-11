@@ -1,4 +1,0 @@
-"0","total_us_cases <- us$cases[nrow(us)]"
-"0","total_us_ncases <- us$ncases[nrow(us)]"
-"0","total_us_deaths <- us$deaths[nrow(us)]"
-"0","total_us_ndeaths <- us$ndeaths[nrow(us)]"

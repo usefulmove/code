@@ -1,9 +1,0 @@
-"0","state_ylim <- 3250"
-"0",""
-"0","p1 <- covid(""Florida"") + coord_cartesian(ylim=c(0,state_ylim))"
-"1","[1]"
-"1"," ""Florida has 65,992 cases (1,096 cases per day) and 2,764 deaths (53 deaths per day)."""
-"1","
-"
-"2","Coordinate system already present. Adding new coordinate system, which will replace the existing one.
-"
