@@ -743,7 +743,7 @@ There have been `r format( total_us_cases, big.mark="," )` total COVID-19 cases 
 
 <br><br>
 
-```{r country_chart_total, out.width = "80%"}
+```{r country_chart_total, include = FALSE, out.width = "80%"}
 
 p_us_total
 
@@ -759,13 +759,14 @@ p_us
 
 <br><br>
 
+<!---
 ### Comparison with the EU
 
 The aggregated data from Johns Hopkins University CSSE was used to calculate a combined case rate for the 27 member states of the European Union (EU). The combined data were used to compare the pandemic response in the EU with the response in the U.S. over time. The rise in infections in the EU preceded the rise in the U.S. For time comparison, the 2,500th case recorded in the EU occurred on March 2, 2020. The 2,500th case in the U.S. was recorded on March 14, 2020. This comparison is minimally useful, however, because the populations of the two regions differ (U.S. - 328,239,523; EU - 447,206,135) and there are a number of other factors (e.g., population density, health care systems, prevalence of comorbidities) that are not consistent between the two.
 
 <br>
 
-```{r us_eu_comparison, out.width = "95%"}
+```{r us_eu_comparison, include = FALSE, out.width = "95%"}
 
 eu_color <- "#fdb980"
 
@@ -849,6 +850,8 @@ us %>%
 
 <br>
 
+--->
+
 ### Individual States
 
 ```{r state_predictions, out.width = "90%"}
@@ -884,13 +887,13 @@ state_df %>%
 ```{r state_charts, include = FALSE}
 
 p1 <- covid("Florida")
-p2 <- covid("Texas")
-p3 <- covid("California")
+p2 <- covid("California")
+p3 <- covid("Texas")
 p4 <- covid("New York")
-p5 <- covid("Georgia")
-p6 <- covid("Illinois")
+p5 <- covid("Illinois")
+p6 <- covid("Wisconsin")
 p7 <- covid("Tennessee")
-p8 <- covid("Wisconsin")
+p8 <- covid("Alabama")
 p9 <- covid("Missouri")
 p10 <- covid("Oklahoma")
 
