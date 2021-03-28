@@ -223,7 +223,7 @@ covid <- function(state_name = "United States") {
   )
 
   # display new cases and new deaths
-  scale_d <- 7
+  scale_d <- 10
 
   p <- ggplot(data = s, mapping = aes(x = date)) +
     geom_smooth(
@@ -254,6 +254,7 @@ covid <- function(state_name = "United States") {
       y = "cases (change)",
       color = ""
     ) +
+    theme(axis.text.x=element_blank()) +
     scale_y_continuous(
       labels = scales::comma,
       sec.axis = sec_axis(~ . / scale_d,
@@ -759,14 +760,13 @@ p_us
 
 <br><br>
 
-<!---
 ### Comparison with the EU
 
 The aggregated data from Johns Hopkins University CSSE was used to calculate a combined case rate for the 27 member states of the European Union (EU). The combined data were used to compare the pandemic response in the EU with the response in the U.S. over time. The rise in infections in the EU preceded the rise in the U.S. For time comparison, the 2,500th case recorded in the EU occurred on March 2, 2020. The 2,500th case in the U.S. was recorded on March 14, 2020. This comparison is minimally useful, however, because the populations of the two regions differ (U.S. - 328,239,523; EU - 447,206,135) and there are a number of other factors (e.g., population density, health care systems, prevalence of comorbidities) that are not consistent between the two.
 
 <br>
 
-```{r us_eu_comparison, include = FALSE, out.width = "95%"}
+```{r us_eu_comparison, include = TRUE, out.width = "80%"}
 
 eu_color <- "#fdb980"
 
@@ -850,8 +850,6 @@ us %>%
 
 <br>
 
---->
-
 ### Individual States
 
 ```{r state_predictions, out.width = "90%"}
@@ -886,24 +884,22 @@ state_df %>%
 
 ```{r state_charts, include = FALSE}
 
-p1 <- covid("Florida")
-p2 <- covid("California")
-p3 <- covid("Texas")
-p4 <- covid("New York")
+p1 <- covid("California")
+p2 <- covid("Texas")
+p3 <- covid("New York")
+p4 <- covid("Florida")
 p5 <- covid("Illinois")
-p6 <- covid("Wisconsin")
-p7 <- covid("Tennessee")
-p8 <- covid("Alabama")
-p9 <- covid("Missouri")
-p10 <- covid("Oklahoma")
+p6 <- covid("Pennsylvania")
+p7 <- covid("Michigan")
+p8 <- covid("Massachusetts")
 
 ```
 
 <br><br>
 
-```{r disp_state_charts, fig.asp=2.1}
+```{r disp_state_charts, fig.asp=1.5}
 
-grid.arrange(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, ncol = 2)
+grid.arrange(p1, p2, p3, p4, p5, p6, p7, p8, ncol = 2)
 
 ```
 
