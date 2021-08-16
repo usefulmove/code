@@ -223,7 +223,7 @@ covid <- function(state_name = "United States") {
   )
 
   # display new cases and new deaths
-  scale_d <- 10
+  scale_d <- 20
 
   p <- ggplot(data = s, mapping = aes(x = date)) +
     geom_smooth(
@@ -242,11 +242,11 @@ covid <- function(state_name = "United States") {
     ) +
     geom_point(
       aes(y = ndeaths * scale_d, color = prim_color),  # unclear why color reversal is required
-      size = 0.8, na.rm = TRUE, alpha = 0.8
+      size = 0.6, na.rm = TRUE, alpha = 0.8
     ) +
     geom_point(
       aes(y = ncases, color = "#808080"),  # unclear why color reversal is required
-      size = 0.8, na.rm = TRUE, alpha = 0.8
+      size = 0.6, na.rm = TRUE, alpha = 0.8
     ) +
     labs(
       subtitle = state_name,
@@ -301,7 +301,7 @@ covidc <- function(county_state) {
   )
 
   # display new cases and new deaths
-  scale_d <- 7
+  scale_d <- 20
 
   p <- ggplot(data = c, mapping = aes(x = date)) +
     geom_smooth(
@@ -376,7 +376,7 @@ covid_total <- function(state_name = "United States") {
   }
 
   # display new cases and new deaths
-  scale_d <- 7
+  scale_d <- 20
 
   p <- ggplot(data = s, mapping = aes(x = date)) +
     geom_area(
@@ -432,7 +432,7 @@ covidc_total <- function(county_state) {
   c <- get_cnty(cnty_name, state_name)
 
   # display new cases and new deaths
-  scale_d <- 7
+  scale_d <- 20
 
   p <- ggplot(data = c, mapping = aes(x = date)) +
    geom_area(
@@ -695,7 +695,7 @@ global_predictions_gdp %>%
     geom_point(
       aes(color = continent),
       alpha = 0.8,
-      size = 3.0
+      size = 2.5
     ) +
     ggrepel::geom_text_repel(
       aes(label = country),
@@ -744,7 +744,7 @@ There have been `r format( total_us_cases, big.mark="," )` total COVID-19 cases 
 
 <br><br>
 
-```{r country_chart_total, include = FALSE, out.width = "80%"}
+```{r country_chart_total, include = TRUE, out.width = "80%"}
 
 p_us_total
 
@@ -787,7 +787,7 @@ us %>%
       data = eu_combined_cases,
       aes(date, ncases),
       color = eu_color,
-      size = 1.0,
+      size = 0.8,
       alpha = 0.8,
       na.rm = TRUE,
       show.legend = FALSE
@@ -813,7 +813,7 @@ us %>%
     geom_point(
       aes(y = ncases, color = prim_color),
       color = prim_color,
-      size = 1.5,
+      size = 0.8,
       alpha = 0.8,
       na.rm = TRUE,
       show.legend = FALSE
@@ -839,7 +839,8 @@ us %>%
                                      Sys.Date()
                                      ),
                                    origin = "1960-10-01"
-                           )
+                           ),
+                    ylim = c(0, NA)
     )
 
 ```
@@ -886,8 +887,8 @@ state_df %>%
 
 p1 <- covid("California")
 p2 <- covid("Texas")
-p3 <- covid("New York")
-p4 <- covid("Florida")
+p3 <- covid("Florida")
+p4 <- covid("New York")
 p5 <- covid("Illinois")
 p6 <- covid("Pennsylvania")
 p7 <- covid("Michigan")
@@ -1181,7 +1182,7 @@ us_mobility_pivot %>%
 
 <br>
 
-# Face Mask Data
+# Face Mask Data (July 14, 2020)
 
 On July 28, 2020, the New York Times released estimates of face mask usage by county calculated from nationwide responses to the survey question *"How often do you wear a mask in public when you expect to be within six feet of another person?"*. The data was collected from July 2 to July 14, 2020.
 
