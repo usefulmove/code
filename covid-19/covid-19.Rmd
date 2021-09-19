@@ -1,6 +1,6 @@
 ---
 title: "COVID-19 Risk Modeling"
-author: "Duane Edmonds"
+author: "D.Edmonds"
 output:
   html_document:
     css: custom.css
