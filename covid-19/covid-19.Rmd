@@ -206,12 +206,19 @@ get_cnty <- function(cnty_name, state_name) {
   c
 }
 
-covid <- function(state_name = "United States") {
+covid <- function(state_name = "United States", time_frame = "all") {
   if (state_name == "United States") {
     s <- us
   }
   else {
     s <- get_state(state_name)
+  }
+  
+  if (time_frame == "all") {
+    x_origin <- "2020-03-01"
+  }
+  else {
+    x_origin <- time_frame
   }
 
   # output stats
@@ -226,6 +233,14 @@ covid <- function(state_name = "United States") {
   scale_d <- 20
 
   p <- ggplot(data = s, mapping = aes(x = date)) +
+    geom_point(
+      aes(y = ndeaths * scale_d, color = prim_color),  # unclear why color reversal is required
+      size = 0.6, na.rm = TRUE, alpha = 0.8
+    ) +
+    geom_point(
+      aes(y = ncases, color = "#808080"),  # unclear why color reversal is required
+      size = 0.6, na.rm = TRUE, alpha = 1.0
+    ) +
     geom_smooth(
       aes(y = ndeaths * scale_d),
       se = FALSE,
@@ -236,33 +251,25 @@ covid <- function(state_name = "United States") {
     geom_smooth(
       aes(y = ncases),
       se = FALSE,
-      color = prim_color,
+      color = "black",
       method = "gam", formula = y ~ s(x, bs = "cs"), level = 0.9,
       na.rm = TRUE
-    ) +
-    geom_point(
-      aes(y = ndeaths * scale_d, color = prim_color),  # unclear why color reversal is required
-      size = 0.6, na.rm = TRUE, alpha = 0.8
-    ) +
-    geom_point(
-      aes(y = ncases, color = "#808080"),  # unclear why color reversal is required
-      size = 0.6, na.rm = TRUE, alpha = 0.8
     ) +
     labs(
       subtitle = state_name,
       x = "",
-      y = "cases (change)",
+      y = "daily cases",
       color = ""
     ) +
     theme(axis.text.x=element_blank()) +
     scale_y_continuous(
       labels = scales::comma,
       sec.axis = sec_axis(~ . / scale_d,
-                          name = "deaths (change)",
+                          name = "daily deaths",
                           labels = scales::comma
                  )
     ) +
-    coord_cartesian(xlim = as.Date(c("2020-03-01",
+    coord_cartesian(xlim = as.Date(c(x_origin,
                                      Sys.Date()
                                      ),
                                    origin = "1960-10-01"
@@ -272,7 +279,7 @@ covid <- function(state_name = "United States") {
     scale_color_manual(
       labels = c("deaths", "cases"),
       values = c("#808080", prim_color),
-      guide = FALSE
+      guide = "none"
     ) +
     theme(
       #axis.text.y = element_text(color = prim_color),
@@ -304,6 +311,14 @@ covidc <- function(county_state) {
   scale_d <- 20
 
   p <- ggplot(data = c, mapping = aes(x = date)) +
+    geom_point(
+      aes(y = ndeaths * scale_d, color = prim_color),  # unclear why color reversal is required
+      size = 0.8, na.rm = TRUE, alpha = 0.8
+    ) +
+    geom_point(
+      aes(y = ncases, color = "#808080"),  # unclear why color reversal is required
+      size = 0.8, na.rm = TRUE, alpha = 1.0
+    ) +
     geom_smooth(
       aes(y = ndeaths * scale_d),
       se = FALSE,
@@ -314,25 +329,17 @@ covidc <- function(county_state) {
     geom_smooth(
       aes(y = ncases),
       se = FALSE,
-      color = prim_color,
+      color = "black",
       method = "gam", formula = y ~ s(x, bs = "cs"), level = 0.9,
       na.rm = TRUE
-    ) +
-    geom_point(
-      aes(y = ndeaths * scale_d, color = prim_color),  # unclear why color reversal is required
-      size = 0.8, na.rm = TRUE, alpha = 0.8
-    ) +
-    geom_point(
-      aes(y = ncases, color = "#808080"),  # unclear why color reversal is required
-      size = 0.8, na.rm = TRUE, alpha = 0.8
     ) +
     labs(
       subtitle = str_glue("{cnty_name} County, {state_name}"),
       x = "",
-      y = "cases (change)",
+      y = "daily cases",
       color = ""
     ) +
-    scale_x_date(limits = as.Date(c("2020-03-01",
+    scale_x_date(limits = as.Date(c(x_origin,
                                     Sys.Date()
                                     ),
                                   origin = "1960-10-01"
@@ -341,11 +348,11 @@ covidc <- function(county_state) {
     scale_y_continuous(
       labels = scales::comma,
       sec.axis = sec_axis(~ . / scale_d,
-                          name = "deaths (change)",
+                          name = "daily deaths",
                           labels = scales::comma
                  )
     ) +
-    coord_cartesian(xlim = as.Date(c("2020-03-01",
+    coord_cartesian(xlim = as.Date(c(x_origin,
                                      Sys.Date()
                                      ),
                                    origin = "1960-10-01"
@@ -355,7 +362,7 @@ covidc <- function(county_state) {
     scale_color_manual(
       labels = c("deaths", "cases"),
       values = c("#808080", prim_color),
-      guide = FALSE
+      guide = "none"
     ) +
     theme(
       #axis.text.y = element_text(color = prim_color),
@@ -382,12 +389,14 @@ covid_total <- function(state_name = "United States") {
     geom_area(
       aes(y = cases, fill = "#808080"),
       na.rm = TRUE,
-      alpha = 0.8
+      alpha = 0.8,
+      color = "black"
     ) +
     geom_area(
       aes(y = deaths * scale_d, fill = prim_color),
       na.rm = TRUE,
-      alpha = 0.9
+      alpha = 0.9,
+      color = "black"
     ) +
     labs(
       subtitle = state_name,
@@ -412,7 +421,7 @@ covid_total <- function(state_name = "United States") {
     scale_fill_manual(
       labels = c("deaths", "cases"),
       values = c("#808080", prim_color),
-      guide = FALSE
+      guide = "none"
     ) +
     theme(
       #axis.text.y = element_text(color = prim_color),
@@ -474,7 +483,7 @@ covidc_total <- function(county_state) {
     scale_fill_manual(
       labels = c("deaths", "cases"),
       values = c("#808080", prim_color),
-      guide = FALSE
+      guide = "none"
     ) +
     theme(
       #axis.text.y = element_text(color = prim_color),
@@ -694,7 +703,7 @@ global_predictions_gdp %>%
   ggplot(aes(gdp_ppp_pcap, risk_prediction)) +
     geom_point(
       aes(color = continent),
-      alpha = 0.8,
+      alpha = 1.0,
       size = 2.5
     ) +
     ggrepel::geom_text_repel(
@@ -704,7 +713,7 @@ global_predictions_gdp %>%
     ) +
     labs(
       subtitle = "Prediction of COVID-19 Risk vs Gross Domestic Product",
-      x = "per capita GDP",
+      x = "GDP (per capita)",
       y = expression(rho)
     ) +
     scale_x_continuous(
@@ -766,9 +775,55 @@ The aggregated data from Johns Hopkins University CSSE was used to calculate a c
 
 <br>
 
+```{r eu, include = TRUE, out.width = "80%"}
+
+eu_combined_cases %>%
+  ggplot(mapping = aes(x = date)) +
+    geom_smooth(
+      aes(date, ncases),
+      se = FALSE,
+      color = "black",
+      method = "gam", formula = y ~ s(x, bs = "cs"), level = 0.9,
+      size = 0.8,
+      na.rm = TRUE,
+      show.legend = FALSE
+    ) +
+    geom_point(
+      aes(date, ncases),
+      color = "black",
+      size = 0.8,
+      alpha = 1.0,
+      na.rm = TRUE,
+      show.legend = FALSE
+    ) +
+    labs(
+      subtitle = "COVID-19 Daily Case Rates:  European Union",
+      x = "",
+      y = "daily cases",
+      color = ""
+    ) +
+    scale_y_continuous(
+      labels = scales::comma
+    ) +
+    coord_cartesian(xlim = as.Date(c("2020-03-01",
+                                     Sys.Date()
+                                     ),
+                                   origin = "1960-10-01"
+                           ),
+                    ylim = c(0, NA)
+    )
+
+```
+
+<br>
+
+---
+
+<br>
+
 ```{r us_eu_comparison, include = TRUE, out.width = "80%"}
 
-eu_color <- "#fdb980"
+eu_color <- "#ff9000"
 
 us %>%
   ggplot(mapping = aes(x = date)) +
@@ -788,17 +843,17 @@ us %>%
       aes(date, ncases),
       color = eu_color,
       size = 0.8,
-      alpha = 0.8,
+      alpha = 1.0,
       na.rm = TRUE,
       show.legend = FALSE
     ) +
     annotate(
       geom = "text",
       label = "European Union",
-      x = as.Date("2020-06-16"),
+      x = as.Date("2020-12-16"),
       y = 9400,
       color = eu_color,
-      size = 4.3
+      size = 4.5
     ) +
     # United States
     geom_smooth(
@@ -814,7 +869,7 @@ us %>%
       aes(y = ncases, color = prim_color),
       color = prim_color,
       size = 0.8,
-      alpha = 0.8,
+      alpha = 1.0,
       na.rm = TRUE,
       show.legend = FALSE
     ) +
@@ -822,14 +877,14 @@ us %>%
       geom = "text",
       label = "United States",
       x = as.Date("2020-06-08"),
-      y = 37500,
+      y = 90000,
       color = prim_color,
       size = 4.5
     ) +
     labs(
-      subtitle = "COVID-19 Case Rates:  United States and European Union",
+      subtitle = "COVID-19 Daily Case Rates:  United States and European Union",
       x = "",
-      y = "cases (change)",
+      y = "daily cases",
       color = ""
     ) +
     scale_y_continuous(
@@ -868,6 +923,7 @@ state_df %>%
       stat = "identity",
       width = 0.8,
       alpha = 0.8,
+      color = "black",
       show.legend = FALSE
     ) +
     coord_flip() +
@@ -885,14 +941,14 @@ state_df %>%
 
 ```{r state_charts, include = FALSE}
 
-p1 <- covid("California")
-p2 <- covid("Texas")
-p3 <- covid("Florida")
-p4 <- covid("New York")
-p5 <- covid("Illinois")
-p6 <- covid("Pennsylvania")
-p7 <- covid("Michigan")
-p8 <- covid("Massachusetts")
+p1 <- covid("California", "2020-09-01")
+p2 <- covid("Texas", "2020-09-01")
+p3 <- covid("Florida", "2020-09-01")
+p4 <- covid("New York", "2020-09-01")
+p5 <- covid("Illinois", "2020-09-01")
+p6 <- covid("Pennsylvania", "2020-09-01")
+p7 <- covid("Michigan", "2020-09-01")
+p8 <- covid("Massachusetts", "2020-09-01")
 
 ```
 
@@ -927,7 +983,8 @@ cnty_table %>%
       aes(fill = fct_reorder2(state, county, risk_prediction)),
       stat = "identity",
       width = 0.8,
-      alpha = 0.8
+      alpha = 0.8,
+      color = "black"
     ) +
     scale_x_discrete(labels = rev(cnty_table$county)) +
     scale_fill_manual(values = get_palette(palette_len)) +
@@ -1264,7 +1321,7 @@ state_mask_use_snapshot %>%
     geom_point(
       aes(color = (risk_prediction > 25) & (score < 0.5)),
       size = 3,
-      alpha = 0.8,
+      alpha = 1.0,
       show.legend = FALSE
     ) +
     labs(
@@ -1312,7 +1369,8 @@ us %>%
   ggplot(aes(day, mean_ndeaths)) +
     geom_col(
       fill = prim_color,
-      alpha = 0.8
+      alpha = 0.8,
+      color = "black"
     ) +
     labs(
       subtitle = "Average Number of Reported Deaths by Day of the Week",
