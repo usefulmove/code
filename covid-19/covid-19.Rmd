@@ -941,22 +941,18 @@ state_df %>%
 
 ```{r state_charts, include = FALSE}
 
-p1 <- covid("California", "2020-09-01")
-p2 <- covid("Texas", "2020-09-01")
-p3 <- covid("Florida", "2020-09-01")
-p4 <- covid("New York", "2020-09-01")
-p5 <- covid("Illinois", "2020-09-01")
-p6 <- covid("Pennsylvania", "2020-09-01")
-p7 <- covid("Michigan", "2020-09-01")
-p8 <- covid("Massachusetts", "2020-09-01")
+p1 <- covid("New York", "2020-10-15")
+p2 <- covid("Pennsylvania", "2020-10-15")
+p3 <- covid("Michigan", "2020-10-15")
+p4 <- covid("Massachusetts", "2020-10-15")
 
 ```
 
 <br><br>
 
-```{r disp_state_charts, fig.asp=1.5}
+```{r disp_state_charts, fig.asp=1.0}
 
-grid.arrange(p1, p2, p3, p4, p5, p6, p7, p8, ncol = 2)
+grid.arrange(p1, p2, p3, p4, ncol = 2)
 
 ```
 
