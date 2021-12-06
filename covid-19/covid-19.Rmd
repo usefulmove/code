@@ -339,7 +339,7 @@ covidc <- function(county_state) {
       y = "daily cases",
       color = ""
     ) +
-    scale_x_date(limits = as.Date(c(x_origin,
+    scale_x_date(limits = as.Date(c("2020-03-01",
                                     Sys.Date()
                                     ),
                                   origin = "1960-10-01"
@@ -352,7 +352,7 @@ covidc <- function(county_state) {
                           labels = scales::comma
                  )
     ) +
-    coord_cartesian(xlim = as.Date(c(x_origin,
+    coord_cartesian(xlim = as.Date(c("2020-03-01",
                                      Sys.Date()
                                      ),
                                    origin = "1960-10-01"
@@ -945,14 +945,16 @@ p1 <- covid("New York", "2020-10-15")
 p2 <- covid("Pennsylvania", "2020-10-15")
 p3 <- covid("Michigan", "2020-10-15")
 p4 <- covid("Massachusetts", "2020-10-15")
+p5 <- covid("Illinois", "2020-10-15")
+p6 <- covid("Arizona", "2020-10-15")
 
 ```
 
 <br><br>
 
-```{r disp_state_charts, fig.asp=1.0}
+```{r disp_state_charts, fig.asp=1.5}
 
-grid.arrange(p1, p2, p3, p4, ncol = 2)
+grid.arrange(p1, p2, p3, p4, p5, p6, ncol = 2)
 
 ```
 
@@ -1217,7 +1219,7 @@ us_mobility_pivot %>%
     ) +
     coord_cartesian(
       xlim = as.Date(c("2020-03-13", NA)),
-      ylim = c(-75, 10)
+      ylim = c(-75, 20)
     ) +
     facet_grid(. ~ activity_category) +
     labs(
@@ -1226,180 +1228,5 @@ us_mobility_pivot %>%
       color = "state"
     ) +
     scale_color_jco()
-
-```
-
-<br><br><br>
-
----
-
-<br>
-
-# Face Mask Data (July 14, 2020)
-
-On July 28, 2020, the New York Times released estimates of face mask usage by county calculated from nationwide responses to the survey question *"How often do you wear a mask in public when you expect to be within six feet of another person?"*. The data was collected from July 2 to July 14, 2020.
-
->This data comes from a large number of interviews conducted online by the global data and survey firm Dynata at the request of The New York Times. The firm asked a question about mask use to obtain 250,000 survey responses between July 2 and July 14, enough data to provide estimates more detailed than the state level. (Several states have imposed new mask requirements since the completion of these interviews.)
-
-An aggregate score was computed from the New York Times data for each U.S. county using a weighted average. State aggregate scores were then calculated using the mean county scores for each state.
-
-```{r mask_use}
-
-cnty_mask_use <- mask_use_estimates %>%
-  mutate(
-    score = ALWAYS + FREQUENTLY ** 2  * SOMETIMES ** 4,
-    state_lower = str_to_lower(state),
-    county_lower = str_to_lower(county)
-  )
-
-state_mask_use <- cnty_mask_use %>%
-  group_by(state) %>%
-  summarise(
-    score = mean(score),
-    .groups = "drop"
-  ) %>%
-  mutate(
-    state_lower = str_to_lower(state)
-  )
-
-states_map <- map_data("state")
-
-states_map %>%
-  left_join(state_mask_use, by = c("region" = "state_lower")) %>%
-  ggplot(aes(long, lat, group = group, fill = (1 - score) - (1 - max(score)))) +
-    geom_polygon(color = "black", show.legend = FALSE) +
-    coord_map("albers", lat0=30, lat1=40) +
-    scale_fill_gradient2(high = "#b3040a") +
-    labs(
-      subtitle = "States with Lowest Community Mask Usage (July 14, 2020)",
-      x = "longitude",
-      y = "latitude",
-      caption = "Red indicates lowest mask usage."
-    )
-
-counties_map <- map_data("county")
-
-counties_map %>%
-  left_join(cnty_mask_use, by = c("region" = "state_lower", "subregion" = "county_lower")) %>%
-  ggplot(aes(long, lat, group = group, fill = 1 - score)) +
-    geom_polygon(color = "white", show.legend = FALSE) +
-    coord_map("albers", lat0=30, lat1=40) +
-    scale_fill_gradient2(high = "#b3040a") +
-    labs(
-      subtitle = "Counties with Lowest Community Mask Usage (July 14, 2020)",
-      x = "longitude",
-      y = "latitude",
-      caption = "Red indicates lowest mask usage. Grey indicates lack of mask usage data."
-    )
-
-```
-
-The chart below shows predicted risk based on analysis of the state case data compared with face mask usage for all states with moderate-to-high risk predictions (greater than 5) on July 30, 2020. The intent here is not to find any causal relationship. Some states have high mask usage because of high numbers of confirmed cases locally, and some states may have low local case numbers because of relative high mask usage. The data *may* indicate, however, some level of additional risk for states with high predicted risk based on case data and low mask usage numbers (as of July 30, 2020). **Oklahoma** and **Missouri** stand out in this regard, although it is reasonable to expect that mask usage will increase in response to rising cases. (States with predicted risk greater than 25 and mask usage less than 50% are shown in yellow.)
-
-<br><br>
-
-```{r mask_and_risk, out.width = "80%"}
-
-# face mask and risk prediction
-
-state_mask_use_snapshot <- read_csv("./historical/state_mask_usage_20200728.csv")
-state_risk_prediction_snapshot <- read_csv("./historical/state_risk_predictions_20200730.csv")
-
-state_mask_use_snapshot %>%
-  left_join(state_risk_prediction_snapshot, by = "state") %>%
-  filter(
-    risk_prediction > 5
-  ) %>%
-  mutate(
-    state = as_factor(state)
-  ) %>%
-  ggplot(aes(score, risk_prediction)) +
-    geom_point(
-      aes(color = (risk_prediction > 25) & (score < 0.5)),
-      size = 3,
-      alpha = 1.0,
-      show.legend = FALSE
-    ) +
-    labs(
-      subtitle = "Risk Compared with Mask Usage (July 30, 2020)",
-      x = "community mask usage",
-      y = expression(rho)
-    ) +
-    scale_x_continuous(
-      labels = scales::percent
-    ) +
-    coord_cartesian(
-      ylim = c(0, NA)
-    ) +
-    ggrepel::geom_text_repel(
-      aes(label = state),
-      point.padding = 0.1,
-      segment.color = "grey"
-    ) +
-    scale_color_jco()
-
-```
-
-<br><br><br>
-
----
-
-<br>
-
-### Data Abnormalities
-
-Analysis of the New York Times reported death data for the U.S. reveals a repeating weekly pattern in which the updates on Sunday and Monday are consistently lower than those reported on the other days of the week. As mentioned in the data analysis description in the Background section, the risk prediction algorithm has been configured to reduce the effect of this variation on the statistical model.
-
-<br>
-
-```{r day_of_week, out.width = "65%"}
-
-us %>%
-  mutate(day = wday(date, label = TRUE)) %>%
-  group_by(day) %>%
-  summarise(
-    mean_ncases = mean(ncases),
-    mean_ndeaths = mean(ndeaths),
-    .groups = "drop"
-  ) %>%
-  ggplot(aes(day, mean_ndeaths)) +
-    geom_col(
-      fill = prim_color,
-      alpha = 0.8,
-      color = "black"
-    ) +
-    labs(
-      subtitle = "Average Number of Reported Deaths by Day of the Week",
-      x = "day of week reported",
-      y = "mean of reported deaths"
-    ) +
-    scale_y_continuous(labels = scales::comma)
-
-```
-
-```{r, include = FALSE}
-
-beepr::beep(2)
-
-```
-
-```{r, eval = FALSE}
-
-library(maps)
-
-srp <- state_risk_predictions %>%
-  mutate(
-    state = tolower(state),
-    risk_prediction = ifelse(risk_prediction < 0, 0, risk_prediction)
-  )
-
-states_map <- map_data("state")
-
-states_map %>%
-  left_join(srp, by = c("region" = "state")) %>%
-  ggplot(aes(long, lat, group = group, fill = sqrt(risk_prediction))) +
-    geom_polygon(color = "black", show.legend = FALSE) +
-    coord_map("albers", lat0=30, lat1=40) +
-    scale_fill_gradient2(low = "white", high = "darkred")
 
 ```
