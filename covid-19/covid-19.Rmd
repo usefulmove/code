@@ -71,6 +71,7 @@ knitr::opts_chunk$set(
   message = FALSE,
   warning = FALSE
 )
+
 library(tidyverse)
 library(ggthemes)
 library(grid)
@@ -79,6 +80,8 @@ library(lubridate)
 library(RColorBrewer)
 library(magrittr)
 library(ggsci)
+library(zoo)
+
 source("../library/ded/ded.R")
 regions <- readr::read_csv("../library/regions.csv")
 eu_countries <- read_csv("../library/eu-countries.csv")
@@ -233,39 +236,63 @@ covid <- function(state_name = "United States", time_frame = "all") {
   scale_d <- 20
 
   p <- ggplot(data = s, mapping = aes(x = date)) +
-    geom_point(
-      aes(y = ndeaths * scale_d, color = prim_color),  # unclear why color reversal is required
-      size = 0.6, na.rm = TRUE, alpha = 0.8
-    ) +
-    geom_point(
-      aes(y = ncases, color = "#808080"),  # unclear why color reversal is required
-      size = 0.6, na.rm = TRUE, alpha = 1.0
-    ) +
-    geom_smooth(
-      aes(y = ndeaths * scale_d),
-      se = FALSE,
-      color = "#808080",
-      method = "gam", formula = y ~ s(x, bs = "cs"), level = 0.9,
+    #geom_point(
+    #  aes(y = ndeaths * scale_d, color = prim_color),  # unclear why color reversal is required
+    #  size = 0.6, na.rm = TRUE, alpha = 0.8
+    #) +
+    #geom_point(
+    #  aes(y = ncases, color = "#808080"),  # unclear why color reversal is required
+    #  size = 0.6, na.rm = TRUE, alpha = 0.8
+    #) +
+    #geom_smooth(
+    #  aes(y = ndeaths * scale_d),
+    #  se = FALSE,
+    #  color = "#808080",
+    #  method = "gam", formula = y ~ s(x, bs = "cs"), level = 0.9,
+    #  na.rm = TRUE
+    #) +
+    #geom_smooth(
+    #  aes(y = ncases),
+    #  se = FALSE,
+    #  color = "black",
+    #  method = "gam", formula = y ~ s(x, bs = "cs"), level = 0.9,
+    #  na.rm = TRUE
+    #) +
+    geom_line(
+      aes(
+        y = rollmean(
+              ndeaths * scale_d,
+              k = 7,
+              fill = NA
+            )
+      ),
+      color = "08080",
+      size = 1,
       na.rm = TRUE
     ) +
-    geom_smooth(
-      aes(y = ncases),
-      se = FALSE,
-      color = "black",
-      method = "gam", formula = y ~ s(x, bs = "cs"), level = 0.9,
+    geom_line(
+      aes(
+        y = rollmean(
+              ncases,
+              k = 7,
+              fill = NA
+            )
+      ),
+      color = prim_color,
+      size = 1,
       na.rm = TRUE
     ) +
     labs(
       subtitle = state_name,
       x = "",
-      y = "daily cases",
-      color = ""
+      y = "cases",
+      color = "",
+      caption = "(seven-day average)"
     ) +
-    theme(axis.text.x=element_blank()) +
     scale_y_continuous(
       labels = scales::comma,
       sec.axis = sec_axis(~ . / scale_d,
-                          name = "daily deaths",
+                          name = "deaths",
                           labels = scales::comma
                  )
     ) +
@@ -273,8 +300,7 @@ covid <- function(state_name = "United States", time_frame = "all") {
                                      Sys.Date()
                                      ),
                                    origin = "1960-10-01"
-                           ),
-                    ylim = c(0, max(s$ncases))
+                           )
     ) +
     scale_color_manual(
       labels = c("deaths", "cases"),
@@ -282,9 +308,7 @@ covid <- function(state_name = "United States", time_frame = "all") {
       guide = "none"
     ) +
     theme(
-      #axis.text.y = element_text(color = prim_color),
       axis.title.y = element_text(color = prim_color),
-      #axis.text.y.right = element_text(color = "#808080"),
       axis.title.y.right = element_text(color = "#808080")
     )
 
@@ -311,33 +335,58 @@ covidc <- function(county_state) {
   scale_d <- 20
 
   p <- ggplot(data = c, mapping = aes(x = date)) +
-    geom_point(
-      aes(y = ndeaths * scale_d, color = prim_color),  # unclear why color reversal is required
-      size = 0.8, na.rm = TRUE, alpha = 0.8
-    ) +
-    geom_point(
-      aes(y = ncases, color = "#808080"),  # unclear why color reversal is required
-      size = 0.8, na.rm = TRUE, alpha = 1.0
-    ) +
-    geom_smooth(
-      aes(y = ndeaths * scale_d),
-      se = FALSE,
-      color = "#808080",
-      method = "gam", formula = y ~ s(x, bs = "cs"), level = 0.9,
+    #geom_point(
+    #  aes(y = ndeaths * scale_d, color = prim_color),  # unclear why color reversal is required
+    #  size = 0.8, na.rm = TRUE, alpha = 0.8
+    #) +
+    #geom_point(
+    #  aes(y = ncases, color = "#808080"),  # unclear why color reversal is required
+    #  size = 0.8, na.rm = TRUE, alpha = 1.0
+    #) +
+    #geom_smooth(
+    #  aes(y = ndeaths * scale_d),
+    #  se = FALSE,
+    #  color = "#808080",
+    #  method = "gam", formula = y ~ s(x, bs = "cs"), level = 0.9,
+    #  na.rm = TRUE
+    #) +
+    #geom_smooth(
+    #  aes(y = ncases),
+    #  se = FALSE,
+    #  color = "black",
+    #  method = "gam", formula = y ~ s(x, bs = "cs"), level = 0.9,
+    #  na.rm = TRUE
+    #) +
+    geom_line(
+      aes(
+        y = rollmean(
+              ndeaths * scale_d,
+              k = 7,
+              fill = NA
+            )
+      ),
+      color = "08080",
+      size = 1,
       na.rm = TRUE
     ) +
-    geom_smooth(
-      aes(y = ncases),
-      se = FALSE,
-      color = "black",
-      method = "gam", formula = y ~ s(x, bs = "cs"), level = 0.9,
+    geom_line(
+      aes(
+        y = rollmean(
+              ncases,
+              k = 7,
+              fill = NA
+            )
+      ),
+      color = prim_color,
+      size = 1,
       na.rm = TRUE
     ) +
     labs(
       subtitle = str_glue("{cnty_name} County, {state_name}"),
       x = "",
-      y = "daily cases",
-      color = ""
+      y = "cases",
+      color = "",
+      caption = "(seven-day average)"
     ) +
     scale_x_date(limits = as.Date(c("2020-03-01",
                                     Sys.Date()
@@ -348,7 +397,7 @@ covidc <- function(county_state) {
     scale_y_continuous(
       labels = scales::comma,
       sec.axis = sec_axis(~ . / scale_d,
-                          name = "daily deaths",
+                          name = "deaths",
                           labels = scales::comma
                  )
     ) +
@@ -356,8 +405,7 @@ covidc <- function(county_state) {
                                      Sys.Date()
                                      ),
                                    origin = "1960-10-01"
-                           ),
-                    ylim = c(0, max(c$ncases))
+                           )
     ) +
     scale_color_manual(
       labels = c("deaths", "cases"),
@@ -395,7 +443,7 @@ covid_total <- function(state_name = "United States") {
     geom_area(
       aes(y = deaths * scale_d, fill = prim_color),
       na.rm = TRUE,
-      alpha = 0.9,
+      alpha = 0.8,
       color = "black"
     ) +
     labs(
@@ -702,7 +750,9 @@ global_predictions_gdp %>%
   filter(risk_prediction > 25) %>%
   ggplot(aes(gdp_ppp_pcap, risk_prediction)) +
     geom_point(
-      aes(color = continent),
+      aes(fill = continent),
+      shape = 21,
+      color = "black",
       alpha = 1.0,
       size = 2.5
     ) +
@@ -769,7 +819,7 @@ p_us
 
 <br><br>
 
-### Comparison with the EU
+### Comparison with the European Union
 
 The aggregated data from Johns Hopkins University CSSE was used to calculate a combined case rate for the 27 member states of the European Union (EU). The combined data were used to compare the pandemic response in the EU with the response in the U.S. over time. The rise in infections in the EU preceded the rise in the U.S. For time comparison, the 2,500th case recorded in the EU occurred on March 2, 2020. The 2,500th case in the U.S. was recorded on March 14, 2020. This comparison is minimally useful, however, because the populations of the two regions differ (U.S. - 328,239,523; EU - 447,206,135) and there are a number of other factors (e.g., population density, health care systems, prevalence of comorbidities) that are not consistent between the two.
 
@@ -779,14 +829,26 @@ The aggregated data from Johns Hopkins University CSSE was used to calculate a c
 
 eu_combined_cases %>%
   ggplot(mapping = aes(x = date)) +
-    geom_smooth(
-      aes(date, ncases),
-      se = FALSE,
+    #geom_smooth(
+    #  aes(date, ncases),
+    #  se = FALSE,
+    #  color = "black",
+    #  method = "gam", formula = y ~ s(x, bs = "cs"), level = 0.9,
+    #  size = 0.8,
+    #  na.rm = TRUE,
+    #  show.legend = FALSE
+    #) +
+    geom_line(
+      aes(
+        y = rollmean(
+              ncases,
+              k = 7,
+              fill = NA
+            )
+      ),
       color = "black",
-      method = "gam", formula = y ~ s(x, bs = "cs"), level = 0.9,
-      size = 0.8,
-      na.rm = TRUE,
-      show.legend = FALSE
+      size = 1,
+      na.rm = TRUE
     ) +
     geom_point(
       aes(date, ncases),
@@ -799,7 +861,7 @@ eu_combined_cases %>%
     labs(
       subtitle = "COVID-19 Daily Case Rates:  European Union",
       x = "",
-      y = "daily cases",
+      y = "cases",
       color = ""
     ) +
     scale_y_continuous(
@@ -828,24 +890,37 @@ eu_color <- "#ff9000"
 us %>%
   ggplot(mapping = aes(x = date)) +
     # European Union
-    geom_smooth(
+    #geom_smooth(
+    #  data = eu_combined_cases,
+    #  aes(date, ncases),
+    #  se = FALSE,
+    #  color = eu_color,
+    #  method = "gam", formula = y ~ s(x, bs = "cs"), level = 0.9,
+    #  size = 0.8,
+    #  na.rm = TRUE,
+    #  show.legend = FALSE
+    #) +
+    #geom_point(
+    #  data = eu_combined_cases,
+    #  aes(date, ncases),
+    #  color = eu_color,
+    #  size = 0.8,
+    #  alpha = 1.0,
+    #  na.rm = TRUE,
+    #  show.legend = FALSE
+    #) +
+    geom_line(
       data = eu_combined_cases,
-      aes(date, ncases),
-      se = FALSE,
+      aes(
+        y = rollmean(
+              ncases,
+              k = 7,
+              fill = NA
+            )
+      ),
       color = eu_color,
-      method = "gam", formula = y ~ s(x, bs = "cs"), level = 0.9,
-      size = 0.8,
-      na.rm = TRUE,
-      show.legend = FALSE
-    ) +
-    geom_point(
-      data = eu_combined_cases,
-      aes(date, ncases),
-      color = eu_color,
-      size = 0.8,
-      alpha = 1.0,
-      na.rm = TRUE,
-      show.legend = FALSE
+      size = 1,
+      na.rm = TRUE
     ) +
     annotate(
       geom = "text",
@@ -856,22 +931,34 @@ us %>%
       size = 4.5
     ) +
     # United States
-    geom_smooth(
-      aes(y = ncases),
-      se = FALSE,
+    #geom_smooth(
+    #  aes(y = ncases),
+    #  se = FALSE,
+    #  color = prim_color,
+    #  method = "gam", formula = y ~ s(x, bs = "cs"), level = 0.9,
+    #  size = 1.2,
+    #  na.rm = TRUE,
+    #  show.legend = FALSE
+    #) +
+    #geom_point(
+    #  aes(y = ncases, color = prim_color),
+    #  color = prim_color,
+    #  size = 0.8,
+    #  alpha = 1.0,
+    #  na.rm = TRUE,
+    #  show.legend = FALSE
+    #) +
+    geom_line(
+      aes(
+        y = rollmean(
+              ncases,
+              k = 7,
+              fill = NA
+            )
+      ),
       color = prim_color,
-      method = "gam", formula = y ~ s(x, bs = "cs"), level = 0.9,
-      size = 1.2,
-      na.rm = TRUE,
-      show.legend = FALSE
-    ) +
-    geom_point(
-      aes(y = ncases, color = prim_color),
-      color = prim_color,
-      size = 0.8,
-      alpha = 1.0,
-      na.rm = TRUE,
-      show.legend = FALSE
+      size = 1,
+      na.rm = TRUE
     ) +
     annotate(
       geom = "text",
@@ -882,10 +969,11 @@ us %>%
       size = 4.5
     ) +
     labs(
-      subtitle = "COVID-19 Daily Case Rates:  United States and European Union",
+      subtitle = "COVID-19 Daily Case Rates:  US and EU",
       x = "",
-      y = "daily cases",
-      color = ""
+      y = "cases",
+      color = "",
+      caption = "(seven-day average)"
     ) +
     scale_y_continuous(
       labels = scales::comma
@@ -941,22 +1029,24 @@ state_df %>%
 
 ```{r state_charts, include = FALSE}
 
-p1 <- covid("New York", "2020-10-15")
-p2 <- covid("Ohio", "2020-10-15")
-p3 <- covid("Wisconsin", "2020-10-15")
-p4 <- covid("Illinois", "2020-10-15")
-p5 <- covid("Pennsylvania", "2020-10-15")
-p6 <- covid("Massachusetts", "2020-10-15")
-p7 <- covid("Michigan", "2020-10-15")
-p8 <- covid("Arizona", "2020-10-15")
+p1 <- covid("Florida")
+p2 <- covid("New Jersey")
+p3 <- covid("New York")
+p4 <- covid("Puerto Rico")
+p5 <- covid("California")
+p6 <- covid("Georgia")
+p7 <- covid("Pennsylvania")
+p8 <- covid("Virginia")
+p9 <- covid("Massachusetts")
+p10 <- covid("Colorado")
 
 ```
 
 <br><br>
 
-```{r disp_state_charts, fig.asp=1.8}
+```{r disp_state_charts, fig.asp=1.9}
 
-grid.arrange(p1, p2, p3, p4, p5, p6, p7, p8, ncol = 2)
+grid.arrange(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, ncol = 2)
 
 ```
 
@@ -1077,7 +1167,7 @@ p <- community_mobility %>%
     ) +
     scale_y_continuous(labels = scales::label_percent(scale = 1)) +
     labs(
-      title = "Community Mobility: United States and European Union",
+      title = "Community Mobility: US and EU",
       subtitle = "retail and recreation",
       x = "",
       y = "change from baseline",
