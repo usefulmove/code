@@ -1,6 +1,6 @@
 ---
 title: "COVID-19 Risk Modeling"
-author: "D.Edmonds"
+author: ""
 output:
   html_document:
     css: custom.css
@@ -1030,23 +1030,29 @@ state_df %>%
 ```{r state_charts, include = FALSE}
 
 p1 <- covid("Florida")
-p2 <- covid("New Jersey")
-p3 <- covid("New York")
-p4 <- covid("Puerto Rico")
-p5 <- covid("California")
-p6 <- covid("Georgia")
-p7 <- covid("Pennsylvania")
-p8 <- covid("Virginia")
-p9 <- covid("Massachusetts")
-p10 <- covid("Colorado")
+p2 <- covid("New York")
+p3 <- covid("Texas")
+p4 <- covid("Illinois")
+p5 <- covid("Georgia")
+p6 <- covid("New Jersey")
+p7 <- covid("California")
+p8 <- covid("Washington")
+p9 <- covid("Virginia")
+p10 <- covid("Tennessee")
+p11 <- covid("Connecticut")
+p12 <- covid("Louisiana")
+p13 <- covid("Colorado")
+p14 <- covid("District of Columbia")
+p15 <- covid("Pennsylvania")
+p16 <- covid("Massachusetts")
 
 ```
 
 <br><br>
 
-```{r disp_state_charts, fig.asp=1.9}
+```{r disp_state_charts, fig.asp=3.0}
 
-grid.arrange(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, ncol = 2)
+grid.arrange(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, ncol = 2)
 
 ```
 
@@ -1106,8 +1112,8 @@ For the purpose of assisting the global COVID-19 pandemic response, Google has m
 
 ```{r mobility_import, include = FALSE}
 
-#community_mobility <- readr::read_csv("./global-mobility-data/Global_Mobility_Report.csv", guess_max = 1e6)  # global mobility data
-community_mobility <- readr::read_csv("https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv", guess_max = 1e6)  # global mobility data
+community_mobility <- readr::read_csv("./global-mobility-data/Global_Mobility_Report.csv", guess_max = 1e6)  # global mobility data
+#community_mobility <- readr::read_csv("https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv", guess_max = 1e6)  # global mobility data
 
 community_mobility <- community_mobility %>%
   mutate(date = as.Date(date))
