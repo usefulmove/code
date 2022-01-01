@@ -1243,6 +1243,15 @@ us_mobility_pivot %>%
       size = 1,
       linetype = "dotted"
     ) + # u.s. declares national emergency
+    annotate(
+      geom = "text",
+      label = "U.S. declares national emergency on March 13, 2020",
+      angle = 90,
+      x = as.Date("2020-04-17"),
+      y = 36,
+      color = "grey",
+      size = 2.5
+    ) +
     geom_smooth(
       aes(color = activity_category),
       se = FALSE,
