@@ -678,9 +678,20 @@ state_risk_predictions <- state_risk_predictions %>% # calculate risk prediction
 state_alarm <- 25
 count_alarm_states <- sum(state_risk_predictions$risk_prediction >= state_alarm)
 
-state_df <- state_risk_predictions %>% # highest risk predictions
+state_alarm_sorted_df <- state_risk_predictions %>% # highest risk predictions
   filter(risk_prediction > 5) %>%
-  top_n(max(c(min(c(count_alarm_states,20)), 15)), risk_prediction)
+  top_n( # return between 15 and 20 results - 15 if the alarm list is short, 20 if it is long
+    max(
+      c(
+        min(
+          c(count_alarm_states,20)
+        )
+        , 15
+      )
+    ),
+    risk_prediction
+  ) %>% 
+  arrange(-risk_prediction)
 
 ```
 
@@ -998,7 +1009,7 @@ us %>%
 
 ```{r state_predictions, out.width = "90%"}
 
-state_df %>%
+state_alarm_sorted_df %>%
   ggplot(
     aes(x = reorder(state, risk_prediction), y = risk_prediction)) +
     geom_hline(yintercept = state_alarm,
@@ -1029,30 +1040,26 @@ state_df %>%
 
 ```{r state_charts, include = FALSE}
 
-p1 <- covid("Florida")
-p2 <- covid("New York")
-p3 <- covid("Texas")
-p4 <- covid("Illinois")
-p5 <- covid("Georgia")
-p6 <- covid("New Jersey")
-p7 <- covid("California")
-p8 <- covid("Washington")
-p9 <- covid("Virginia")
-p10 <- covid("Tennessee")
-p11 <- covid("Connecticut")
-p12 <- covid("Louisiana")
-p13 <- covid("Colorado")
-p14 <- covid("District of Columbia")
-p15 <- covid("Pennsylvania")
-p16 <- covid("Massachusetts")
+p1 <- covid(state_alarm_sorted_df$state[1])
+p2 <- covid(state_alarm_sorted_df$state[2])
+p3 <- covid(state_alarm_sorted_df$state[3])
+p4 <- covid(state_alarm_sorted_df$state[4])
+p5 <- covid(state_alarm_sorted_df$state[5])
+p6 <- covid(state_alarm_sorted_df$state[6])
+p7 <- covid(state_alarm_sorted_df$state[7])
+p8 <- covid(state_alarm_sorted_df$state[8])
+p9 <- covid(state_alarm_sorted_df$state[9])
+p10 <- covid(state_alarm_sorted_df$state[10])
+p11 <- covid(state_alarm_sorted_df$state[11])
+p12 <- covid(state_alarm_sorted_df$state[12])
 
 ```
 
 <br><br>
 
-```{r disp_state_charts, fig.asp=3.0}
+```{r disp_state_charts, fig.asp=2.26}
 
-grid.arrange(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, ncol = 2)
+grid.arrange(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, ncol = 2)
 
 ```
 
@@ -1112,8 +1119,8 @@ For the purpose of assisting the global COVID-19 pandemic response, Google has m
 
 ```{r mobility_import, include = FALSE}
 
-community_mobility <- readr::read_csv("./global-mobility-data/Global_Mobility_Report.csv", guess_max = 1e6)  # global mobility data
-#community_mobility <- readr::read_csv("https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv", guess_max = 1e6)  # global mobility data
+#community_mobility <- readr::read_csv("./global-mobility-data/Global_Mobility_Report.csv", guess_max = 1e6)  # global mobility data
+community_mobility <- readr::read_csv("https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv", guess_max = 1e6)  # global mobility data
 
 community_mobility <- community_mobility %>%
   mutate(date = as.Date(date))
