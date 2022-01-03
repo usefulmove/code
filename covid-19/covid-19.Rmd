@@ -1052,14 +1052,16 @@ p9 <- covid(state_alarm_sorted_df$state[9])
 p10 <- covid(state_alarm_sorted_df$state[10])
 p11 <- covid(state_alarm_sorted_df$state[11])
 p12 <- covid(state_alarm_sorted_df$state[12])
+p13 <- covid(state_alarm_sorted_df$state[13])
+p14 <- covid(state_alarm_sorted_df$state[14])
 
 ```
 
 <br><br>
 
-```{r disp_state_charts, fig.asp=2.26}
+```{r disp_state_charts, fig.asp=2.64}
 
-grid.arrange(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, ncol = 2)
+grid.arrange(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, ncol = 2)
 
 ```
 
