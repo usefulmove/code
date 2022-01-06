@@ -51,6 +51,10 @@ The New York Times has also provided public human coronavirus disease case and d
 >
 >The data begins with the first reported coronavirus case in Washington State on Jan. 21, 2020. We will publish regular updates to the data in this repository.
 
+### Our World in Data
+
+Hospital and ICU data collected from a number of official sources has been collated and maintained by Our World in Data. The the collated data and a complete list of country-by-country sources is available on GitHub (https://github.com/owid/covid-19-data).
+
 <br>
 
 ## Data Analysis
@@ -147,6 +151,19 @@ states <- read_csv(str_glue("{data_path}us-states.csv"))
 
 # counties
 counties <- read_csv(str_glue("{data_path}us-counties.csv"))
+
+```
+
+```{r owid_tidy, include = FALSE}
+
+hospitalizations_raw <- read_csv("https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/hospitalizations/covid-hospitalizations.csv")
+
+#convert to a tidier format
+hosps <- hospitalizations_raw %>% 
+  pivot_wider(
+    names_from = indicator,
+    values_from = value
+  )
 
 ```
 
@@ -825,6 +842,46 @@ p_us_total
 ```{r country_chart_change, out.width = "80%"}
 
 p_us
+
+```
+
+<br><br>
+
+```{r country_chart_hospitalizations, out.width = "80%"}
+
+hosps %>%
+  filter(
+    entity == "United States"
+  ) %>% 
+  select(
+    entity,
+    date,
+    "daily ICU occupancy" = `Daily ICU occupancy per million`,
+    "daily hospital occupancy" = `Daily hospital occupancy per million`
+  ) %>% 
+  pivot_longer(
+    cols = `daily ICU occupancy`:`daily hospital occupancy`,
+    names_to = "category"
+  ) %>% 
+  ggplot(
+    aes(x = date)
+  ) +
+    geom_line(
+      aes(
+        y = value,
+        color = category
+      ),
+      size = 1
+    ) +
+    labs(
+      subtitle = "U.S. COVID-19 Hospital Admissions",
+      x = "",
+      y = "Occupancy (per million)"
+    ) +
+    theme(
+      legend.position = "bottom"
+    ) +
+    scale_color_brewer(palette = "Set2")
 
 ```
 
