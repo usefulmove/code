@@ -692,8 +692,8 @@ state_risk_predictions <- state_risk_predictions %>% # calculate risk prediction
                             )
   )
 
-state_alarm <- 25
-count_alarm_states <- sum(state_risk_predictions$risk_prediction >= state_alarm)
+state_alarm_threshold <- 25
+count_alarm_states <- sum(state_risk_predictions$risk_prediction >= state_alarm_threshold)
 
 state_alarm_sorted_df <- state_risk_predictions %>% # highest risk predictions
   filter(risk_prediction > 5) %>%
@@ -893,64 +893,6 @@ The aggregated data from Johns Hopkins University CSSE was used to calculate a c
 
 <br>
 
-```{r eu, include = TRUE, out.width = "80%"}
-
-eu_combined_cases %>%
-  ggplot(mapping = aes(x = date)) +
-    #geom_smooth(
-    #  aes(date, ncases),
-    #  se = FALSE,
-    #  color = "black",
-    #  method = "gam", formula = y ~ s(x, bs = "cs"), level = 0.9,
-    #  size = 0.8,
-    #  na.rm = TRUE,
-    #  show.legend = FALSE
-    #) +
-    geom_line(
-      aes(
-        y = rollmean(
-              ncases,
-              k = 7,
-              fill = NA
-            )
-      ),
-      color = "black",
-      size = 1,
-      na.rm = TRUE
-    ) +
-    geom_point(
-      aes(date, ncases),
-      color = "black",
-      size = 0.8,
-      alpha = 1.0,
-      na.rm = TRUE,
-      show.legend = FALSE
-    ) +
-    labs(
-      subtitle = "COVID-19 Daily Case Rates:  European Union",
-      x = "",
-      y = "cases",
-      color = ""
-    ) +
-    scale_y_continuous(
-      labels = scales::comma
-    ) +
-    coord_cartesian(xlim = as.Date(c("2020-03-01",
-                                     Sys.Date()
-                                     ),
-                                   origin = "1960-10-01"
-                           ),
-                    ylim = c(0, NA)
-    )
-
-```
-
-<br>
-
----
-
-<br>
-
 ```{r us_eu_comparison, include = TRUE, out.width = "80%"}
 
 eu_color <- "#ff9000"
@@ -994,7 +936,7 @@ us %>%
       geom = "text",
       label = "European Union",
       x = as.Date("2020-12-16"),
-      y = 9400,
+      y = 20000,
       color = eu_color,
       size = 4.5
     ) +
@@ -1032,7 +974,7 @@ us %>%
       geom = "text",
       label = "United States",
       x = as.Date("2020-06-08"),
-      y = 90000,
+      y = 120000,
       color = prim_color,
       size = 4.5
     ) +
@@ -1069,13 +1011,13 @@ us %>%
 state_alarm_sorted_df %>%
   ggplot(
     aes(x = reorder(state, risk_prediction), y = risk_prediction)) +
-    geom_hline(yintercept = state_alarm,
+    geom_hline(yintercept = state_alarm_threshold,
                size = 0.5,
                color = "darkgrey",
                linetype = "dotted"
     ) +
     geom_bar(
-      aes(fill = risk_prediction < state_alarm),
+      aes(fill = risk_prediction < state_alarm_threshold),
       stat = "identity",
       width = 0.8,
       alpha = 0.8,
@@ -1093,7 +1035,7 @@ state_alarm_sorted_df %>%
 
 ```
 
-`r count_alarm_states` states currently have risk predictions above 25.
+`r count_alarm_states` of `r length(state_risk_predictions$state)` states currently have risk predictions above 25. (Note: The state definition used here includes the District of Columbia, Puerto Rico, Virgin Islands, American Samoa, Guam, and Northern Mariana Islands.)
 
 ```{r state_charts, include = FALSE}
 
