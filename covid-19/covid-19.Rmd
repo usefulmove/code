@@ -749,22 +749,37 @@ cnty_table <- cnty_risk_predictions %>% # highest risk predictions
 
 ### World
 
-```{r world_risk, include = FALSE}
+```{r world_risk, out.width = "90%"}
 
 global_risk_predictions %>%
-  top_n(5, risk_prediction) %>%
-  ggplot(aes(fct_reorder(country, desc(risk_prediction)), risk_prediction)) +
+  mutate(
+    country = recode(
+                country,
+                "US" = "United States"
+              )
+  ) %>%
+  top_n(20, risk_prediction) %>%
+  ggplot(
+    aes(
+      x = risk_prediction,
+      y = fct_reorder(
+            country,
+            risk_prediction
+          )
+    )
+  ) +
     geom_col(
       width = 0.8,
       alpha = 0.8,
+      color = "black",
       fill = prim_color
     ) +
     labs(
       subtitle = "Countries with Highest Predicted Risk",
-      x = "",
-      y = expression(rho)
+      x = expression(rho),
+      y = ""
     ) +
-    scale_y_continuous(labels = scales::comma)
+    scale_x_continuous(labels = scales::comma)
 
 ```
 
@@ -1010,20 +1025,27 @@ us %>%
 
 state_alarm_sorted_df %>%
   ggplot(
-    aes(x = reorder(state, risk_prediction), y = risk_prediction)) +
+    aes(
+      x = reorder(state, risk_prediction),
+      y = risk_prediction
+    )
+  ) +
     geom_hline(yintercept = state_alarm_threshold,
                size = 0.5,
                color = "darkgrey",
                linetype = "dotted"
     ) +
     geom_bar(
-      aes(fill = risk_prediction < state_alarm_threshold),
+      aes(
+        fill = risk_prediction < state_alarm_threshold
+      ),
       stat = "identity",
       width = 0.8,
       alpha = 0.8,
       color = "black",
       show.legend = FALSE
     ) +
+    scale_y_continuous(labels = scales::comma) +
     coord_flip() +
     labs(
       subtitle = "States with Highest Predicted Risk",
