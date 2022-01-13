@@ -758,7 +758,7 @@ global_risk_predictions %>%
                 "US" = "United States"
               )
   ) %>%
-  top_n(20, risk_prediction) %>%
+  top_n(15, risk_prediction) %>%
   ggplot(
     aes(
       x = risk_prediction,
@@ -775,7 +775,7 @@ global_risk_predictions %>%
       fill = prim_color
     ) +
     labs(
-      subtitle = "Countries with Highest Predicted Risk",
+      subtitle = "Countries with Highest Predicted COVID-19 Risk",
       x = expression(rho),
       y = ""
     ) +
@@ -783,12 +783,16 @@ global_risk_predictions %>%
 
 ```
 
+<br><br>
+
 ```{r, world_risk_gdp, out.width = "95%"}
 
 global_predictions_gdp %>%
-  mutate(country = recode(country,
-                          "US" = "United States"
-                          )
+  mutate(
+    country = recode(
+                country,
+                "US" = "United States"
+              )
   ) %>%
   filter(risk_prediction > 25) %>%
   ggplot(aes(gdp_ppp_pcap, risk_prediction)) +
@@ -805,8 +809,8 @@ global_predictions_gdp %>%
       segment.color = "grey"
     ) +
     labs(
-      subtitle = "Prediction of COVID-19 Risk vs Gross Domestic Product",
-      x = "GDP (per capita)",
+      subtitle = "COVID-19 Risk Prediction vs GDP",
+      x = "Gross Domestic Product (per capita)",
       y = expression(rho)
     ) +
     scale_x_continuous(
@@ -1120,6 +1124,7 @@ cnty_table %>%
       y = expression(rho),
       fill = "state"
     ) +
+    scale_y_continuous(labels = scales::comma) +
     coord_flip()
 
 ```
