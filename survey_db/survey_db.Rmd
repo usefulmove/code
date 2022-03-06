@@ -1,0 +1,39 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+library(DBI)
+library(tidyverse)
+```
+
+```{r}
+# connect to Clever Cloud survey database
+db <- dbConnect(
+  RMySQL::MySQL(),
+  dbname = "b28kw3czffvrcmddjxri",
+  host = "b28kw3czffvrcmddjxri-mysql.services.clever-cloud.com",
+  port = 3306,
+  user = "uregdz06i7ou4d65",
+  password = "q6sGFI1tu1fsAvIPVFQh"
+)
+
+
+#con <- dbConnect(
+#  RMySQL::MySQL(),
+#  dbname = "company",
+#  host = "courses.csrrinzqubik.us-east-1.rds.amazonaws.com",
+#  port = 3306,
+#  user = "student",
+#  password = "datacamp"
+#)
+
+dbListTables(db)
+
+survey_data <- dbReadTable(db, "survey_one")
+
+survey_subset <- dbGetQuery(db, "SELECT name, dept, kd5 FROM survey_one WHERE dept IN ('LAB', 'EXEC', 'MFG');")
+
+```
