@@ -8,7 +8,7 @@ library(DBI)
 library(tidyverse)
 ```
 
-```{r}
+```{r echo = TRUE, show = TRUE}
 # connect to Clever Cloud survey database
 db <- dbConnect(
   RMySQL::MySQL(),
@@ -23,7 +23,7 @@ dbListTables(db)
 
 ```
 
-```{r}
+```{r echo = TRUE, show = TRUE}
 # generate report using dplyr
 survey_data <- dbReadTable(db, "employee_survey")
 employee_data <- dbReadTable(db, "employee")
@@ -37,7 +37,10 @@ comb_survey_data <- survey_data %>%
 
 # generate department results table
 dep_results <- comb_survey_data %>% 
-  group_by(department) %>% 
+  group_by(
+    department,
+    date
+  ) %>% 
   summarise(
     'count' = n(),
     'Qavg1' = mean(question1),
@@ -45,11 +48,14 @@ dep_results <- comb_survey_data %>%
     'Qavg3' = mean(question3),
     'Qavg4' = mean(question4),
     'Qavg5' = mean(question5),
+    .groups = 'drop'
   )
+
+dep_results
   
 ```
 
-```{r}
+```{r echo = TRUE, show = TRUE}
 # generate report using SQL
 
 # need to do a left join of the employee data to the survey data frame using employeeID
@@ -61,6 +67,8 @@ data <- dbGetQuery(db,
                    ;
                    "
                   )
+
+data
 
 # calculate aggregate data
 
@@ -78,6 +86,7 @@ results <- dbGetQuery(db,
                    "
                    SELECT
                       department,
+                      date,
                       COUNT(*) AS 'count',
                       AVG(question1) AS 'Qavg1',
                       AVG(question2) AS 'Qavg2',
@@ -85,10 +94,11 @@ results <- dbGetQuery(db,
                       AVG(question4) AS 'Qavg4',
                       AVG(question5) AS 'Qavg5'
                    FROM comb_survey
-                   GROUP BY department  
+                   GROUP BY department, date  
                    ;
                    "
                   )
+results
 
 dbSendQuery(db, # remove temporary table
                    "
