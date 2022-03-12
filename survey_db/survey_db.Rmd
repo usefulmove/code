@@ -3,7 +3,6 @@ title: "R Notebook"
 output: html_notebook
 ---
 
-
 ```{r}
 library(DBI)
 library(tidyverse)
@@ -20,20 +19,82 @@ db <- dbConnect(
   password = "q6sGFI1tu1fsAvIPVFQh"
 )
 
-
-#con <- dbConnect(
-#  RMySQL::MySQL(),
-#  dbname = "company",
-#  host = "courses.csrrinzqubik.us-east-1.rds.amazonaws.com",
-#  port = 3306,
-#  user = "student",
-#  password = "datacamp"
-#)
-
 dbListTables(db)
 
-survey_data <- dbReadTable(db, "survey_one")
+```
 
-survey_subset <- dbGetQuery(db, "SELECT name, dept, kd5 FROM survey_one WHERE dept IN ('LAB', 'EXEC', 'MFG');")
+```{r}
+# generate report using dplyr
+survey_data <- dbReadTable(db, "employee_survey")
+employee_data <- dbReadTable(db, "employee")
+
+# need to do a left join of the employee data to the survey data frame using employeeID
+comb_survey_data <- survey_data %>% 
+  left_join(
+    employee_data,
+    by = 'employeeID'
+  )
+
+# generate department results table
+dep_results <- comb_survey_data %>% 
+  group_by(department) %>% 
+  summarise(
+    'count' = n(),
+    'Qavg1' = mean(question1),
+    'Qavg2' = mean(question2),
+    'Qavg3' = mean(question3),
+    'Qavg4' = mean(question4),
+    'Qavg5' = mean(question5),
+  )
+  
+```
+
+```{r}
+# generate report using SQL
+
+# need to do a left join of the employee data to the survey data frame using employeeID
+data <- dbGetQuery(db,
+                   "
+                   SELECT *
+                   FROM employee_survey
+                   LEFT JOIN employee ON employee_survey.employeeID = employee.employeeID
+                   ;
+                   "
+                  )
+
+# calculate aggregate data
+
+dbSendQuery(db, # create temporary table with joined results
+                   "
+                   CREATE TEMPORARY TABLE comb_survey
+                      SELECT employee_survey.*, employee.name, employee.department
+                      FROM employee_survey
+                      LEFT JOIN employee ON employee_survey.employeeID = employee.employeeID
+                   ;
+                   "
+                  )
+
+results <- dbGetQuery(db,
+                   "
+                   SELECT
+                      department,
+                      COUNT(*) AS 'count',
+                      AVG(question1) AS 'Qavg1',
+                      AVG(question2) AS 'Qavg2',
+                      AVG(question3) AS 'Qavg3',
+                      AVG(question4) AS 'Qavg4',
+                      AVG(question5) AS 'Qavg5'
+                   FROM comb_survey
+                   GROUP BY department  
+                   ;
+                   "
+                  )
+
+dbSendQuery(db, # remove temporary table
+                   "
+                   DROP TEMPORARY TABLE comb_survey
+                   ;
+                   "
+                 )
 
 ```
