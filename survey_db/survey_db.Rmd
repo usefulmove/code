@@ -72,39 +72,64 @@ data
 
 # calculate aggregate data
 
-dbSendQuery(db, # create temporary table with joined results
-                   "
-                   CREATE TEMPORARY TABLE comb_survey
-                      SELECT employee_survey.*, employee.name, employee.department
-                      FROM employee_survey
-                      LEFT JOIN employee ON employee_survey.employeeID = employee.employeeID
-                   ;
-                   "
-                  )
+# (method 1)
+#dbSendQuery(db, # create temporary table with joined results
+#                   "
+#                   CREATE TEMPORARY TABLE comb_survey
+#                      SELECT employee_survey.*, employee.name, employee.department
+#                      FROM employee_survey
+#                      LEFT JOIN employee ON employee_survey.employeeID = employee.employeeID
+#                   ;
+#                   "
+#                  )
+#
+#results <- dbGetQuery(db,
+#                   "
+#                   SELECT
+#                      department,
+#                      date,
+#                      COUNT(*) AS 'count',
+#                      AVG(question1) AS 'Qavg1',
+#                      AVG(question2) AS 'Qavg2',
+#                      AVG(question3) AS 'Qavg3',
+#                      AVG(question4) AS 'Qavg4',
+#                      AVG(question5) AS 'Qavg5'
+#                   FROM comb_survey
+#                   GROUP BY department, date  
+#                   ;
+#                   "
+#                  )
+#results
+#
+#dbSendQuery(db, # remove temporary table
+#                   "
+#                   DROP TEMPORARY TABLE comb_survey
+#                   ;
+#                   "
+#                 )
+
+# (method 1)
 
 results <- dbGetQuery(db,
-                   "
-                   SELECT
-                      department,
-                      date,
-                      COUNT(*) AS 'count',
-                      AVG(question1) AS 'Qavg1',
-                      AVG(question2) AS 'Qavg2',
-                      AVG(question3) AS 'Qavg3',
-                      AVG(question4) AS 'Qavg4',
-                      AVG(question5) AS 'Qavg5'
-                   FROM comb_survey
-                   GROUP BY department, date  
-                   ;
-                   "
-                  )
-results
+                    "
+                    SELECT
+                        department,
+                        date,
+                        AVG(question1) AS 'Qavg1',
+                        AVG(question2) AS 'Qavg3',
+                        AVG(question3) AS 'Qavg3',
+                        AVG(question4) AS 'Qavg4',
+                        AVG(question5) AS 'Qavg5'
+                    FROM
+                        employee_survey LEFT JOIN employee
+                        ON employee_survey.employeeID = employee.employeeID
+                    GROUP BY
+                        department,
+                        date
+                    ;
+                    "
+                    )
 
-dbSendQuery(db, # remove temporary table
-                   "
-                   DROP TEMPORARY TABLE comb_survey
-                   ;
-                   "
-                 )
+results
 
 ```
