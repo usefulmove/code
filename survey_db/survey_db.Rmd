@@ -112,21 +112,21 @@ data
 
 results <- dbGetQuery(db,
                     "
-                    SELECT
-                        department,
-                        date,
-                        AVG(question1) AS 'Qavg1',
-                        AVG(question2) AS 'Qavg3',
-                        AVG(question3) AS 'Qavg3',
-                        AVG(question4) AS 'Qavg4',
-                        AVG(question5) AS 'Qavg5'
-                    FROM
-                        employee_survey LEFT JOIN employee
-                        ON employee_survey.employeeID = employee.employeeID
-                    GROUP BY
-                        department,
-                        date
-                    ;
+                      SELECT
+                          department,
+                          date,
+                          AVG(question1) AS 'Qavg1',
+                          AVG(question2) AS 'Qavg3',
+                          AVG(question3) AS 'Qavg3',
+                          AVG(question4) AS 'Qavg4',
+                          AVG(question5) AS 'Qavg5'
+                      FROM
+                          employee_survey s LEFT JOIN employee e
+                              ON s.employeeID = e.employeeID
+                      GROUP BY
+                          department,
+                          date
+                      ;
                     "
                     )
 
