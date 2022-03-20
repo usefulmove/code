@@ -85,12 +85,35 @@ library(RColorBrewer)
 library(magrittr)
 library(ggsci)
 library(zoo)
+library(DBI)
+library(RSQLite)
+library(ggrepel)
 
+## read in supporting personal library files
 source("../library/ded/ded.R")
 regions <- readr::read_csv("../library/regions.csv")
 eu_countries <- read_csv("../library/eu-countries.csv")
 gdp <- readr::read_csv("../library/gdp-ppp-per-capita.csv")  # per capita GDP (PPP) in international dollars
 
+library_db <- dbConnect(SQLite(), "~/repos/code/library.db") 
+#dbListTables(library_db)
+state_populations_2018 <- dbGetQuery( # submit SQL query to SQLite library database for state population and region data
+               library_db,
+               "
+               SELECT
+                 p.state,
+                 p.year,
+                 p.population,
+                 s.Region AS region
+               FROM
+                 state_population p LEFT JOIN states s
+                 ON p.state LIKE s.State
+               WHERE year LIKE '2018'
+               ;"
+             )
+dbDisconnect(library_db)
+
+## ggplot defaults
 prim_color <- pal_jco()(10)[1]
 alt_color <- pal_jco()(10)[5]
 
@@ -147,10 +170,10 @@ us <- read_csv(str_glue("{data_path}us.csv"))
 us_live <- read_csv(str_glue("{data_path}live/us.csv"))
 
 # states
-states <- read_csv(str_glue("{data_path}us-states.csv"))
+state_df <- read_csv(str_glue("{data_path}us-states.csv"))
 
 # counties
-counties <- read_csv(str_glue("{data_path}us-counties.csv"))
+county_df <- read_csv(str_glue("{data_path}us-counties.csv"))
 
 ```
 
@@ -174,7 +197,7 @@ mask_data_path <- "../../covid-19-data/mask-use/mask-use-by-county.csv"
 # mask use
 mask_use_estimates <- read_csv(mask_data_path)
 
-distinct_counties <- counties %>%
+distinct_counties <- county_df %>%
   distinct(fips, county, state)
 
 mask_use_estimates <- mask_use_estimates %>%
@@ -200,7 +223,7 @@ get_country <- function(country_name) {
 }
 
 get_state <- function(state_name) {
-  s <- states[states$state == state_name, ] # state object
+  s <- state_df[state_df$state == state_name, ] # state object
 
   s <- s %>%
     mutate(
@@ -212,7 +235,7 @@ get_state <- function(state_name) {
 }
 
 get_cnty <- function(cnty_name, state_name) {
-  c <- counties %>%
+  c <- county_df %>%
     filter(county == cnty_name, state == state_name) # county object
 
   if (nrow(c) > 1) {
@@ -684,7 +707,7 @@ p_us <- covid()
 # state analysis (u.s.)
 
 # calculate state risk predictions
-state_risk_predictions <- states %>% distinct(state)
+state_risk_predictions <- state_df %>% distinct(state)
 state_risk_predictions <- state_risk_predictions %>% # calculate risk prediction for each state
   mutate(
     risk_prediction = map_dbl(state_risk_predictions$state,
@@ -717,7 +740,7 @@ state_alarm_sorted_df <- state_risk_predictions %>% # highest risk predictions
 # county analysis (u.s.)
 
 # calculate county risk predictions
-cnty_risk_predictions <- counties %>%
+cnty_risk_predictions <- county_df %>%
   filter(county != "Unknown") %>%
   distinct(county, state, fips) %>%
   mutate(state = as.character(state), county = as.character(county))
@@ -797,13 +820,15 @@ global_predictions_gdp %>%
   filter(risk_prediction > 25) %>%
   ggplot(aes(gdp_ppp_pcap, risk_prediction)) +
     geom_point(
-      aes(fill = continent),
+      aes(
+        fill = continent
+      ),
       shape = 21,
       color = "black",
       alpha = 1.0,
-      size = 2.5
+      #size = 2.5
     ) +
-    ggrepel::geom_text_repel(
+    geom_text_repel(
       aes(label = country),
       point.padding = 0.1,
       segment.color = "grey"
@@ -895,7 +920,7 @@ hosps %>%
     labs(
       subtitle = "U.S. COVID-19 Hospital Admissions",
       x = "",
-      y = "Occupancy (per million)"
+      y = "Occupancy (per million people)"
     ) +
     theme(
       legend.position = "bottom"
@@ -1130,6 +1155,298 @@ cnty_table %>%
 
 There are `r format(nrow(cnty_risk_predictions), big.mark = ",")` U.S. counties represented in the New York Times data set.
 
+<br>
+
+---
+
+<br>
+
+### Deaths
+
+```{r state_deaths, out.width = "80%"}
+
+state_deaths_df <- state_df %>% 
+  group_by(state) %>% 
+  summarise(
+    deaths = max(deaths),
+    .groups = "drop"
+  ) %>% 
+  left_join( # join with state population library dataframe
+    state_populations_2018,
+    by = c("state" = "state")
+  ) %>% 
+  filter(
+    !is.na(population)
+  ) %>% 
+  select(
+    state,
+    deaths,
+    population,
+    region
+  ) %>%
+  mutate(
+    population = as.integer(population),
+    death_rate = deaths / population
+  )
+
+state_deaths_df %>% 
+  filter(
+    !is.na(region)
+  ) %>% 
+  mutate(
+    deaths_per_million = death_rate * 1e6,
+    population_millions = population / 1e6
+  ) %>% 
+  ggplot(
+    aes(
+      x = population_millions,
+      y = deaths
+    )
+  ) +
+    geom_point(
+      color = "black",
+      alpha = 0.8
+    ) +
+    scale_x_continuous(
+      trans = "log10"
+    ) +
+    scale_y_continuous(
+      trans = "log10",
+      labels = scales::comma
+    ) +
+    labs(
+      subtitle = "COVID-19 State Deaths",
+      x = "population (log — in millions)",
+      y = "deaths (log)"
+    ) +
+    scale_fill_nejm()
+
+```
+
+<br><br>
+
+```{r state_death_rates}
+state_deaths_df %>% 
+  filter(
+    !is.na(region)
+  ) %>% 
+  mutate(
+    deaths_per_million = death_rate * 1e6,
+    population_millions = population / 1e6
+  ) %>% 
+  ggplot(
+    aes(
+      x = population_millions,
+      y = deaths_per_million
+    )
+  ) +
+    geom_point(
+      aes(
+        fill = region,
+        size = population
+      ),
+      shape = 21,
+      color = "black",
+      alpha = 0.8
+    ) +
+    geom_text_repel(
+      aes(label = state),
+      point.padding = 0.1,
+      segment.color = "grey"
+    ) +
+    facet_wrap(
+      vars(region),
+      ncol = 2
+    ) +
+    scale_x_continuous(
+      trans = "log10"
+    ) +
+    scale_y_continuous(
+      labels = scales::comma
+    ) +
+    labs(
+      subtitle = "COVID-19 Death Rates by State",
+      x = "population (log — in millions)",
+      y = "deaths (per million people)"
+    ) +
+    scale_fill_nejm()
+
+```
+
+<br>
+
+---
+
+<br>
+
+```{r region_death_rates, out.width = "80%"}
+
+region_deaths_df <- state_df %>% 
+  group_by(state) %>% 
+  summarise(
+    state_deaths = max(deaths),
+    .groups = "drop"
+  ) %>% 
+  left_join( # join with state population library dataframe
+    state_populations_2018,
+    by = c("state" = "state")
+  ) %>% 
+  filter(
+    !is.na(population)
+  ) %>% 
+  select(
+    state,
+    state_deaths,
+    population,
+    region
+  ) %>%
+  group_by(region) %>% 
+  summarise(
+    deaths = sum(state_deaths),
+    population = sum(as.integer(population)),
+    .groups = "drop"
+  ) %>% 
+  mutate(
+    death_rate = deaths / population
+  )
+
+# plot deaths
+region_deaths_df %>% 
+  filter(
+    !is.na(region)
+  ) %>% 
+  mutate(
+    deaths_per_million = death_rate * 1e6,
+    population_millions = population / 1e6
+  ) %>% 
+  select(
+    region,
+    deaths,
+    deaths_per_million
+  ) %>% 
+  ggplot(
+    aes(
+      x = fct_relevel(region, c("West", "Midwest", "South", "Northeast")),
+      y = deaths
+    )
+  ) +
+    geom_col(
+      aes(
+        fill = region,
+      ),
+      color = "black",
+      #show.legend = FALSE,
+      width = 0.8,
+      alpha = 0.8
+    ) +
+    scale_y_continuous(
+      labels = scales::comma
+    ) +
+    labs(
+      subtitle = "COVID-19 Deaths by Region",
+      x = "",
+      y = "deaths"
+    ) +
+    scale_fill_nejm()
+
+## plot death rates
+#region_deaths_df %>% 
+#  filter(
+#    !is.na(region)
+#  ) %>% 
+#  mutate(
+#    deaths_per_million = death_rate * 1e6,
+#    population_millions = population / 1e6
+#  ) %>% 
+#  select(
+#    region,
+#    deaths,
+#    deaths_per_million
+#  ) %>% 
+#  ggplot(
+#    aes(
+#      x = fct_relevel(region, c("West", "Midwest", "South", "Northeast")),
+#      y = deaths_per_million
+#    )
+#  ) +
+#    geom_col(
+#      aes(
+#        fill = region,
+#      ),
+#      color = "black",
+#      show.legend = FALSE,
+#      width = 0.8,
+#      alpha = 0.8
+#    ) +
+#    scale_y_continuous(
+#      labels = scales::comma
+#    ) +
+#    labs(
+#      subtitle = "COVID-19 Death Rates by Region",
+#      x = "",
+#      y = "deaths (per million people)"
+#    ) +
+#    scale_fill_nejm()
+
+```
+
+<br>
+
+```{r region_death_rates_boxplot, out.width = "80%"}
+
+state_df %>% 
+  group_by(state) %>% 
+  summarise(
+    state_deaths = max(deaths),
+    .groups = "drop"
+  ) %>% 
+  left_join( # join with state population library dataframe
+    state_populations_2018,
+    by = c("state" = "state")
+  ) %>% 
+  select(
+    state,
+    state_deaths,
+    population,
+    region
+  ) %>%
+  filter(
+    !is.na(population),
+    !is.na(region)
+  ) %>% 
+  mutate(
+    population = as.integer(population),
+    death_rate_per_million = state_deaths / population * 1e6
+  ) %>% 
+  group_by(region) %>% 
+  ggplot(
+    aes(
+      x = fct_relevel(region, c("West", "Midwest", "South", "Northeast")),
+      y = death_rate_per_million
+    )
+  ) +
+    geom_boxplot(
+      aes(
+        fill = region
+      ),
+      alpha = 0.8,
+      #show.legend = FALSE
+    ) +
+    geom_point(
+      color = "black"
+    ) +
+    labs(
+      subtitle = "COVID-19 Death Rates by Region",
+      x = "",
+      y = "deaths (per million people)"
+    ) +
+    scale_y_continuous(
+      labels = scales::comma
+    ) +
+    scale_fill_nejm()
+
+```
+
 <br><br><br>
 
 ---
@@ -1213,7 +1530,7 @@ p <- community_mobility %>%
       y = "change from baseline",
       color = "country"
     ) +
-    ggsci::scale_color_jco()
+    scale_color_jco()
 
 #plotly::ggplotly(p, tooltip = "country")
 p
