@@ -1216,7 +1216,7 @@ state_deaths_df %>%
     ) +
     labs(
       subtitle = "COVID-19 State Deaths",
-      x = "population (log — in millions)",
+      x = "population (log – in millions)",
       y = "deaths (log)"
     ) +
     scale_fill_nejm()
@@ -1251,8 +1251,9 @@ state_deaths_df %>%
     ) +
     geom_text_repel(
       aes(label = state),
-      point.padding = 0.1,
-      segment.color = "grey"
+      point.padding = 0.2,
+      segment.color = "grey",
+      size = 3
     ) +
     facet_wrap(
       vars(region),
@@ -1266,7 +1267,7 @@ state_deaths_df %>%
     ) +
     labs(
       subtitle = "COVID-19 Death Rates by State",
-      x = "population (log — in millions)",
+      x = "population (log – in millions)",
       y = "deaths (per million people)"
     ) +
     scale_fill_nejm()
@@ -1432,8 +1433,9 @@ state_df %>%
       alpha = 0.8,
       #show.legend = FALSE
     ) +
-    geom_point(
-      color = "black"
+    geom_jitter(
+      color = "black",
+      width = 0.02
     ) +
     labs(
       subtitle = "COVID-19 Death Rates by Region",
