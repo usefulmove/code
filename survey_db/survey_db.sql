@@ -30,3 +30,21 @@ INSERT INTO survey_one(
   ('Cora', 'LAB', 5, 4, 3, 5, 5);
 
 SELECT * FROM survey_one;
+
+
+---
+
+
+SELECT
+  department AS dept,
+  AVG(question1) AS safety,
+  AVG(question2) AS depend,
+  AVG(question3) AS clarity,
+  AVG(question4) AS meaning,
+  AVG(question5) AS impact
+FROM
+  employee_survey s LEFT JOIN employee e
+    ON s.employeeID = e.employeeID
+GROUP BY
+  e.department
+;

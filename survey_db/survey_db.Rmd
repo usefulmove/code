@@ -1,5 +1,5 @@
 ---
-title: "Employee Survey"
+title: "Corbin & Co. Employee Survey Program"
 output: html_notebook
 ---
 
@@ -169,18 +169,19 @@ comb_survey_data %>%
       aes(
         fill = department
       ),
-      color = "black"
+      color = "black",
+      size = 1.0,
+      alpha = 0.9
     ) +
     facet_grid(
       cols = vars(department),
       rows = vars(question)
     ) +
     labs(
-      title = NULL,
-      subtitle = "Corbin Inc. Employee Survey",
-      #x = "average feedback scores for key dynamics",
+      #title = NULL,
+      title = "Q1 2001 Corbin & Co. Employee Cross-functional Survey",
       x = "",
-      y = ""
+      y = "average feedback scores (0-5) for five key dynamics"
     ) +
     theme_economist() +
     theme(
@@ -190,6 +191,45 @@ comb_survey_data %>%
     ) +
     scale_fill_brewer(
       palette = "Set2"
+    )
+    
+```
+
+```{r echo = TRUE, show = TRUE, fig.width = 12}
+
+comb_survey_data %>% 
+  filter(
+    department == "Lab"
+  ) %>% 
+  group_by(date) %>%
+  summarise(
+    depend_avg = mean(question2),
+    .groups = "drop"
+  ) %>% 
+  ggplot(
+    aes(
+      x = date,
+      y = depend_avg
+    )
+  ) +
+    geom_col(
+      aes(
+        
+      ),
+      fill = "#ffd924",
+      color = "black",
+      size = 1.0,
+      alpha = 0.8
+    ) +
+    labs(
+      #title = NULL,
+      title = "Q1 2001 Corbin & Co. Employee Survey — Clinical Laboratory (104)",
+      x = "",
+      y = "Dependability Rating"
+    ) +
+    theme_economist() +
+    theme(
+      legend.position = "none"
     )
     
 ```
