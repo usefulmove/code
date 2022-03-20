@@ -1,5 +1,5 @@
 ---
-title: "R Notebook"
+title: "Employee Survey"
 output: html_notebook
 ---
 
@@ -136,19 +136,26 @@ results
 
 ```
 
-```{r echo = TRUE, show = TRUE}
+```{r echo = TRUE, show = TRUE, fig.width = 12}
 
 comb_survey_data %>% 
   group_by(department, date) %>%
   summarise(
-    D_1 = mean(question1),
-    D_2 = mean(question2),
-    D_3 = mean(question3),
-    D_4 = mean(question4),
-    D_5 = mean(question5),
+    Safety = mean(question1),
+    Depend = mean(question2),
+    Clarity = mean(question3),
+    Meaning = mean(question4),
+    Impact = mean(question5),
+    .groups = "drop"
   ) %>% 
   pivot_longer(
-    cols = starts_with('D_'),
+    cols = c(
+      Safety,
+      Depend,
+      Clarity,
+      Meaning,
+      Impact
+    ),
     names_to = "question",
     values_to = "avg"
   ) %>% 
@@ -171,10 +178,11 @@ comb_survey_data %>%
     labs(
       title = NULL,
       subtitle = "Corbin Inc. Employee Survey",
+      #x = "average feedback scores for key dynamics",
       x = "",
       y = ""
     ) +
-    theme_wsj() +
+    theme_economist() +
     theme(
       axis.text.x = element_blank(),
       axis.ticks.x = element_blank(),
