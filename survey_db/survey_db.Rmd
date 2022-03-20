@@ -6,6 +6,8 @@ output: html_notebook
 ```{r}
 library(DBI)
 library(tidyverse)
+library(ggthemes)
+library(RColorBrewer)
 ```
 
 ```{r echo = TRUE, show = TRUE}
@@ -132,4 +134,54 @@ results <- dbGetQuery(db,
 
 results
 
+```
+
+```{r echo = TRUE, show = TRUE}
+
+comb_survey_data %>% 
+  group_by(department, date) %>%
+  summarise(
+    D_1 = mean(question1),
+    D_2 = mean(question2),
+    D_3 = mean(question3),
+    D_4 = mean(question4),
+    D_5 = mean(question5),
+  ) %>% 
+  pivot_longer(
+    cols = starts_with('D_'),
+    names_to = "question",
+    values_to = "avg"
+  ) %>% 
+  ggplot(
+    aes(
+      x = date,
+      y = avg
+    )
+  ) +
+    geom_col(
+      aes(
+        fill = department
+      ),
+      color = "black"
+    ) +
+    facet_grid(
+      cols = vars(department),
+      rows = vars(question)
+    ) +
+    labs(
+      title = NULL,
+      subtitle = "Corbin Inc. Employee Survey",
+      x = "",
+      y = ""
+    ) +
+    theme_wsj() +
+    theme(
+      axis.text.x = element_blank(),
+      axis.ticks.x = element_blank(),
+      legend.position = "none"
+    ) +
+    scale_fill_brewer(
+      palette = "Set2"
+    )
+    
 ```
