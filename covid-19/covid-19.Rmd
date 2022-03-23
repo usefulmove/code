@@ -98,19 +98,20 @@ gdp <- readr::read_csv("../library/gdp-ppp-per-capita.csv")  # per capita GDP (P
 library_db <- dbConnect(SQLite(), "~/repos/code/library.db") 
 #dbListTables(library_db)
 state_populations_2018 <- dbGetQuery( # submit SQL query to SQLite library database for state population and region data
-               library_db,
-               "
-               SELECT
-                 p.state,
-                 p.year,
-                 p.population,
-                 s.Region AS region
-               FROM
-                 state_population p LEFT JOIN states s
-                 ON p.state LIKE s.State
-               WHERE year LIKE '2018'
-               ;"
-             )
+                            library_db,
+                            "
+                              SELECT
+                                p.state,
+                                p.year,
+                                p.population,
+                                s.Region AS region
+                              FROM
+                                state_population p LEFT JOIN states s
+                                ON p.state LIKE s.State
+                              WHERE year LIKE '2018'
+                              ;
+                            "
+                          )
 dbDisconnect(library_db)
 
 ## ggplot defaults
@@ -1185,7 +1186,7 @@ state_deaths_df <- state_df %>%
     region
   ) %>%
   mutate(
-    population = as.integer(population),
+    population = population,
     death_rate = deaths / population
   )
 
@@ -1304,7 +1305,7 @@ region_deaths_df <- state_df %>%
   group_by(region) %>% 
   summarise(
     deaths = sum(state_deaths),
-    population = sum(as.integer(population)),
+    population = sum(population),
     .groups = "drop"
   ) %>% 
   mutate(
@@ -1416,7 +1417,7 @@ state_df %>%
     !is.na(region)
   ) %>% 
   mutate(
-    population = as.integer(population),
+    population = population,
     death_rate_per_million = state_deaths / population * 1e6
   ) %>% 
   group_by(region) %>% 
