@@ -87,6 +87,7 @@ library(ggsci)
 library(zoo)
 library(DBI)
 library(RSQLite)
+library(RMySQL)
 library(ggrepel)
 
 ## read in supporting personal library files
@@ -95,23 +96,34 @@ regions <- readr::read_csv("../library/regions.csv")
 eu_countries <- read_csv("../library/eu-countries.csv")
 gdp <- readr::read_csv("../library/gdp-ppp-per-capita.csv")  # per capita GDP (PPP) in international dollars
 
-library_db <- dbConnect(SQLite(), "~/repos/code/library.db") 
+#library_db <- dbConnect(SQLite(), "~/repos/code/library.db") 
+
+library_db <- dbConnect(
+  MySQL(),
+  dbname = "b28kw3czffvrcmddjxri",
+  host = "b28kw3czffvrcmddjxri-mysql.services.clever-cloud.com",
+  port = 3306,
+  user = "uregdz06i7ou4d65",
+  password = "q6sGFI1tu1fsAvIPVFQh"
+)
+  
 #dbListTables(library_db)
-state_populations_2018 <- dbGetQuery( # submit SQL query to SQLite library database for state population and region data
-                            library_db,
-                            "
-                              SELECT
-                                p.state,
-                                p.year,
-                                p.population,
-                                s.Region AS region
-                              FROM
-                                state_population p LEFT JOIN states s
-                                ON p.state LIKE s.State
-                              WHERE year LIKE '2018'
-                              ;
-                            "
-                          )
+state_populations_2018 <- dbGetQuery(
+  # submit SQL query to SQLite library database for state population and region data
+  library_db,
+  "
+    SELECT
+      p.state,
+      p.year,
+      p.population,
+      s.Region AS region
+    FROM
+      population_us_states_2010_2018 p LEFT JOIN us_states s
+      ON p.state LIKE s.State
+    WHERE year LIKE '2018'
+    ;
+  "
+)
 dbDisconnect(library_db)
 
 ## ggplot defaults
