@@ -1,0 +1,51 @@
+---
+title: "College Basketball"
+output: html_document
+---
+
+This dataset contains data about NCAA Basketball games, teams, and players. Game data covers play-by-play and box scores back to 2009, as well as final scores back to 1996. Additional data about wins and losses goes back to the 1894-1895 season for some teams. All data runs through the end of the 2017-2018 season.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{sql scores}
+select
+    count(*) as total_games,
+    countif(win is true) as home_wins,
+    countif(win is false) as home_losses,
+    countif(win is true) / COUNT(*) as home_win_percentage,
+    avg(points_game - opp_points_game) as avg_game_diff
+from
+    bigquery-public-data.ncaa_basketball.mbb_teams_games_sr
+where
+  (lead_changes + times_tied >= 7.85 + 2.5 * 7.16) and
+  (home_team = true) and
+  (neutral_site <> true) and
+  (division_name like 'NCAA%')
+;
+
+```
+
+The average game differential (home team points - visitor team points) was a 1.3496 point home team advantage across all NCAA divisions for highly competitive games (specifically, games where the number of lead changes and times tied was at least 2 standard deviations higher than normal). Of the 470 games that match this criterion in the database, 272 were won by the home team compared with the 198 that were won by the visitor, representing a 57.9 percent win percentage for the home team.
+
+```{sql}
+select
+    count(*) as total_games,
+    countif(win is true) as home_wins,
+    countif(win is false) as home_losses,
+    countif(win is true) / COUNT(*) as home_win_percentage,
+    avg(points_game - opp_points_game) as avg_game_diff
+from
+    bigquery-public-data.ncaa_basketball.mbb_teams_games_sr
+where
+  --(lead_changes >= 12.739) and
+  --(abs(points_game - opp_points_game) > 10) and
+  (home_team = true) and
+  (neutral_site <> true) and
+  (division_name like 'NCAA%')
+;
+
+```
+
+In fact, filtering for highly competitive games inaccurately biases the home win percentage in the negative direction. Removing the filter and performing the same analysis across the entire body of 10,624 NCAA games, the home win percentage is 68.1 percent, 7,234 home wins and 3390 home losses. Filtering for close games has a very similar effect on the analysis.
