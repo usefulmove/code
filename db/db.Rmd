@@ -7,17 +7,45 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(DBI)
+library(RMySQL)
+```
+
+```{r data}
+df <- read_csv("~/Desktop/bq-results-20220327-002723-1648341846519.csv")
+#df <- read_csv("~/Desktop/test_data.csv")  # test data set
+
+#str(df)
 ```
 
 ```{r dbconnect}
 db <- dbConnect(
-        MySql(),
-        TODO
+        MySQL(),
+        dbname = "ncaam",
+        host = "localhost",
+        port = 3306,
+        user = "root",
+        password = "rootroot"
+      )
 
+dbListTables(db)
 ```
 
+```{r dbedit}
 
-```{r , echo=FALSE}
+#dbCreateTable(db, "games", df)
+
+dbWriteTable(db, "games", df, overwrite = TRUE, temporary = TRUE, row.names = FALSE)
+
+games <- dbGetQuery(
+  db,
+  "
+    select *
+    from ncaam.games
+    ;
+  "
+)
+
+#dbRemoveTable(db, "games")
+dbDisconnect(db)
 
 ```
-
