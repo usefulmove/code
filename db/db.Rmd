@@ -1,0 +1,23 @@
+---
+title: "db"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(DBI)
+```
+
+```{r dbconnect}
+db <- dbConnect(
+        MySql(),
+        TODO
+
+```
+
+
+```{r , echo=FALSE}
+
+```
+
