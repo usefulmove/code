@@ -22,6 +22,8 @@ db <- dbConnect(
 )
 
 dbListTables(db)
+  
+#dbDisconnect(db)  
 
 ```
 
