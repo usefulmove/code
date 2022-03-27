@@ -1199,7 +1199,8 @@ state_deaths_df <- state_df %>%
   ) %>%
   mutate(
     population = population,
-    death_rate = deaths / population
+    death_rate = deaths / population,
+    region = fct_relevel(region, c("West", "Midwest", "South", "Northeast")),
   )
 
 state_deaths_df %>% 
@@ -1256,7 +1257,7 @@ state_deaths_df %>%
     geom_point(
       aes(
         fill = region,
-        size = population
+        size = deaths
       ),
       shape = 21,
       color = "black",
@@ -1279,7 +1280,7 @@ state_deaths_df %>%
       labels = scales::comma
     ) +
     labs(
-      subtitle = "COVID-19 Death Rates by State",
+      subtitle = "COVID-19 Death Rates by State and by Region",
       x = "population (log – in millions)",
       y = "deaths (per million people)"
     ) +
@@ -1293,7 +1294,7 @@ state_deaths_df %>%
 
 <br>
 
-```{r region_death_rates, out.width = "80%"}
+```{r region_death_rates_one, out.width = "80%"}
 
 region_deaths_df <- state_df %>% 
   group_by(state) %>% 
@@ -1321,10 +1322,14 @@ region_deaths_df <- state_df %>%
     .groups = "drop"
   ) %>% 
   mutate(
-    death_rate = deaths / population
+    death_rate = deaths / population,
+    region = fct_relevel(region, c("West", "Midwest", "South", "Northeast")),
   )
 
-# plot deaths
+```
+
+```{r region_death_rates_two, out.width = "80%"}
+# plot deaths (total)
 region_deaths_df %>% 
   filter(
     !is.na(region)
@@ -1340,7 +1345,7 @@ region_deaths_df %>%
   ) %>% 
   ggplot(
     aes(
-      x = fct_relevel(region, c("West", "Midwest", "South", "Northeast")),
+      x = region,
       y = deaths
     )
   ) +
@@ -1357,50 +1362,53 @@ region_deaths_df %>%
       labels = scales::comma
     ) +
     labs(
-      subtitle = "COVID-19 Deaths by Region",
+      subtitle = "COVID-19 Total Deaths by Region",
       x = "",
       y = "deaths"
     ) +
     scale_fill_nejm()
 
-## plot death rates
-#region_deaths_df %>% 
-#  filter(
-#    !is.na(region)
-#  ) %>% 
-#  mutate(
-#    deaths_per_million = death_rate * 1e6,
-#    population_millions = population / 1e6
-#  ) %>% 
-#  select(
-#    region,
-#    deaths,
-#    deaths_per_million
-#  ) %>% 
-#  ggplot(
-#    aes(
-#      x = fct_relevel(region, c("West", "Midwest", "South", "Northeast")),
-#      y = deaths_per_million
-#    )
-#  ) +
-#    geom_col(
-#      aes(
-#        fill = region,
-#      ),
-#      color = "black",
-#      show.legend = FALSE,
-#      width = 0.8,
-#      alpha = 0.8
-#    ) +
-#    scale_y_continuous(
-#      labels = scales::comma
-#    ) +
-#    labs(
-#      subtitle = "COVID-19 Death Rates by Region",
-#      x = "",
-#      y = "deaths (per million people)"
-#    ) +
-#    scale_fill_nejm()
+```
+
+```{r region_death_rates_three, out.width = "80%"}
+# plot deaths
+region_deaths_df %>% 
+  filter(
+    !is.na(region)
+  ) %>% 
+  mutate(
+    deaths_per_million = death_rate * 1e6,
+    population_millions = population / 1e6
+  ) %>% 
+  select(
+    region,
+    deaths,
+    deaths_per_million
+  ) %>% 
+  ggplot(
+    aes(
+      x = region,
+      y = deaths_per_million
+    )
+  ) +
+    geom_col(
+      aes(
+        fill = region,
+      ),
+      color = "black",
+      #show.legend = FALSE,
+      width = 0.8,
+      alpha = 0.8
+    ) +
+    scale_y_continuous(
+      labels = scales::comma
+    ) +
+    labs(
+      subtitle = "COVID-19 Death Rates by Region",
+      x = "",
+      y = "deaths (per million people)"
+    ) +
+    scale_fill_nejm()
 
 ```
 
@@ -1429,7 +1437,6 @@ state_df %>%
     !is.na(region)
   ) %>% 
   mutate(
-    population = population,
     death_rate_per_million = state_deaths / population * 1e6
   ) %>% 
   group_by(region) %>% 
@@ -1444,14 +1451,25 @@ state_df %>%
         fill = region
       ),
       alpha = 0.8,
-      #show.legend = FALSE
     ) +
     geom_jitter(
       color = "black",
       width = 0.02
     ) +
+    #geom_point(
+    #  data = region_deaths_df,
+    #  aes(
+    #    #x = fct_relevel(region, c("West", "Midwest", "South", "Northeast")),
+    #    #x = region,
+    #    y = death_rate * 1e6
+    #  ),
+    #  shape = 21,
+    #  fill = "black",
+    #  color = "black",
+    #  size = 6
+    #) +
     labs(
-      subtitle = "COVID-19 Death Rates by Region",
+      subtitle = "COVID-19 Death Rates by Region (box plot)",
       x = "",
       y = "deaths (per million people)"
     ) +
