@@ -86,7 +86,7 @@ library(magrittr)
 library(ggsci)
 library(zoo)
 library(DBI)
-library(RSQLite)
+#library(RSQLite)
 library(RMySQL)
 library(ggrepel)
 
@@ -109,7 +109,7 @@ library_db <- dbConnect(
   
 #dbListTables(library_db)
 state_populations_2018 <- dbGetQuery(
-  # submit SQL query to SQLite library database for state population and region data
+  # submit SQL query to library database for state population and region data
   library_db,
   "
     SELECT
