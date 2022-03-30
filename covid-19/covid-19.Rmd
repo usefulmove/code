@@ -87,7 +87,8 @@ library(ggsci)
 library(zoo)
 library(DBI)
 #library(RSQLite)
-library(RMySQL)
+#library(RMySQL)
+library(RMariaDB)
 library(ggrepel)
 
 ## read in supporting personal library files
@@ -99,7 +100,8 @@ gdp <- readr::read_csv("../library/gdp-ppp-per-capita.csv")  # per capita GDP (P
 #library_db <- dbConnect(SQLite(), "~/repos/code/library.db") 
 
 library_db <- dbConnect(
-  MySQL(),
+  MariaDB(),
+  #MySQL(),
   dbname = "b28kw3czffvrcmddjxri",
   host = "b28kw3czffvrcmddjxri-mysql.services.clever-cloud.com",
   port = 3306,
@@ -1189,7 +1191,8 @@ state_deaths_df <- state_df %>%
     by = c("state" = "state")
   ) %>% 
   filter(
-    !is.na(population)
+    !is.na(population),
+    !is.na(region)
   ) %>% 
   select(
     state,
@@ -1201,16 +1204,30 @@ state_deaths_df <- state_df %>%
     population = population,
     death_rate = deaths / population,
     region = fct_relevel(region, c("West", "Midwest", "South", "Northeast")),
+    deaths_per_million = death_rate * 1e6,
+    population_millions = population / 1e6
+  )
+
+state_labels <- state_deaths_df %>% 
+  filter(
+    state %in% c(
+      "New York",
+      "Texas",
+      "California",
+      "Vermont",
+      "Maine",
+      "Arizona",
+      "Mississippi",
+      "New Jersey",
+      "Michagin",
+      "Alabama",
+      "Hawaii",
+      "Utah",
+      "Wyoming"
+    )
   )
 
 state_deaths_df %>% 
-  filter(
-    !is.na(region)
-  ) %>% 
-  mutate(
-    deaths_per_million = death_rate * 1e6,
-    population_millions = population / 1e6
-  ) %>% 
   ggplot(
     aes(
       x = population_millions,
@@ -1218,8 +1235,19 @@ state_deaths_df %>%
     )
   ) +
     geom_point(
+      shape = 21,
+      fill = prim_color,
       color = "black",
+      size = 2.5,
       alpha = 0.8
+    ) +
+    geom_text_repel(
+      data = state_labels,
+      aes(label = state),
+      min.segment.length = 0,
+      #point.padding = 5.0,
+      segment.color = "grey",
+      size = 4
     ) +
     scale_x_continuous(
       trans = "log10"
@@ -1229,7 +1257,7 @@ state_deaths_df %>%
       labels = scales::comma
     ) +
     labs(
-      subtitle = "COVID-19 State Deaths",
+      subtitle = "COVID-19 Deaths by State",
       x = "population (log – in millions)",
       y = "deaths (log)"
     ) +
@@ -1522,7 +1550,7 @@ df_highlights <- community_mobility %>%
                           "France",
                           "Sweden",
                           "Ireland"
-                          )
+                        )
   ) %>%
   rename(country = country_region)
 
