@@ -1398,7 +1398,7 @@ region_deaths_df %>%
 
 ```
 
-```{r region_death_rates_three, out.width = "80%"}
+```{r region_death_rates_three, out.width = "80%", include = FALSE}
 # plot deaths
 region_deaths_df %>% 
   filter(
