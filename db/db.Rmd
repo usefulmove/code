@@ -11,15 +11,16 @@ library(RMySQL)
 ```
 
 ```{r data}
-df <- read_csv("~/Desktop/bq-results-20220327-002723-1648341846519.csv")
-#df <- read_csv("~/Desktop/test_data.csv")  # test data set
+games_df <- read_csv("~/Desktop/bq-results-20220327-002723-1648341846519.csv")
+#games_df <- read_csv("~/Desktop/test_data.csv")  # test data set
 
-#str(df)
+#str(games_df)
 ```
 
 ```{r dbconnect}
-db <- dbConnect(
-        MySQL(),
+ncaa_db <- dbConnect(
+        RMariaDB::MariaDB(),
+        #MySQL(),
         dbname = "ncaam",
         host = "localhost",
         port = 3306,
@@ -27,17 +28,17 @@ db <- dbConnect(
         password = "rootroot"
       )
 
-dbListTables(db)
+dbListTables(ncaa_db)
 ```
 
 ```{r dbedit}
 
-#dbCreateTable(db, "games", df)
+#dbCreateTable(ncaa_db, "games", games_df)
 
-dbWriteTable(db, "games", df, overwrite = TRUE, temporary = TRUE, row.names = FALSE)
+dbWriteTable(ncaa_db, "games", games_df, overwrite = TRUE, row.names = FALSE)
 
 games <- dbGetQuery(
-  db,
+  ncaa_db,
   "
     select *
     from ncaam.games
@@ -45,7 +46,7 @@ games <- dbGetQuery(
   "
 )
 
-#dbRemoveTable(db, "games")
-dbDisconnect(db)
+#dbRemoveTable(ncaa_db, "games")
+dbDisconnect(ncaa_db)
 
 ```
