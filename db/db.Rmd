@@ -7,46 +7,66 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(DBI)
-library(RMySQL)
+library(RMariaDB)
+library(lubridate)
 ```
 
 ```{r data}
-games_df <- read_csv("~/Desktop/bq-results-20220327-002723-1648341846519.csv")
-#games_df <- read_csv("~/Desktop/test_data.csv")  # test data set
+fastrak_df <- read_csv("/Users/dedmonds/sb/code/code/fastrak/FasTrak_transaction_report_220404_21Oct-22Apr.csv")
 
-#str(games_df)
+# data cleaning
+fastrak_df <- fastrak_df %>%
+  select('POSTED DATE':'BALANCE') %>% 
+  mutate(
+    # convert numeric columns from character strings
+    BALANCE = as.numeric(str_replace(fastrak_df$BALANCE, "\\$", "")),
+    DEBIT = as.numeric(str_replace(fastrak_df$`DEBIT(-)`, "\\$", "")),
+    CREDIT = as.numeric(str_replace(fastrak_df$`CREDIT(+)`, "\\$", "")),
+    `ENTRY LANE` = as.numeric(`ENTRY LANE`),
+    `EXIT LANE` = as.numeric(`EXIT LANE`),
+    # convert data columns from character strings
+    `POSTED DATE` = mdy(`POSTED DATE`),
+    `TRANSACTION DATE` = mdy(`TRANSACTION DATE`),
+    `ENTRY DATE/TIME` = mdy_hms(fastrak_df$`ENTRY DATE/TIME`, tz = "US/Pacific")
+  ) %>% 
+  select(
+    -`DEBIT(-)`,
+    -`CREDIT(+)`,
+  )
+  
+
+str(fastrak_df)
 ```
 
 ```{r dbconnect}
-ncaa_db <- dbConnect(
-        RMariaDB::MariaDB(),
-        #MySQL(),
-        dbname = "ncaam",
-        host = "localhost",
+library_db <- dbConnect(
+        MariaDB(),
+        dbname = "b28kw3czffvrcmddjxri",
+        host = "b28kw3czffvrcmddjxri-mysql.services.clever-cloud.com",
         port = 3306,
-        user = "root",
-        password = "rootroot"
+        user = "uregdz06i7ou4d65",
+        password = "q6sGFI1tu1fsAvIPVFQh"
       )
 
-dbListTables(ncaa_db)
+dbListTables(library_db)
 ```
 
 ```{r dbedit}
 
-#dbCreateTable(ncaa_db, "games", games_df)
+#dbCreateTable(library_db, "fastrak", fastrak_df)
 
-dbWriteTable(ncaa_db, "games", games_df, overwrite = TRUE, row.names = FALSE)
+dbWriteTable(library_db, "fastrak", fastrak_df, overwrite = TRUE, row.names = FALSE)
 
-games <- dbGetQuery(
-  ncaa_db,
+data <- dbGetQuery(
+  library_db,
   "
     select *
-    from ncaam.games
+    from fastrak
     ;
   "
 )
 
-#dbRemoveTable(ncaa_db, "games")
-dbDisconnect(ncaa_db)
+#dbRemoveTable(library_db, "fastrak")
+dbDisconnect(library_db)
 
 ```
