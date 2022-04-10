@@ -1,0 +1,76 @@
+---
+title: "Transactions"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(lubridate)
+library(RMariaDB)
+library(tidyquery)
+```
+
+```{r data, echo=FALSE}
+transactions <- read_csv("~/repos/code/transactions/.data")
+```
+
+
+```{r clean, echo=FALSE}
+transactions <- transactions %>% 
+  select(
+    -Labels, # remove useless columns
+    -Notes
+  ) %>% 
+  mutate(
+    Date = mdy(Date),
+  )
+```
+
+
+```{r database, echo=FALSE}
+db <- dbConnect( # connect to remote Clever Cloud database
+  RMariaDB::MariaDB(),
+  user = "uregdz06i7ou4d65",
+  password = "q6sGFI1tu1fsAvIPVFQh",
+  host = "b28kw3czffvrcmddjxri-mysql.services.clever-cloud.com",
+  port = 3306,
+  dbname = "b28kw3czffvrcmddjxri"
+)
+
+# SQL connection interface terminal — local dataframe
+query(
+  transactions,
+  "
+    select max(length('Original Description'))
+  "  
+)
+          
+# SQL connection interface terminal — remote database
+dbGetQuery(
+  db,
+  "
+    create table transactions (
+      date date,
+      desc varchar(128),
+      orig_desc varchar(128),
+      amount double(12,2),
+      trans_type varchar(32),
+      category varchar(128),
+      account varchar(128)
+    )
+  "
+)
+
+dbCreateTable(
+  db,
+  "transactions",
+  transactions
+) 
+
+dbWriteTable(
+  db,
+  "transactions",
+  transactions
+)
+```
