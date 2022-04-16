@@ -1,0 +1,44 @@
+---
+title: "BigQuery"
+output: html_document
+---
+
+```{r setup, include = FALSE, warning = FALSE}
+library(tidyverse)
+library(dbplyr)
+library(bigrquery)
+library(DBI)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r db_connect}
+db <- dbConnect(
+  bigquery(),
+  project = "bigquery-public-data",
+  #dataset = "austin_311",
+  dataset = "ncaa_basketball",
+  billing = "My Billing Account"
+)
+
+dbListTables(
+  db
+)
+
+team_colors <- tbl(
+  db,
+  "team_colors"
+)
+
+data_pull <- bq_dataset_query(
+  db,
+  "
+    select
+      *
+    from
+      team_colors ;
+  "
+)
+      #`bigquery-public-data.ncaa_basketball.team_colors` ;
+
+dbDisconnect(db)
+```
