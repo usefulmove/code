@@ -1,5 +1,5 @@
 ---
-title: "Mint"
+title: "mint"
 output: html_document
 ---
 
@@ -12,23 +12,38 @@ library(tidyquery)
 ```
 
 ```{r data, echo=FALSE}
-transactions <- read_csv("~/repos/code/mint/.data")
+transactions <- read_csv("~/repos/code/mint/.data_2204152117")
 ```
 
 
 ```{r clean, echo=FALSE}
 transactions <- transactions %>% 
-  select(
-    -Labels, # remove useless columns
-    -Notes
-  ) %>% 
   mutate(
-    Date = mdy(Date),
+    date = mdy(Date),
+    description = Description,
+    original = `Original Description`,
+    amount = Amount,
+    type = `Transaction Type`,
+    category = Category,
+    account = `Account Name`
+  ) %>% 
+  select(
+    # remove renamed columns
+    -Date,
+    -Description,
+    -'Original Description',
+    -Amount,
+    -'Transaction Type',
+    -Category,
+    -'Account Name',
+    # remove useless columns
+    -Labels,
+    -Notes
   )
 ```
 
 
-```{r database, echo=FALSE}
+```{r database_tools, echo=FALSE}
 db <- dbConnect( # connect to remote Clever Cloud database
   RMariaDB::MariaDB(),
   user = "uregdz06i7ou4d65",
@@ -40,9 +55,9 @@ db <- dbConnect( # connect to remote Clever Cloud database
 
 # SQL connection interface terminal — local dataframe
 query(
-  transactions,
+  early_transactions,
   "
-    select max(length('Original Description'))
+    select min(date), max(date)
   "  
 )
           
@@ -52,10 +67,10 @@ dbGetQuery(
   "
     create table transactions (
       date date,
-      desc varchar(128),
-      orig_desc varchar(128),
+      description varchar(128),
+      original varchar(128),
       amount double(12,2),
-      trans_type varchar(32),
+      type varchar(32),
       category varchar(128),
       account varchar(128)
     )
@@ -71,6 +86,38 @@ dbCreateTable(
 dbWriteTable(
   db,
   "transactions",
-  transactions
+  transactions,
+  append = TRUE
+)
+```
+
+```{r analysis, echo=FALSE}
+dbGetQuery(
+  db,
+  "
+    select 
+        sq.year as year, sq.month as month, sum(sq.amount) as expenses
+    from
+        (
+          select 
+              *,
+      		extract(year from date) as year,
+      		extract(month from date) as month
+          from
+              transactions
+          where
+              type like 'debit'
+     			and
+              (
+                category in ('restaurants', 'coffee shops')
+         	    		or
+     	        	category regexp 'food'
+     			        or
+     		        category regexp 'alcohol'
+              )
+    	  ) as sq
+    group by sq.year , sq.month
+    order by sq.year desc, sq.month desc;
+  "
 )
 ```
