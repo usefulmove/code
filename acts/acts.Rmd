@@ -1,5 +1,5 @@
 ---
-title: "mint"
+title: "acts"
 output: html_document
 ---
 
@@ -12,7 +12,7 @@ library(tidyquery)
 ```
 
 ```{r data, echo=FALSE}
-transactions <- read_csv("~/repos/code/mint/.data_2204152117")
+transactions <- read_csv("~/repos/code/acts/.data_2204152117")
 ```
 
 
