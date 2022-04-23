@@ -1,6 +1,9 @@
 library(tidyverse)
 library(DBI)
 
+# goal :: model interface for loading data from one data source (e.g. CSV)
+#         into a different data source (e.g. remote database)
+
 c <-
   cols_only(
     GEO_ID = col_character(),
