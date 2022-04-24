@@ -17,7 +17,7 @@ c <-
     P1_007N = col_integer(),
     P1_008N = col_integer()
   )
-census <- readr::read_csv("~/Desktop/data.csv", col_types = c)
+census <- readr::read_csv("data.csv", col_types = c)
 
 glimpse(census)
 
@@ -26,7 +26,9 @@ census <-
   filter(GEO_ID != "id") %>%
   mutate(
     geo_id = GEO_ID,
-    name = NAME,
+    #name = NAME,
+    county = str_extract(NAME, "^[^,]+"),
+    state = str_extract(NAME, "[^,]+$"),
     total = P1_001N,
     total_one_race = P1_002N,
     white = P1_003N,
@@ -38,7 +40,9 @@ census <-
   ) %>%
   select(
     geo_id,
-    name,
+    #name,
+    county,
+    state,
     total,
     total_one_race,
     white,
