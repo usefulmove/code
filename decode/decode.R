@@ -82,7 +82,6 @@ decode_disconnect <- function(.con_name) {
 decode_overwrite <- function(.con_name, .dob_name, .data) {
 
   if (.con_name == "library") {
-
     .con <- decode_connect("library")
 
     DBI::dbWriteTable(
@@ -95,6 +94,43 @@ decode_overwrite <- function(.con_name, .dob_name, .data) {
     global_library_con <<- .con # global connection variable
 
     decode_disconnect("library")
+  }
+
+  #if (.con_name == "code.library.us_demographics_census2020") {
+  #  .data %>%
+  #    jsonlite::write_json(
+  #      "~/repos/code/library/.ibrary.us_demographics_census2020.json"
+  #    )
+  #}
+
+  if (.con_name == "code") {
+    .data %>%
+      jsonlite::write_json(
+        str_glue("~/repos/code/library/library.{.dob_name}.json")
+      )
+  }
+
+}
+
+decode_read <- function(.con_name, .dob_name) {
+
+  if (.con_name == "library") {
+
+    .db <- decode_connect("library")
+
+    .data <-
+      dbGetQuery(
+        .db,
+        str_glue(
+          "select * from {.dob_name}"
+        )
+      )
+
+    global_library_con <<- .db # global connection variable
+
+    decode_disconnect("library")
+
+    return(.data)
   }
 }
 
