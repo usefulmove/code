@@ -3,40 +3,19 @@ library(DBI)
 library(jsonlite)
 source("~/repos/code/decode/decode.R")
 
-data <-
-  decode_read(
-    "library",
-    "us_demographics_census2020"
-  )
 
-decode_overwrite(
-  "code",
-  "us_demographics_census2020",
-  data
-)
-
+# read from remote library database
+dof_name <- "iso3166_country_codes"
 
 data <-
   decode_read(
     "library",
-    "eu_countries"
+    dof_name
   )
 
+# write to local code repository library
 decode_overwrite(
   "code",
-  "eu_countries",
-  data
-)
-
-
-data <-
-  decode_read(
-    "library",
-    "us_states"
-  )
-
-decode_overwrite(
-  "code",
-  "us_states",
+  dof_name,
   data
 )

@@ -76,6 +76,7 @@ decode_connect <- function(.con_name) {
 decode_disconnect <- function(.con_name) {
   if (.con_name == "library") {
     DBI::dbDisconnect(global_library_con) # library database (AWS)
+    rm(global_library_con) # remove from the global namespace
   }
 }
 
