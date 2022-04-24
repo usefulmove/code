@@ -64,8 +64,8 @@ decode_connect <- function(.con_name) {
         RMariaDB::MariaDB(),
         dbname = "library",
         host = "coradbinstance.chkmsmjosdxs.us-west-1.rds.amazonaws.com",
-        username = "root",
-        password = "rootroot",
+        username = rawToChar(.cm),
+        password = rawTochar(.cn),
         port = 3306
       )
   }
