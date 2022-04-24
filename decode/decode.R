@@ -43,44 +43,62 @@ decode_recode <- function(.df, .x, ...) {
   return(.df)
 }
 
-#    decode_getdob
+#    decode_connect
 #
 #    description
 #
 #    usage
-#      decode_getdob(.x)
+#    decode_connect(.x)
 #
 #    arguments
-#      .x    name of database to load
+#    .con_name  name of data connection
 #
 #    value
-#      connection object
+#    connection object
 
-decode_getdob <- function(.df, .x, ...) {
-  .x <- deparse(substitute(.x))
+decode_connect <- function(.con_name) {
 
-  args <- rlang::list2(...)
-  args <- stringr::str_split(args,"=")
-
-  if (class(.df[[.x]])=="factor") {
-    b_coerce=TRUE
-    .df[[.x]] <- as.character(.df[[.x]])
-  } else {
-    b_coerce=FALSE
+  if (.con_name == "library") {
+    .dob <-
+      DBI::dbConnect( # library database (AWS)
+        RMariaDB::MariaDB(),
+        dbname = "library",
+        host = "coradbinstance.chkmsmjosdxs.us-west-1.rds.amazonaws.com",
+        username = "root",
+        password = "rootroot",
+        port = 3306
+      )
   }
 
-  for (i in seq(1,length(args))) {
-    .df[[.x]][.df[[.x]]==args[[i]][[2]]] <- args[[i]][[1]]
-  }
-
-  if (b_coerce) {
-    .df[[.x]] <- as.factor(.df[[.x]])
-  }
-
-  return(.df)
+  return(.dob)
 }
 
-decode_connect <- function(TODO) # interface closely following the database interface
+decode_disconnect <- function(.con_name) {
+  if (.con_name == "library") {
+    DBI::dbDisconnect(global_library_con) # library database (AWS)
+  }
+}
 
-decode_senddob <- function(TODO) # send message to data object
+decode_overwrite <- function(.con_name, .dob_name, .data) {
+
+  if (.con_name == "library") {
+
+    .con <- decode_connect("library")
+
+    DBI::dbWriteTable(
+      .con,
+      .dob_name,
+      .data,
+      overwrite = TRUE
+    )
+
+    global_library_con <<- .con # global connection variable
+
+    decode_disconnect("library")
+  }
+}
+
+#decode_append <- function(TODO) # get data object
+#decode_getdob <- function(TODO) # get data object
+#decode_senddob <- function(TODO) # send message to data object
 

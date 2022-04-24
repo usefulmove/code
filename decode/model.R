@@ -49,11 +49,8 @@ census <-
     other
   )
 
-library_dob <- decode_getdob("library")
-
-decode_senddob(
-  library_dob,
+decode_overwrite(
+  "library",
   "us_demographics_census2020",
   census
   )
-
