@@ -59,31 +59,30 @@ decode_recode <- function(.df, .x, ...) {
 decode_connect <- function(.con_name) {
 
   if (.con_name == "library") {
-    .dob <-
+    .con <-
       DBI::dbConnect( # library database (AWS)
         RMariaDB::MariaDB(),
         dbname = "library",
         host = "coradbinstance.chkmsmjosdxs.us-west-1.rds.amazonaws.com",
-        username = rawToChar(.cm),
-        password = rawTochar(.cn),
+        username = rawToChar(get(".cm", envir = .GlobalEnv)),
+        password = rawToChar(get(".cn", envir = .GlobalEnv)),
         port = 3306
       )
+    assign("global_library_con", .con, envir = .GlobalEnv) # add to global namespace
   }
-
-  return(.dob)
 }
 
 decode_disconnect <- function(.con_name) {
   if (.con_name == "library") {
-    DBI::dbDisconnect(global_library_con) # library database (AWS)
-    rm(global_library_con) # remove from the global namespace
+    .con <- get("global_library_con", envir = .GlobalEnv)
+    DBI::dbDisconnect(.con) # library database (AWS)
   }
 }
 
 decode_overwrite <- function(.con_name, .dob_name, .data) {
 
   if (.con_name == "library") {
-    .con <- decode_connect("library")
+    decode_connect("library")
 
     DBI::dbWriteTable(
       .con,
@@ -91,8 +90,6 @@ decode_overwrite <- function(.con_name, .dob_name, .data) {
       .data,
       overwrite = TRUE
     )
-
-    global_library_con <<- .con # global connection variable
 
     decode_disconnect("library")
   }
@@ -117,17 +114,35 @@ decode_read <- function(.con_name, .dob_name) {
 
   if (.con_name == "library") {
 
-    .db <- decode_connect("library")
+    decode_connect("library")
 
+    .con <- get("global_library_con", envir = .GlobalEnv)
     .data <-
       dbGetQuery(
-        .db,
+        .con,
         str_glue(
           "select * from {.dob_name}"
         )
       )
 
-    global_library_con <<- .db # global connection variable
+    decode_disconnect("library")
+
+    return(.data)
+  }
+}
+
+decode_readSQL <- function(.con_name, .query) {
+
+  if (.con_name == "library") {
+
+    decode_connect("library")
+
+    .con <- get("global_library_con", envir = .GlobalEnv)
+    .data <-
+      dbGetQuery(
+        .con,
+        .query
+      )
 
     decode_disconnect("library")
 
