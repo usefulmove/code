@@ -86,33 +86,16 @@ library(magrittr)
 library(ggsci)
 library(zoo)
 library(DBI)
-#library(RSQLite)
-#library(RMySQL)
 library(RMariaDB)
 library(ggrepel)
 
 ## read in supporting personal library files
-source("../library/ded/ded.R")
-regions <- readr::read_csv("../library/regions.csv")
-eu_countries <- read_csv("../library/eu-countries.csv")
-gdp <- readr::read_csv("../library/gdp-ppp-per-capita.csv")  # per capita GDP (PPP) in international dollars
+source("../decode/decode.R")
+world_regions <- decode_read("library", "world_regions")
+eu_countries <- decode_read("library", "eu_countries")
+gdp <- decode_read("library", "world_gdp") # per capita GDP (PPP) in international dollars
 
-#library_db <- dbConnect(SQLite(), "~/repos/code/library.db") 
-
-library_db <- dbConnect(
-  MariaDB(),
-  #MySQL(),
-  dbname = "b28kw3czffvrcmddjxri",
-  host = "b28kw3czffvrcmddjxri-mysql.services.clever-cloud.com",
-  port = 3306,
-  user = "uregdz06i7ou4d65",
-  password = "q6sGFI1tu1fsAvIPVFQh"
-)
-  
-#dbListTables(library_db)
-state_populations_2018 <- dbGetQuery(
-  # submit SQL query to library database for state population and region data
-  library_db,
+state_pop_query <- (
   "
     SELECT
       p.state,
@@ -124,9 +107,8 @@ state_populations_2018 <- dbGetQuery(
       ON p.state LIKE s.State
     WHERE year LIKE '2018'
     ;
-  "
-)
-dbDisconnect(library_db)
+  " )
+state_populations_2018 <- decode_readSQL("library", state_pop_query)
 
 ## ggplot defaults
 prim_color <- pal_jco()(10)[1]
@@ -658,7 +640,7 @@ global_risk_predictions <- global_risk_predictions %>%  # calculate risk predict
                             )
   )
 
-regions_join <- regions %>%
+regions_join <- world_regions %>%
   mutate(country = recode(country,
                           "United States" = "US",
                           "Cape Verde" = "Cabo Verde",
@@ -1555,7 +1537,7 @@ df_highlights <- community_mobility %>%
   rename(country = country_region)
 
 p <- community_mobility %>%
-  left_join(regions, by = c("country_region" = "country")) %>%
+  left_join(world_regions, by = c("country_region" = "country")) %>%
   filter(
     is.na(sub_region_1),
     is.na(sub_region_2),
@@ -1639,7 +1621,7 @@ us_mobility_pivot %>%
                              "transit_stations"
                              )
   ) %>%  # u.s. country-level data
-  ded_recode(
+  decode_recode(
     activity_category,
     "retail and recreation=retail_and_recreation",
     "transit stations=transit_stations"
@@ -1715,7 +1697,7 @@ us_mobility_pivot %>%
                  "District of Columbia"
                  )
   ) %>%
-  ded_recode(
+  decode_recode(
     activity_category,
     "retail and recreation=retail_and_recreation",
     "transit stations=transit_stations"
