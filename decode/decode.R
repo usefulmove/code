@@ -1,4 +1,4 @@
-# (decode library version 0.1.0)
+# (decode library version 0.2.0)
 
 #    decode_recode
 #
@@ -84,6 +84,7 @@ decode_overwrite <- function(.con_name, .dob_name, .data) {
   if (.con_name == "library") {
     decode_connect("library")
 
+    .con <- get("global_library_con", envir = .GlobalEnv)
     DBI::dbWriteTable(
       .con,
       .dob_name,
