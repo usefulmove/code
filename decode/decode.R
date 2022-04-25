@@ -151,6 +151,4 @@ decode_readSQL <- function(.con_name, .query) {
 }
 
 #decode_append <- function(TODO) # get data object
-#decode_getdob <- function(TODO) # get data object
-#decode_senddob <- function(TODO) # send message to data object
 
