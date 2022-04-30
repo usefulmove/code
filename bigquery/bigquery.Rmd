@@ -15,7 +15,6 @@ knitr::opts_chunk$set(echo = TRUE)
 db <- dbConnect(
   bigquery(),
   project = "bigquery-public-data",
-  #dataset = "austin_311",
   dataset = "ncaa_basketball",
   billing = "My Billing Account"
 )
@@ -29,16 +28,22 @@ team_colors <- tbl(
   "team_colors"
 )
 
+games <- 
+  tbl(
+    db,
+    "mbb_historical_tournament_games"
+  )
+
 data_pull <- bq_dataset_query(
   db,
   "
     select
       *
     from
-      team_colors ;
+      team_colors
+    limit 3 ;
   "
 )
-      #`bigquery-public-data.ncaa_basketball.team_colors` ;
 
 dbDisconnect(db)
 ```
