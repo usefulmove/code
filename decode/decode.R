@@ -119,7 +119,7 @@ decode_read <- function(.con_name, .dob_name) {
 
     .con <- get("global_library_con", envir = .GlobalEnv)
     .data <-
-      dbGetQuery(
+      DBI::dbGetQuery(
         .con,
         str_glue(
           "select * from {.dob_name}"
@@ -140,7 +140,7 @@ decode_readSQL <- function(.con_name, .query) {
 
     .con <- get("global_library_con", envir = .GlobalEnv)
     .data <-
-      dbGetQuery(
+      DBI::dbGetQuery(
         .con,
         .query
       )
