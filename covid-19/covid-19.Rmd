@@ -90,6 +90,7 @@ library(RMariaDB)
 library(ggrepel)
 
 ## read in supporting personal library files
+source("../decode/.cora")
 source("../decode/decode.R")
 world_regions <- decode_read("library", "world_regions")
 eu_countries <- decode_read("library", "eu_countries")
