@@ -1,4 +1,4 @@
-# (decode library version 0.3.0)
+# (decode library version 0.5.0)
 
 #    decode_recode
 #
@@ -97,7 +97,9 @@ decode_disconnect <- function(.con_name) {
   }
 }
 
-decode_overwrite <- function(.con_name, .dob_name, .data) {
+#decode_add <- function(.data, TODO) # add to data object
+
+decode_overwrite <- function(.data, .con_name, .dob_name) {
 
   if (.con_name == "library") {
     decode_connect("library")
@@ -133,7 +135,6 @@ decode_overwrite <- function(.con_name, .dob_name, .data) {
         str_glue("~/repos/code/library/library.{.dob_name}.json")
       )
   }
-
 }
 
 decode_read <- function(.con_name, .dob_name) {
@@ -175,6 +176,3 @@ decode_readSQL <- function(.con_name, .query) {
     return(.data)
   }
 }
-
-#decode_append <- function(TODO) # get data object
-
