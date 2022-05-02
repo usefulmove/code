@@ -1,4 +1,4 @@
-# (decode library version 0.2.0)
+# (decode library version 0.3.0)
 
 #    decode_recode
 #
@@ -70,12 +70,30 @@ decode_connect <- function(.con_name) {
       )
     assign("global_library_con", .con, envir = .GlobalEnv) # add to global namespace
   }
+
+  if (.con_name == "development") {
+    .con <-
+      DBI::dbConnect( # development database (AWS)
+        RMariaDB::MariaDB(),
+        dbname = "development",
+        host = "coradbinstance.chkmsmjosdxs.us-west-1.rds.amazonaws.com",
+        username = rawToChar(get(".cm", envir = .GlobalEnv)),
+        password = rawToChar(get(".cn", envir = .GlobalEnv)),
+        port = 3306
+      )
+    assign("global_development_con", .con, envir = .GlobalEnv) # add to global namespace
+  }
 }
 
 decode_disconnect <- function(.con_name) {
   if (.con_name == "library") {
     .con <- get("global_library_con", envir = .GlobalEnv)
     DBI::dbDisconnect(.con) # library database (AWS)
+  }
+
+  if (.con_name == "development") {
+    .con <- get("global_development_con", envir = .GlobalEnv)
+    DBI::dbDisconnect(.con) # development database (AWS)
   }
 }
 
@@ -95,12 +113,19 @@ decode_overwrite <- function(.con_name, .dob_name, .data) {
     decode_disconnect("library")
   }
 
-  #if (.con_name == "code.library.us_demographics_census2020") {
-  #  .data %>%
-  #    jsonlite::write_json(
-  #      "~/repos/code/library/.ibrary.us_demographics_census2020.json"
-  #    )
-  #}
+  if (.con_name == "development") {
+    decode_connect("development")
+
+    .con <- get("global_development_con", envir = .GlobalEnv)
+    DBI::dbWriteTable(
+      .con,
+      .dob_name,
+      .data,
+      overwrite = TRUE
+    )
+
+    decode_disconnect("development")
+  }
 
   if (.con_name == "code") {
     .data %>%
