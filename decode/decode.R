@@ -64,8 +64,8 @@ decode_connect <- function(.con_name) {
         RMariaDB::MariaDB(),
         dbname = "library",
         host = "coradbinstance.chkmsmjosdxs.us-west-1.rds.amazonaws.com",
-        username = rawToChar(get(".cm", envir = .GlobalEnv)),
-        password = rawToChar(get(".cn", envir = .GlobalEnv)),
+        username = safer::decrypt_string("Us7mTdd0+ArYK3sZlhC9+2sM/Cc=", get(".dbkey", envir = .GlobalEnv)),
+        password = safer::decrypt_string("CKfGcJQcBuxQQ3dVsk0NsmsM/CcsxB8L", get(".dbkey", envir = .GlobalEnv)),
         port = 3306
       )
     assign("global_library_con", .con, envir = .GlobalEnv) # add to global namespace
@@ -77,8 +77,8 @@ decode_connect <- function(.con_name) {
         RMariaDB::MariaDB(),
         dbname = "development",
         host = "coradbinstance.chkmsmjosdxs.us-west-1.rds.amazonaws.com",
-        username = rawToChar(get(".cm", envir = .GlobalEnv)),
-        password = rawToChar(get(".cn", envir = .GlobalEnv)),
+        username = safer::decrypt_string("Us7mTdd0+ArYK3sZlhC9+2sM/Cc=", get(".dbkey", envir = .GlobalEnv)),
+        password = safer::decrypt_string("CKfGcJQcBuxQQ3dVsk0NsmsM/CcsxB8L", get(".dbkey", envir = .GlobalEnv)),
         port = 3306
       )
     assign("global_development_con", .con, envir = .GlobalEnv) # add to global namespace
