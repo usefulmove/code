@@ -1,4 +1,4 @@
-# (decode library version 0.5.0)
+# (decode library version 0.6.0)
 
 #    decode_recode
 #
