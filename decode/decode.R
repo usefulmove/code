@@ -97,7 +97,36 @@ decode_disconnect <- function(.con_name) {
   }
 }
 
-#decode_add <- function(.data, TODO) # add to data object
+decode_append <- function(.data, .con_name, .dob_name) {
+
+  if (.con_name == "library") {
+    decode_connect("library")
+
+    .con <- get("global_library_con", envir = .GlobalEnv)
+    DBI::dbWriteTable(
+      .con,
+      .dob_name,
+      .data,
+      append = TRUE
+    )
+
+    decode_disconnect("library")
+  }
+
+  if (.con_name == "development") {
+    decode_connect("development")
+
+    .con <- get("global_development_con", envir = .GlobalEnv)
+    DBI::dbWriteTable(
+      .con,
+      .dob_name,
+      .data,
+      append = TRUE
+    )
+
+    decode_disconnect("development")
+  }
+}
 
 decode_overwrite <- function(.data, .con_name, .dob_name) {
 
