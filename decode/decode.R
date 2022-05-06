@@ -1,4 +1,4 @@
-# (decode library version 0.6.0)
+# (decode library version 0.6.1)
 
 #    decode_recode
 #
@@ -64,8 +64,24 @@ decode_connect <- function(.con_name) {
         RMariaDB::MariaDB(),
         dbname = "library",
         host = "coradbinstance.chkmsmjosdxs.us-west-1.rds.amazonaws.com",
-        username = safer::decrypt_string("Us7mTdd0+ArYK3sZlhC9+2sM/Cc=", get(".dbkey", envir = .GlobalEnv)),
-        password = safer::decrypt_string("CKfGcJQcBuxQQ3dVsk0NsmsM/CcsxB8L", get(".dbkey", envir = .GlobalEnv)),
+        username = safer::decrypt_string(
+                     "Us7mTdd0+ArYK3sZlhC9+2sM/Cc=",
+                     rawToChar(
+                       get(
+                         ".dbkey",
+                         envir = .GlobalEnv
+                       )
+                     )
+                   ),
+        password = safer::decrypt_string(
+                     "CKfGcJQcBuxQQ3dVsk0NsmsM/CcsxB8L",
+                     rawToChar(
+                       get(
+                         ".dbkey",
+                         envir = .GlobalEnv
+                       )
+                     )
+                   ),
         port = 3306
       )
     assign("global_library_con", .con, envir = .GlobalEnv) # add to global namespace
@@ -77,8 +93,24 @@ decode_connect <- function(.con_name) {
         RMariaDB::MariaDB(),
         dbname = "development",
         host = "coradbinstance.chkmsmjosdxs.us-west-1.rds.amazonaws.com",
-        username = safer::decrypt_string("Us7mTdd0+ArYK3sZlhC9+2sM/Cc=", get(".dbkey", envir = .GlobalEnv)),
-        password = safer::decrypt_string("CKfGcJQcBuxQQ3dVsk0NsmsM/CcsxB8L", get(".dbkey", envir = .GlobalEnv)),
+        username = safer::decrypt_string(
+                     "Us7mTdd0+ArYK3sZlhC9+2sM/Cc=",
+                     rawToChar(
+                       get(
+                         ".dbkey",
+                         envir = .GlobalEnv
+                       )
+                     )
+                   ),
+        password = safer::decrypt_string(
+                     "CKfGcJQcBuxQQ3dVsk0NsmsM/CcsxB8L",
+                     rawToChar(
+                       get(
+                         ".dbkey",
+                         envir = .GlobalEnv
+                       )
+                     )
+                   ),
         port = 3306
       )
     assign("global_development_con", .con, envir = .GlobalEnv) # add to global namespace
@@ -161,7 +193,7 @@ decode_overwrite <- function(.data, .con_name, .dob_name) {
   if (.con_name == "code") {
     .data %>%
       jsonlite::write_json(
-        str_glue("~/repos/code/library/library.{.dob_name}.json")
+        stringr::str_glue("~/repos/code/library/library.{.dob_name}.json")
       )
   }
 }
@@ -176,7 +208,7 @@ decode_read <- function(.con_name, .dob_name) {
     .data <-
       DBI::dbGetQuery(
         .con,
-        str_glue(
+        stringr::str_glue(
           "select * from {.dob_name}"
         )
       )
