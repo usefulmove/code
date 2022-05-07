@@ -1,4 +1,4 @@
-# (decode library version 0.6.1)
+# (decode library version 0.8.0)
 
 #    decode_recode
 #
@@ -85,9 +85,9 @@ decode_connect <- function(.con_name) {
         port = 3306
       )
     assign("global_library_con", .con, envir = .GlobalEnv) # add to global namespace
-  }
 
-  if (.con_name == "development") {
+  } else if (.con_name == "development") {
+
     .con <-
       DBI::dbConnect( # development database (AWS)
         RMariaDB::MariaDB(),
@@ -114,18 +114,34 @@ decode_connect <- function(.con_name) {
         port = 3306
       )
     assign("global_development_con", .con, envir = .GlobalEnv) # add to global namespace
+
+  } else if (.con_name == "local") {
+
+    .con <-
+      DBI::dbConnect( # local MySQL database
+        RMariaDB::MariaDB(),
+        dbname = "minic",
+        host = "localhost",
+        username = "root",
+        password = "rootroot",
+        port = 3306
+      )
+    assign("global_local_con", .con, envir = .GlobalEnv) # add to global namespace
+
   }
+
 }
 
 decode_disconnect <- function(.con_name) {
   if (.con_name == "library") {
     .con <- get("global_library_con", envir = .GlobalEnv)
     DBI::dbDisconnect(.con) # library database (AWS)
-  }
-
-  if (.con_name == "development") {
+  } else if (.con_name == "development") {
     .con <- get("global_development_con", envir = .GlobalEnv)
     DBI::dbDisconnect(.con) # development database (AWS)
+  } else if (.con_name == "local") {
+    .con <- get("global_local_con", envir = .GlobalEnv)
+    DBI::dbDisconnect(.con) # local database
   }
 }
 
@@ -143,9 +159,9 @@ decode_append <- function(.data, .con_name, .dob_name) {
     )
 
     decode_disconnect("library")
-  }
 
-  if (.con_name == "development") {
+  } else if (.con_name == "development") {
+
     decode_connect("development")
 
     .con <- get("global_development_con", envir = .GlobalEnv)
@@ -157,10 +173,28 @@ decode_append <- function(.data, .con_name, .dob_name) {
     )
 
     decode_disconnect("development")
+
+  } else if (.con_name == "local") {
+
+    decode_connect("local")
+
+    .con <- get("global_local_con", envir = .GlobalEnv)
+    DBI::dbWriteTable(
+      .con,
+      .dob_name,
+      .data,
+      append = TRUE
+    )
+
+    decode_disconnect("local")
+
+  } else {
+
   }
+
 }
 
-decode_overwrite <- function(.data, .con_name, .dob_name) {
+decode_create <- function(.data, .con_name, .dob_name) {
 
   if (.con_name == "library") {
     decode_connect("library")
@@ -174,9 +208,7 @@ decode_overwrite <- function(.data, .con_name, .dob_name) {
     )
 
     decode_disconnect("library")
-  }
-
-  if (.con_name == "development") {
+  } else if (.con_name == "development") {
     decode_connect("development")
 
     .con <- get("global_development_con", envir = .GlobalEnv)
@@ -188,9 +220,19 @@ decode_overwrite <- function(.data, .con_name, .dob_name) {
     )
 
     decode_disconnect("development")
-  }
+  } else if (.con_name == "local") {
+    decode_connect("local")
 
-  if (.con_name == "code") {
+    .con <- get("global_local_con", envir = .GlobalEnv)
+    DBI::dbWriteTable(
+      .con,
+      .dob_name,
+      .data,
+      overwrite = TRUE
+    )
+
+    decode_disconnect("local")
+  } else if (.con_name == "code") {
     .data %>%
       jsonlite::write_json(
         stringr::str_glue("~/repos/code/library/library.{.dob_name}.json")
@@ -201,7 +243,6 @@ decode_overwrite <- function(.data, .con_name, .dob_name) {
 decode_read <- function(.con_name, .dob_name) {
 
   if (.con_name == "library") {
-
     decode_connect("library")
 
     .con <- get("global_library_con", envir = .GlobalEnv)
@@ -214,9 +255,9 @@ decode_read <- function(.con_name, .dob_name) {
       )
 
     decode_disconnect("library")
-
     return(.data)
   }
+
 }
 
 decode_readSQL <- function(.con_name, .query) {
@@ -233,7 +274,6 @@ decode_readSQL <- function(.con_name, .query) {
       )
 
     decode_disconnect("library")
-
     return(.data)
   }
 }
