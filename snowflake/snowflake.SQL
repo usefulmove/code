@@ -1,11 +1,9 @@
 /*
 
-Core Question <- Our data sets us apart from other labs.
-                 It enables us to understand how to improve
-                 (all quality metrics we can measure or can
-                 deduce from the data we have) much faster
-                 and more intelligently than any other lab
-                 ever has.
+  SummerBio data should set us apart from other
+  labs and enables us to get better much faster
+  and more intelligently than any other lab
+  ever has.
 
 ACCOUNT
   TODO
@@ -128,11 +126,12 @@ GROUP BY CALL_C ;
 
 -- (over time . . .)
 
-select -- aggregate controls metrics by day (2022)
-  date(RECEIVED_DATE_TIME_C) as date,
-  SAMPLE_TYPE_C as sample_type,
-  count(*) as no_samples -- samples processed
-  -- TODO as retest_perc,
+select -- aggregate controls data by week (2022)
+  weekofyear(RECEIVED_DATE_TIME_C) as WOY,
+  SAMPLE_TYPE_C,
+  CALL_C,
+  count(*)
+  -- TODO as retest_perc, (?)
   -- TODO as inconclusive_perc,
   -- TODO as invalid_perc,
   -- TODO as positive_perc,
@@ -142,30 +141,8 @@ select -- aggregate controls metrics by day (2022)
 from
   SALESFORCESNOWFLAKE.LIMS_SAMPLE_C 
 where
-  RECEIVED_DATE_TIME_C like '2022%'
-  --  and
-  -- control samples
-  --SAMPLE_TYPE_C LIKE '%ositive%'
-  --                   'Negative Control',
-    --                 'NTC',
-      --               'Filler'
-        --           )
-   -- and 
-  --CALL_C is not null
-  --  and
-  --STATUS_C regexp '[Rr]eleased' 
-group by
-  date,
-  SAMPLE_TYPE_C
-order by
-  date,
-  SAMPLE_TYPE_C ;
-
-SELECT   date(RECEIVED_DATE_TIME_C) as date, SAMPLE_TYPE_C, CALL_C  , count(*)
-from
-  SALESFORCESNOWFLAKE.LIMS_SAMPLE_C 
-WHERE date LIKE '%2022%'
-GROUP BY date, SAMPLE_TYPE_C, CALL_C  
-ORDER BY date, SAMPLE_TYPE_C , CALL_C ;
+  RECEIVED_DATE_TIME_C like '%2022%'
+group by woy, SAMPLE_TYPE_C, CALL_C  
+order by woy, SAMPLE_TYPE_C, CALL_C ;
 
 ---- inconclusive distribution over the plate (heat map) (?)
