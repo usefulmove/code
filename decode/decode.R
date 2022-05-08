@@ -1,4 +1,4 @@
-# (decode library version 0.8.0)
+# (decode library version 0.8.2)
 
 #    decode_recode
 #
@@ -60,7 +60,8 @@ decode_connect <- function(.con_name) {
 
   if (.con_name == "library") {
     .con <-
-      DBI::dbConnect( # library database (AWS)
+      connections::connection_open(
+      #DBI::dbConnect( # library database (AWS)
         RMariaDB::MariaDB(),
         dbname = "library",
         host = "coradbinstance.chkmsmjosdxs.us-west-1.rds.amazonaws.com",
@@ -89,7 +90,8 @@ decode_connect <- function(.con_name) {
   } else if (.con_name == "development") {
 
     .con <-
-      DBI::dbConnect( # development database (AWS)
+      connections::connection_open(
+      #DBI::dbConnect( # development database (AWS)
         RMariaDB::MariaDB(),
         dbname = "development",
         host = "coradbinstance.chkmsmjosdxs.us-west-1.rds.amazonaws.com",
@@ -118,12 +120,13 @@ decode_connect <- function(.con_name) {
   } else if (.con_name == "local") {
 
     .con <-
-      DBI::dbConnect( # local MySQL database
+      connections::connection_open(
+      #DBI::dbConnect( # local MySQL database
         RMariaDB::MariaDB(),
         dbname = "minic",
         host = "localhost",
         username = "root",
-        password = "rootroot",
+        password = rstudioapi::askForPassword(prompt = "Enter password for localhost:"),
         port = 3306
       )
     assign("global_local_con", .con, envir = .GlobalEnv) # add to global namespace
@@ -135,13 +138,16 @@ decode_connect <- function(.con_name) {
 decode_disconnect <- function(.con_name) {
   if (.con_name == "library") {
     .con <- get("global_library_con", envir = .GlobalEnv)
-    DBI::dbDisconnect(.con) # library database (AWS)
+    connections::connection_close(.con)
+    #DBI::dbDisconnect(.con) # library database (AWS)
   } else if (.con_name == "development") {
     .con <- get("global_development_con", envir = .GlobalEnv)
-    DBI::dbDisconnect(.con) # development database (AWS)
+    connections::connection_close(.con)
+    #DBI::dbDisconnect(.con) # development database (AWS)
   } else if (.con_name == "local") {
     .con <- get("global_local_con", envir = .GlobalEnv)
-    DBI::dbDisconnect(.con) # local database
+    connections::connection_close(.con)
+    #DBI::dbDisconnect(.con) # local database
   }
 }
 
@@ -276,4 +282,5 @@ decode_readSQL <- function(.con_name, .query) {
     decode_disconnect("library")
     return(.data)
   }
+
 }
