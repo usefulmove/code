@@ -111,8 +111,7 @@ where
   SAMPLE_TYPE_C is not null
 limit 100 ;
 
-select -- control aggregation
-  SAMPLE_TYPE_C as sample_type,
+select -- control aggregation SAMPLE_TYPE_C as sample_type,
   count(*) as no_samples
 from
   SALESFORCESNOWFLAKE.LIMS_SAMPLE_C 
@@ -130,30 +129,43 @@ GROUP BY CALL_C ;
 -- (over time . . .)
 
 select -- aggregate controls metrics by day (2022)
-  TODO as day, -- what format?
-  TODO as samples_processed,
-  TODO as retest_perc,
-  TODO as inconclusive_perc,
-  TODO as invalid_perc,
-  TODO as positive_perc,
-  TODO as n1_avg,
-  TODO as n2_avg,
-  TODO as rp_avg
+  date(RECEIVED_DATE_TIME_C) as date,
+  SAMPLE_TYPE_C as sample_type,
+  count(*) as no_samples -- samples processed
+  -- TODO as retest_perc,
+  -- TODO as inconclusive_perc,
+  -- TODO as invalid_perc,
+  -- TODO as positive_perc,
+  -- TODO as n1_avg,
+  -- TODO as n2_avg,
+  -- TODO as rp_avg
 from
   SALESFORCESNOWFLAKE.LIMS_SAMPLE_C 
 where
-  CREATED_DATE like '2022%'
-    and
-  SAMPLE_TYPE_C in ( 'Positive Control', 
-                     'Negative Control',
-                     'NTC',
-                     'Filler'
-                   )
-    and
-  SAMPLE_TYPE_C is not null
-    and 
-  CALL_C is not null
-    and
-  STATUS_C regexp '[Rr]eleased' ;
+  RECEIVED_DATE_TIME_C like '2022%'
+  --  and
+  -- control samples
+  --SAMPLE_TYPE_C LIKE '%ositive%'
+  --                   'Negative Control',
+    --                 'NTC',
+      --               'Filler'
+        --           )
+   -- and 
+  --CALL_C is not null
+  --  and
+  --STATUS_C regexp '[Rr]eleased' 
+group by
+  date,
+  SAMPLE_TYPE_C
+order by
+  date,
+  SAMPLE_TYPE_C ;
 
----- inconclusive distribution over the plate (heat map)
+SELECT   date(RECEIVED_DATE_TIME_C) as date, SAMPLE_TYPE_C, CALL_C  , count(*)
+from
+  SALESFORCESNOWFLAKE.LIMS_SAMPLE_C 
+WHERE date LIKE '%2022%'
+GROUP BY date, SAMPLE_TYPE_C, CALL_C  
+ORDER BY date, SAMPLE_TYPE_C , CALL_C ;
+
+---- inconclusive distribution over the plate (heat map) (?)
