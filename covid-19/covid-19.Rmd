@@ -250,52 +250,30 @@ get_cnty <- function(cnty_name, state_name) {
 covid <- function(state_name = "United States", time_frame = "all") {
   if (state_name == "United States") {
     s <- us
-  }
-  else {
+  } else {
     s <- get_state(state_name)
   }
   
   if (time_frame == "all") {
     x_origin <- "2020-03-01"
-  }
-  else {
+  } else {
     x_origin <- time_frame
   }
 
   # output stats
-  print(str_glue("{state_name} has {format(s$cases[nrow(s)], big.mark = ',')} cases ",
-                 "({format(s$ncases[nrow(s)], big.mark = ',')} cases per day) and ",
-                 "{format(s$deaths[nrow(s)], big.mark = ',')} deaths ",
-                 "({format(s$ndeaths[nrow(s)], big.mark = ',')} deaths per day)."
-        )
+  print(
+    str_glue(
+      "{state_name} has {format(s$cases[nrow(s)], big.mark = ',')} cases ",
+      "({format(s$ncases[nrow(s)], big.mark = ',')} cases per day) and ",
+      "{format(s$deaths[nrow(s)], big.mark = ',')} deaths ",
+      "({format(s$ndeaths[nrow(s)], big.mark = ',')} deaths per day)."
+    )
   )
 
   # display new cases and new deaths
   scale_d <- 20
 
   p <- ggplot(data = s, mapping = aes(x = date)) +
-    #geom_point(
-    #  aes(y = ndeaths * scale_d, color = prim_color),  # unclear why color reversal is required
-    #  size = 0.6, na.rm = TRUE, alpha = 0.8
-    #) +
-    #geom_point(
-    #  aes(y = ncases, color = "#808080"),  # unclear why color reversal is required
-    #  size = 0.6, na.rm = TRUE, alpha = 0.8
-    #) +
-    #geom_smooth(
-    #  aes(y = ndeaths * scale_d),
-    #  se = FALSE,
-    #  color = "#808080",
-    #  method = "gam", formula = y ~ s(x, bs = "cs"), level = 0.9,
-    #  na.rm = TRUE
-    #) +
-    #geom_smooth(
-    #  aes(y = ncases),
-    #  se = FALSE,
-    #  color = "black",
-    #  method = "gam", formula = y ~ s(x, bs = "cs"), level = 0.9,
-    #  na.rm = TRUE
-    #) +
     geom_line(
       aes(
         y = rollmean(
@@ -373,28 +351,6 @@ covidc <- function(county_state) {
   scale_d <- 20
 
   p <- ggplot(data = c, mapping = aes(x = date)) +
-    #geom_point(
-    #  aes(y = ndeaths * scale_d, color = prim_color),  # unclear why color reversal is required
-    #  size = 0.8, na.rm = TRUE, alpha = 0.8
-    #) +
-    #geom_point(
-    #  aes(y = ncases, color = "#808080"),  # unclear why color reversal is required
-    #  size = 0.8, na.rm = TRUE, alpha = 1.0
-    #) +
-    #geom_smooth(
-    #  aes(y = ndeaths * scale_d),
-    #  se = FALSE,
-    #  color = "#808080",
-    #  method = "gam", formula = y ~ s(x, bs = "cs"), level = 0.9,
-    #  na.rm = TRUE
-    #) +
-    #geom_smooth(
-    #  aes(y = ncases),
-    #  se = FALSE,
-    #  color = "black",
-    #  method = "gam", formula = y ~ s(x, bs = "cs"), level = 0.9,
-    #  na.rm = TRUE
-    #) +
     geom_line(
       aes(
         y = rollmean(
@@ -463,8 +419,7 @@ covidc <- function(county_state) {
 covid_total <- function(state_name = "United States") {
   if (state_name == "United States") {
     s <- us
-  }
-  else {
+  } else {
     s <- get_state(state_name)
   }
 
@@ -941,26 +896,6 @@ eu_color <- "#ff9000"
 
 us %>%
   ggplot(mapping = aes(x = date)) +
-    # European Union
-    #geom_smooth(
-    #  data = eu_combined_cases,
-    #  aes(date, ncases),
-    #  se = FALSE,
-    #  color = eu_color,
-    #  method = "gam", formula = y ~ s(x, bs = "cs"), level = 0.9,
-    #  size = 0.8,
-    #  na.rm = TRUE,
-    #  show.legend = FALSE
-    #) +
-    #geom_point(
-    #  data = eu_combined_cases,
-    #  aes(date, ncases),
-    #  color = eu_color,
-    #  size = 0.8,
-    #  alpha = 1.0,
-    #  na.rm = TRUE,
-    #  show.legend = FALSE
-    #) +
     geom_line(
       data = eu_combined_cases,
       aes(
@@ -982,24 +917,6 @@ us %>%
       color = eu_color,
       size = 4.5
     ) +
-    # United States
-    #geom_smooth(
-    #  aes(y = ncases),
-    #  se = FALSE,
-    #  color = prim_color,
-    #  method = "gam", formula = y ~ s(x, bs = "cs"), level = 0.9,
-    #  size = 1.2,
-    #  na.rm = TRUE,
-    #  show.legend = FALSE
-    #) +
-    #geom_point(
-    #  aes(y = ncases, color = prim_color),
-    #  color = prim_color,
-    #  size = 0.8,
-    #  alpha = 1.0,
-    #  na.rm = TRUE,
-    #  show.legend = FALSE
-    #) +
     geom_line(
       aes(
         y = rollmean(
@@ -1467,18 +1384,6 @@ state_df %>%
       color = "black",
       width = 0.02
     ) +
-    #geom_point(
-    #  data = region_deaths_df,
-    #  aes(
-    #    #x = fct_relevel(region, c("West", "Midwest", "South", "Northeast")),
-    #    #x = region,
-    #    y = death_rate * 1e6
-    #  ),
-    #  shape = 21,
-    #  fill = "black",
-    #  color = "black",
-    #  size = 6
-    #) +
     labs(
       subtitle = "COVID-19 Death Rates by Region (box plot)",
       x = "",
