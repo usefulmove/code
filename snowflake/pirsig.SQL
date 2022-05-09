@@ -130,25 +130,43 @@ WHERE CALL_C IS NOT NULL AND CREATED_DATE like '2022%'
 GROUP BY CALL_C ;
   
 
--- (over time . . .)
+-- (over time . . .) ----------------------------------------------------------
 
-select -- aggregate controls data by week (2022)
-  weekofyear(RECEIVED_DATE_TIME_C) as WOY,
-  SAMPLE_TYPE_C,
-  CALL_C,
-  count(*)
+
+select -- aggregate quality data by week (2022)
+  weekofyear(RECEIVED_DATE_TIME_C) as week,
+  SAMPLE_TYPE_C as sample_type,
+  CALL_C as call,
+  count(*) as no_samples
   -- TODO as retest_perc, (?)
   -- TODO as inconclusive_perc,
   -- TODO as invalid_perc,
-  -- TODO as positive_perc,
-  -- TODO as N1Cq_avg,
-  -- TODO as N2Cq_avg,
-  -- TODO as RPCq_avg
+  -- TODO as positive_perc
 from
   SALESFORCESNOWFLAKE.LIMS_SAMPLE_C 
 where
   RECEIVED_DATE_TIME_C like '%2022%'
-group by woy, SAMPLE_TYPE_C, CALL_C  
-order by woy, SAMPLE_TYPE_C, CALL_C ;
+group by week, SAMPLE_TYPE_C, CALL_C  
+order by week, SAMPLE_TYPE_C, CALL_C ;
 
----- inconclusive distribution over the plate (heat map) (?)
+
+select -- controls Cq performance
+  SAMPLE_BARCODE_C as barcode,
+  CREATED_DATE as created_date,
+  SAMPLE_TYPE_C as sample_type,
+  CALL_C as call,
+  N_1_CQ_1_C as n1,
+  N_2_CQ_1_C as n2,
+  RP_CQ_1_C as rp
+from
+  SALESFORCESNOWFLAKE.LIMS_SAMPLE_C
+where
+  RECEIVED_DATE_TIME_C like '%2022%'
+    and
+  SAMPLE_TYPE_C not in ('Clinical Samples', 'Filler') ;
+
+
+-- TODO -- inconclusive distribution over the plate (heat map) (?)
+
+
+-- TODO -- what percentage of calls on negative controls were negative, positive - positive, NTC - NTC?
