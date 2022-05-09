@@ -44,7 +44,7 @@ from LIMS_SAMPLE_C
 limit 3 ;
 
 
-select distinct 
+select distinct
   STATUS_C
 from LIMS_SAMPLE_C ;
 
@@ -54,13 +54,13 @@ from INFORMATION_SCHEMA."TABLES"
 order by TABLE_NAME ;
 
 
-select CALL_C as result, count(*) as number 
+select CALL_C as result, count(*) as number
 from LIMS_SAMPLE_C
 where
-  CALL_C is not null 
-    and 
+  CALL_C is not null
+    and
   STATUS_C like 'Released'
-    and 
+    and
   CREATED_DATE between '2022-05-06' and '2022-05-07'
 group by CALL_C
 order by number desc ;
@@ -83,7 +83,7 @@ from
 select distinct
   RECORD_TYPE_ID
 from
-  SALESFORCESNOWFLAKE.LIMS_SAMPLE_C 
+  SALESFORCESNOWFLAKE.LIMS_SAMPLE_C
 limit 100 ;
 
 
@@ -94,7 +94,7 @@ select
   distinct
   SAMPLE_TYPE_C
 from
-  SALESFORCESNOWFLAKE.LIMS_SAMPLE_C 
+  SALESFORCESNOWFLAKE.LIMS_SAMPLE_C
 limit 100 ;
 
 
@@ -106,7 +106,7 @@ limit 100 ;
 select
   count(*)
 from
-  SALESFORCESNOWFLAKE.LIMS_SAMPLE_C 
+  SALESFORCESNOWFLAKE.LIMS_SAMPLE_C
 where
   CREATED_DATE like '2022%'
     and
@@ -117,7 +117,7 @@ limit 100 ;
 select -- control aggregation SAMPLE_TYPE_C as sample_type,
   count(*) as no_samples
 from
-  SALESFORCESNOWFLAKE.LIMS_SAMPLE_C 
+  SALESFORCESNOWFLAKE.LIMS_SAMPLE_C
 where
   SAMPLE_TYPE_C is not null
 group by
@@ -128,9 +128,22 @@ SELECT CALL_C AS `call`, count(*) AS total -- pos, neg, inv, inc counts (2022)
 FROM SALESFORCESNOWFLAKE.LIMS_SAMPLE_C
 WHERE CALL_C IS NOT NULL AND CREATED_DATE like '2022%'
 GROUP BY CALL_C ;
-  
+
 
 -- (over time . . .) ----------------------------------------------------------
+
+
+select -- summary of Snowflake data
+  min(RECEIVED_DATE_TIME_C) as `from`,
+  max(RECEIVED_DATE_TIME_C) as `to`,
+  SAMPLE_TYPE_C as sample_type,
+  count(*) as samples
+from
+  SALESFORCESNOWFLAKE.LIMS_SAMPLE_C
+group by
+  SAMPLE_TYPE_C
+order by
+  samples desc ;
 
 
 select -- aggregate quality data by week (2022)
@@ -143,14 +156,14 @@ select -- aggregate quality data by week (2022)
   -- TODO as invalid_perc,
   -- TODO as positive_perc
 from
-  SALESFORCESNOWFLAKE.LIMS_SAMPLE_C 
+  SALESFORCESNOWFLAKE.LIMS_SAMPLE_C
 where
   RECEIVED_DATE_TIME_C like '%2022%'
-group by week, SAMPLE_TYPE_C, CALL_C  
+group by week, SAMPLE_TYPE_C, CALL_C
 order by week, SAMPLE_TYPE_C, CALL_C ;
 
 
-select -- controls Cq performance
+select -- controls Cq performance (2022)
   SAMPLE_BARCODE_C as barcode,
   CREATED_DATE as created_date,
   SAMPLE_TYPE_C as sample_type,
@@ -164,6 +177,7 @@ where
   RECEIVED_DATE_TIME_C like '%2022%'
     and
   SAMPLE_TYPE_C not in ('Clinical Samples', 'Filler') ;
+
 
 
 -- TODO -- inconclusive distribution over the plate (heat map) (?)
