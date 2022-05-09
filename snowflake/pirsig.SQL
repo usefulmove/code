@@ -1,10 +1,5 @@
 /*
 
-  SummerBio data should set us apart from other
-  labs and enables us to get better much faster
-  and more intelligently than any other lab
-  ever has.
-
 ACCOUNT
   TODO
 
@@ -43,17 +38,21 @@ LIMS_PLATE_SAMPLE_ASSOCIATION_C
 
 */
 
+
 select *
 from LIMS_SAMPLE_C
 limit 3 ;
+
 
 select distinct 
   STATUS_C
 from LIMS_SAMPLE_C ;
 
+
 select *
 from INFORMATION_SCHEMA."TABLES"
 order by TABLE_NAME ;
+
 
 select CALL_C as result, count(*) as number 
 from LIMS_SAMPLE_C
@@ -66,6 +65,7 @@ where
 group by CALL_C
 order by number desc ;
 
+
 select
   min(CREATED_DATE) as `from`,
   max(CREATED_DATE) as `to`,
@@ -73,10 +73,12 @@ select
 from
   LIMS_SAMPLE_C ;
 
+
 select distinct
   ID, NAME
 from
   SALESFORCESNOWFLAKE.LIMS_SAMPLE_C ;
+
 
 select distinct
   RECORD_TYPE_ID
@@ -84,7 +86,9 @@ from
   SALESFORCESNOWFLAKE.LIMS_SAMPLE_C 
 limit 100 ;
 
+
 ----------------------------------------------
+
 
 select
   distinct
@@ -97,7 +101,7 @@ limit 100 ;
 -- how many controls have we processed
 -- this year and what do the quality metrics
 -- have to say about them over time?
--- (time series)
+
 
 select
   count(*)
@@ -109,6 +113,7 @@ where
   SAMPLE_TYPE_C is not null
 limit 100 ;
 
+
 select -- control aggregation SAMPLE_TYPE_C as sample_type,
   count(*) as no_samples
 from
@@ -117,6 +122,7 @@ where
   SAMPLE_TYPE_C is not null
 group by
   SAMPLE_TYPE_C ;
+
 
 SELECT CALL_C AS `call`, count(*) AS total -- pos, neg, inv, inc counts (2022)
 FROM SALESFORCESNOWFLAKE.LIMS_SAMPLE_C
@@ -135,9 +141,9 @@ select -- aggregate controls data by week (2022)
   -- TODO as inconclusive_perc,
   -- TODO as invalid_perc,
   -- TODO as positive_perc,
-  -- TODO as n1_avg,
-  -- TODO as n2_avg,
-  -- TODO as rp_avg
+  -- TODO as N1Cq_avg,
+  -- TODO as N2Cq_avg,
+  -- TODO as RPCq_avg
 from
   SALESFORCESNOWFLAKE.LIMS_SAMPLE_C 
 where
