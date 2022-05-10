@@ -8,7 +8,7 @@ output:
 
 `r format(Sys.time(), '%B %d, %Y')`
 
-![](./sb-logo.png)
+![](./snowflake.png)
 
 <style>
 body {text-align: justify}
@@ -40,12 +40,93 @@ library(lubridate)
 library(RColorBrewer)
 library(ggsci)
 library(DBI)
-source("../decode/decode.R")
 
 theme_set(theme_minimal())
 
 ```
 
 ```{r snowflake}
+
+snow_db <-
+  #connections::connection_open(
+  DBI::dbConnect(
+    odbc::odbc(),
+    Driver       = "/opt/snowflake/snowflakeodbc/lib/universal/libSnowflake.dylib",
+    Server       = "lha61820.snowflakecomputing.com",
+    UID          = rstudioapi::askForPassword("Please enter your username"),
+    PWD          = rstudioapi::askForPassword("Please enter your password"),
+    Database     = "FIVETRAN_DATABASE",
+    Warehouse    = "FIVETRAN_WAREHOUSE",
+    Schema       = "SALESFORCESNOWFLAKE"
+  )
+
+```
+
+```{r}
+
+summary_data <- 
+  snow_db %>% 
+  dbGetQuery(
+    "
+      select -- summary of Snowflake data
+        min(RECEIVED_DATE_TIME_C) as `from`,
+        max(RECEIVED_DATE_TIME_C) as `to`,
+        SAMPLE_TYPE_C as sample_type,
+        count(*) as samples
+      from
+        SALESFORCESNOWFLAKE.LIMS_SAMPLE_C
+      group by
+        SAMPLE_TYPE_C
+      order by
+        samples desc
+    "
+  )
+
+controls <-
+  snow_db %>% 
+  dbGetQuery(
+    "
+      select -- controls Cq performance (2022)
+        SAMPLE_BARCODE_C as barcode,
+        CREATED_DATE as created_date,
+        SAMPLE_TYPE_C as sample_type,
+        CALL_C as call,
+        N_1_CQ_1_C as n1,
+        N_2_CQ_1_C as n2,
+        RP_CQ_1_C as rp
+      from
+        SALESFORCESNOWFLAKE.LIMS_SAMPLE_C
+      where
+        RECEIVED_DATE_TIME_C like '%2022%'
+          and
+        SAMPLE_TYPE_C not in ('Clinical Samples', 'Filler')  
+    "
+  )
+
+controls %>% jsonlite::write_json("controls.json")
+
+aggregated <- 
+  snow_db %>% 
+  dbGetQuery(
+    "
+      select -- aggregate quality data by week (2022)
+        weekofyear(RECEIVED_DATE_TIME_C) as week,
+        SAMPLE_TYPE_C as sample_type,
+        CALL_C as call,
+        count(*) as no_samples
+        -- TODO as retest_perc, (?)
+        -- TODO as inconclusive_perc,
+        -- TODO as invalid_perc,
+        -- TODO as positive_perc
+      from
+        SALESFORCESNOWFLAKE.LIMS_SAMPLE_C
+      where
+        RECEIVED_DATE_TIME_C like '%2022%'
+      group by week, SAMPLE_TYPE_C, CALL_C
+      order by week, SAMPLE_TYPE_C, CALL_C 
+    "
+  )
+
+aggregated %>% jsonlite::write_json("aggregated.json")
 
 ```
