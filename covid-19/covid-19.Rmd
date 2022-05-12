@@ -130,28 +130,28 @@ global_deaths <- read_csv("https://raw.githubusercontent.com/CSSEGISandData/COVI
 #
 #   data comes in an untidy format with date columns containing the cumulative number of case or death entries
 
-global_cases <- global_cases %>%
+global_cases <- global_cases |>
   pivot_longer(
     cols = 5:ncol(global_cases),
     names_to = "date",
     values_to = "cases"
-  ) %>%
+  ) |>
   rename(
     province = `Province/State`,
     country = `Country/Region`,
     latitude = Lat,
     longitude = Long
-  ) %>%
+  ) |>
   mutate(
     date = lubridate::mdy(date)
   )
 
-eu_cases <- global_cases %>%
+eu_cases <- global_cases |>
   filter(country %in% c(eu_countries$Country, "Czechia"))
 
-eu_combined_cases <- eu_cases %>%
-  group_by(date) %>%
-  summarise(cases = sum(cases)) %>%
+eu_combined_cases <- eu_cases |>
+  group_by(date) |>
+  summarise(cases = sum(cases)) |>
   mutate(
     ncases = cases - lag(cases, default = cases[1])
   )
@@ -160,7 +160,6 @@ eu_combined_cases <- eu_cases %>%
 
 ```{r nytimes_tidy, include = FALSE}
 
-#data_path <- "../../covid-19-data/"
 data_path <- "https://raw.githubusercontent.com/nytimes/covid-19-data/master/"
 
 # united states
@@ -180,27 +179,11 @@ county_df <- read_csv(str_glue("{data_path}us-counties.csv"))
 hospitalizations_raw <- read_csv("https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/hospitalizations/covid-hospitalizations.csv")
 
 #convert to a tidier format
-hosps <- hospitalizations_raw %>% 
+hosps <- hospitalizations_raw |> 
   pivot_wider(
     names_from = indicator,
     values_from = value
   )
-
-```
-
-```{r mask_use_tidy, include = FALSE}
-
-mask_data_path <- "../../covid-19-data/mask-use/mask-use-by-county.csv"
-
-# mask use
-mask_use_estimates <- read_csv(mask_data_path)
-
-distinct_counties <- county_df %>%
-  distinct(fips, county, state)
-
-mask_use_estimates <- mask_use_estimates %>%
-  left_join(distinct_counties, by = c("COUNTYFP" = "fips")) %>%
-  filter(!is.na(county))
 
 ```
 
@@ -209,10 +192,10 @@ mask_use_estimates <- mask_use_estimates %>%
 # data analysis functions
 
 get_country <- function(country_name) {
-  c <- global_cases %>%
+  c <- global_cases |>
     filter(country == country_name)  # country object
 
-  c <- c %>%
+  c <- c |>
     mutate(
       ncases = cases - lag(cases, default = cases[1])
     )
@@ -223,7 +206,7 @@ get_country <- function(country_name) {
 get_state <- function(state_name) {
   s <- state_df[state_df$state == state_name, ] # state object
 
-  s <- s %>%
+  s <- s |>
     mutate(
       ncases = cases - lag(cases, default = cases[1]),
       ndeaths = deaths - lag(deaths, default = deaths[1])
@@ -233,11 +216,11 @@ get_state <- function(state_name) {
 }
 
 get_cnty <- function(cnty_name, state_name) {
-  c <- county_df %>%
+  c <- county_df |>
     filter(county == cnty_name, state == state_name) # county object
 
   if (nrow(c) > 1) {
-    c <- c %>%
+    c <- c |>
       mutate(
         ncases = cases - lag(cases, default = cases[1]),
         ndeaths = deaths - lag(deaths, default = deaths[1])
@@ -588,15 +571,15 @@ doParallel::registerDoParallel()
 
 # global analysis
 
-global_risk_predictions <- global_cases %>% distinct(country)
-global_risk_predictions <- global_risk_predictions %>%  # calculate risk prediction for each country
+global_risk_predictions <- global_cases |> distinct(country)
+global_risk_predictions <- global_risk_predictions |>  # calculate risk prediction for each country
   mutate(
     risk_prediction = map_dbl(global_risk_predictions$country,
                             ~ calculate_risk_prediction_country_c(.)
                             )
   )
 
-regions_join <- world_regions %>%
+regions_join <- world_regions |>
   mutate(country = recode(country,
                           "United States" = "US",
                           "Cape Verde" = "Cabo Verde",
@@ -614,10 +597,10 @@ regions_join <- world_regions %>%
                           )
   )
 
-global_risk_predictions <- global_risk_predictions %>%
+global_risk_predictions <- global_risk_predictions |>
   left_join(regions_join, by = "country")
 
-gdp_join <- gdp %>%  # match country names where different prior to join
+gdp_join <- gdp |>  # match country names where different prior to join
   mutate(country = recode(country,
                           "Bahamas, The" = "Bahamas",
                           "People's Republic of China" = "China",
@@ -634,8 +617,8 @@ gdp_join <- gdp %>%  # match country names where different prior to join
                           )
   )
 
-global_predictions_gdp <- global_risk_predictions %>%
-  left_join(gdp_join, by = "country") %>%
+global_predictions_gdp <- global_risk_predictions |>
+  left_join(gdp_join, by = "country") |>
   filter(!is.na(gdp_ppp_pcap))
 
 ```
@@ -644,7 +627,7 @@ global_predictions_gdp <- global_risk_predictions %>%
 
 # u.s. analysis
 
-us <- us %>%
+us <- us |>
   mutate(
     ncases = cases - lag(cases, default = cases[1]),
     ndeaths = deaths - lag(deaths, default = deaths[1])
@@ -660,8 +643,8 @@ p_us <- covid()
 # state analysis (u.s.)
 
 # calculate state risk predictions
-state_risk_predictions <- state_df %>% distinct(state)
-state_risk_predictions <- state_risk_predictions %>% # calculate risk prediction for each state
+state_risk_predictions <- state_df |> distinct(state)
+state_risk_predictions <- state_risk_predictions |> # calculate risk prediction for each state
   mutate(
     risk_prediction = map_dbl(state_risk_predictions$state,
                             ~ calculate_risk_prediction_state_c(.)
@@ -671,8 +654,8 @@ state_risk_predictions <- state_risk_predictions %>% # calculate risk prediction
 state_alarm_threshold <- 25
 count_alarm_states <- sum(state_risk_predictions$risk_prediction >= state_alarm_threshold)
 
-state_alarm_sorted_df <- state_risk_predictions %>% # highest risk predictions
-  filter(risk_prediction > 5) %>%
+state_alarm_sorted_df <- state_risk_predictions |> # highest risk predictions
+  filter(risk_prediction > 5) |>
   top_n( # return between 15 and 20 results - 15 if the alarm list is short, 20 if it is long
     max(
       c(
@@ -683,7 +666,7 @@ state_alarm_sorted_df <- state_risk_predictions %>% # highest risk predictions
       )
     ),
     risk_prediction
-  ) %>% 
+  ) |> 
   arrange(-risk_prediction)
 
 ```
@@ -693,22 +676,22 @@ state_alarm_sorted_df <- state_risk_predictions %>% # highest risk predictions
 # county analysis (u.s.)
 
 # calculate county risk predictions
-cnty_risk_predictions <- county_df %>%
-  filter(county != "Unknown") %>%
-  distinct(county, state, fips) %>%
+cnty_risk_predictions <- county_df |>
+  filter(county != "Unknown") |>
+  distinct(county, state, fips) |>
   mutate(state = as.character(state), county = as.character(county))
 
-cnty_risk_predictions <- cnty_risk_predictions %>% # add current risk predictions
+cnty_risk_predictions <- cnty_risk_predictions |> # add current risk predictions
   mutate(risk_prediction = map2_dbl(cnty_risk_predictions$county,
                               cnty_risk_predictions$state,
                               ~ calculate_risk_prediction_cnty_c(.x, .y)
                      )
   )
 
-cnty_table <- cnty_risk_predictions %>% # highest risk predictions
-  filter(risk_prediction > 5) %>%
-  top_n(16, risk_prediction) %>%
-  arrange(desc(risk_prediction)) %>%
+cnty_table <- cnty_risk_predictions |> # highest risk predictions
+  filter(risk_prediction > 5) |>
+  top_n(16, risk_prediction) |>
+  arrange(desc(risk_prediction)) |>
   mutate(
     order = as.factor(row_number(risk_prediction)),
     county = as.factor(county),
@@ -727,14 +710,14 @@ cnty_table <- cnty_risk_predictions %>% # highest risk predictions
 
 ```{r world_risk, out.width = "90%"}
 
-global_risk_predictions %>%
+global_risk_predictions |>
   mutate(
     country = recode(
                 country,
                 "US" = "United States"
               )
-  ) %>%
-  top_n(15, risk_prediction) %>%
+  ) |>
+  top_n(15, risk_prediction) |>
   ggplot(
     aes(
       x = risk_prediction,
@@ -763,14 +746,14 @@ global_risk_predictions %>%
 
 ```{r, world_risk_gdp, out.width = "95%"}
 
-global_predictions_gdp %>%
+global_predictions_gdp |>
   mutate(
     country = recode(
                 country,
                 "US" = "United States"
               )
-  ) %>%
-  filter(risk_prediction > 25) %>%
+  ) |>
+  filter(risk_prediction > 25) |>
   ggplot(aes(gdp_ppp_pcap, risk_prediction)) +
     geom_point(
       aes(
@@ -846,20 +829,20 @@ p_us
 
 ```{r country_chart_hospitalizations, out.width = "80%"}
 
-hosps %>%
+hosps |>
   filter(
     entity == "United States"
-  ) %>% 
+  ) |> 
   select(
     entity,
     date,
     "daily ICU occupancy" = `Daily ICU occupancy per million`,
     "daily hospital occupancy" = `Daily hospital occupancy per million`
-  ) %>% 
+  ) |> 
   pivot_longer(
     cols = `daily ICU occupancy`:`daily hospital occupancy`,
     names_to = "category"
-  ) %>% 
+  ) |> 
   ggplot(
     aes(x = date)
   ) +
@@ -894,7 +877,7 @@ The aggregated data from Johns Hopkins University CSSE was used to calculate a c
 
 eu_color <- "#ff9000"
 
-us %>%
+us |>
   ggplot(mapping = aes(x = date)) +
     geom_line(
       data = eu_combined_cases,
@@ -967,7 +950,7 @@ us %>%
 
 ```{r state_predictions, out.width = "90%"}
 
-state_alarm_sorted_df %>%
+state_alarm_sorted_df |>
   ggplot(
     aes(
       x = reorder(state, risk_prediction),
@@ -1045,8 +1028,8 @@ get_palette <- colorRampPalette(pal_jco()(base_palette_len))
 n_states <- n_distinct(cnty_table$state)
 palette_len <- ifelse(n_states > base_palette_len, n_states, base_palette_len)
 
-cnty_table %>%
-  mutate(county = fct_reorder(county, risk_prediction)) %>%
+cnty_table |>
+  mutate(county = fct_reorder(county, risk_prediction)) |>
   ggplot(aes(x = order, y = risk_prediction)) +
     geom_bar(
       aes(fill = fct_reorder2(state, county, risk_prediction)),
@@ -1080,26 +1063,26 @@ There are `r format(nrow(cnty_risk_predictions), big.mark = ",")` U.S. counties 
 
 ```{r state_deaths, out.width = "80%"}
 
-state_deaths_df <- state_df %>% 
-  group_by(state) %>% 
+state_deaths_df <- state_df |> 
+  group_by(state) |> 
   summarise(
     deaths = max(deaths),
     .groups = "drop"
-  ) %>% 
+  ) |> 
   left_join( # join with state population library dataframe
     state_populations_2018,
     by = c("state" = "state")
-  ) %>% 
+  ) |> 
   filter(
     !is.na(population),
     !is.na(region)
-  ) %>% 
+  ) |> 
   select(
     state,
     deaths,
     population,
     region
-  ) %>%
+  ) |>
   mutate(
     population = population,
     death_rate = deaths / population,
@@ -1108,7 +1091,7 @@ state_deaths_df <- state_df %>%
     population_millions = population / 1e6
   )
 
-state_labels <- state_deaths_df %>% 
+state_labels <- state_deaths_df |> 
   filter(
     state %in% c(
       "New York",
@@ -1127,7 +1110,7 @@ state_labels <- state_deaths_df %>%
     )
   )
 
-state_deaths_df %>% 
+state_deaths_df |> 
   ggplot(
     aes(
       x = population_millions,
@@ -1168,14 +1151,14 @@ state_deaths_df %>%
 <br><br>
 
 ```{r state_death_rates}
-state_deaths_df %>% 
+state_deaths_df |> 
   filter(
     !is.na(region)
-  ) %>% 
+  ) |> 
   mutate(
     deaths_per_million = death_rate * 1e6,
     population_millions = population / 1e6
-  ) %>% 
+  ) |> 
   ggplot(
     aes(
       x = population_millions,
@@ -1224,31 +1207,31 @@ state_deaths_df %>%
 
 ```{r region_death_rates_one, out.width = "80%"}
 
-region_deaths_df <- state_df %>% 
-  group_by(state) %>% 
+region_deaths_df <- state_df |> 
+  group_by(state) |> 
   summarise(
     state_deaths = max(deaths),
     .groups = "drop"
-  ) %>% 
+  ) |> 
   left_join( # join with state population library dataframe
     state_populations_2018,
     by = c("state" = "state")
-  ) %>% 
+  ) |> 
   filter(
     !is.na(population)
-  ) %>% 
+  ) |> 
   select(
     state,
     state_deaths,
     population,
     region
-  ) %>%
-  group_by(region) %>% 
+  ) |>
+  group_by(region) |> 
   summarise(
     deaths = sum(state_deaths),
     population = sum(population),
     .groups = "drop"
-  ) %>% 
+  ) |> 
   mutate(
     death_rate = deaths / population,
     region = fct_relevel(region, c("West", "Midwest", "South", "Northeast")),
@@ -1258,19 +1241,19 @@ region_deaths_df <- state_df %>%
 
 ```{r region_death_rates_two, out.width = "80%"}
 # plot deaths (total)
-region_deaths_df %>% 
+region_deaths_df |> 
   filter(
     !is.na(region)
-  ) %>% 
+  ) |> 
   mutate(
     deaths_per_million = death_rate * 1e6,
     population_millions = population / 1e6
-  ) %>% 
+  ) |> 
   select(
     region,
     deaths,
     deaths_per_million
-  ) %>% 
+  ) |> 
   ggplot(
     aes(
       x = region,
@@ -1300,19 +1283,19 @@ region_deaths_df %>%
 
 ```{r region_death_rates_three, out.width = "80%", include = FALSE}
 # plot deaths
-region_deaths_df %>% 
+region_deaths_df |> 
   filter(
     !is.na(region)
-  ) %>% 
+  ) |> 
   mutate(
     deaths_per_million = death_rate * 1e6,
     population_millions = population / 1e6
-  ) %>% 
+  ) |> 
   select(
     region,
     deaths,
     deaths_per_million
-  ) %>% 
+  ) |> 
   ggplot(
     aes(
       x = region,
@@ -1344,30 +1327,30 @@ region_deaths_df %>%
 
 ```{r region_death_rates_boxplot, out.width = "80%"}
 
-state_df %>% 
-  group_by(state) %>% 
+state_df |> 
+  group_by(state) |> 
   summarise(
     state_deaths = max(deaths),
     .groups = "drop"
-  ) %>% 
+  ) |> 
   left_join( # join with state population library dataframe
     state_populations_2018,
     by = c("state" = "state")
-  ) %>% 
+  ) |> 
   select(
     state,
     state_deaths,
     population,
     region
-  ) %>%
+  ) |>
   filter(
     !is.na(population),
     !is.na(region)
-  ) %>% 
+  ) |> 
   mutate(
     death_rate_per_million = state_deaths / population * 1e6
-  ) %>% 
-  group_by(region) %>% 
+  ) |> 
+  group_by(region) |> 
   ggplot(
     aes(
       x = fct_relevel(region, c("West", "Midwest", "South", "Northeast")),
@@ -1415,7 +1398,7 @@ For the purpose of assisting the global COVID-19 pandemic response, Google has m
 #community_mobility <- readr::read_csv("./global-mobility-data/Global_Mobility_Report.csv", guess_max = 1e6)  # global mobility data
 community_mobility <- readr::read_csv("https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv", guess_max = 1e6)  # global mobility data
 
-community_mobility <- community_mobility %>%
+community_mobility <- community_mobility |>
   mutate(date = as.Date(date))
 
 ```
@@ -1426,7 +1409,7 @@ The data used for the analysis below is current through `r format(max(community_
 
 ```{r community_mobility}
 
-df_highlights <- community_mobility %>%
+df_highlights <- community_mobility |>
   filter(
     is.na(sub_region_1),
     is.na(sub_region_2),
@@ -1439,17 +1422,17 @@ df_highlights <- community_mobility %>%
                           "Sweden",
                           "Ireland"
                         )
-  ) %>%
+  ) |>
   rename(country = country_region)
 
-p <- community_mobility %>%
-  left_join(world_regions, by = c("country_region" = "country")) %>%
+p <- community_mobility |>
+  left_join(world_regions, by = c("country_region" = "country")) |>
   filter(
     is.na(sub_region_1),
     is.na(sub_region_2),
     country_region %in% c(eu_countries$Country, "Czechia")
-  ) %>%
-  rename(country = country_region) %>%
+  ) |>
+  rename(country = country_region) |>
   ggplot(aes(date, retail_and_recreation_percent_change_from_baseline, group = country)) +
     geom_hline(
       yintercept = 0,
@@ -1497,26 +1480,26 @@ p
 ```{r us_mobility}
 
 # United States
-us_mobility <- community_mobility %>%  # u.s. mobility data
+us_mobility <- community_mobility |>  # u.s. mobility data
   filter(
     country_region_code == "US"
-  ) %>%
+  ) |>
   rename(
     country = country_region,  # country
     state = sub_region_1,  # state
     cnty = sub_region_2  # county
-  ) %>%
+  ) |>
   select(
     -country_region_code,
     -(iso_3166_2_code:census_fips_code)
   )
 
-us_mobility_pivot <- us_mobility %>%
-  setNames(gsub("_percent_change_from_baseline", "", names(.))) %>%
+us_mobility_pivot <- us_mobility |>
+  setNames(gsub("_percent_change_from_baseline", "", names(.))) |>
   pivot_longer(cols = retail_and_recreation:residential, names_to = "activity_category", values_to = "change_from_baseline")
 
 
-us_mobility_pivot %>%
+us_mobility_pivot |>
   filter(
     is.na(state),
     is.na(cnty),
@@ -1526,12 +1509,12 @@ us_mobility_pivot %>%
                              "residential",
                              "transit_stations"
                              )
-  ) %>%  # u.s. country-level data
+  ) |>  # u.s. country-level data
   decode_recode(
     activity_category,
     "retail and recreation=retail_and_recreation",
     "transit stations=transit_stations"
-  ) %>%
+  ) |>
   ggplot(aes(date, change_from_baseline, group = activity_category)) +
     geom_hline(
       yintercept = 0,
@@ -1585,7 +1568,7 @@ us_mobility_pivot %>%
 
 ```{r state_mobility}
 
-us_mobility_pivot %>%
+us_mobility_pivot |>
   filter(
     is.na(cnty),
     activity_category %in% c(
@@ -1602,12 +1585,12 @@ us_mobility_pivot %>%
                  "New York",
                  "District of Columbia"
                  )
-  ) %>%
+  ) |>
   decode_recode(
     activity_category,
     "retail and recreation=retail_and_recreation",
     "transit stations=transit_stations"
-  ) %>%
+  ) |>
   ggplot(aes(date, change_from_baseline, color = state)) +
     geom_hline(
       yintercept = 0,
