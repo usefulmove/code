@@ -65,7 +65,7 @@ snow_db <-
 ```{r}
 
 summary_data <- 
-  snow_db %>% 
+  snow_db |> 
   dbGetQuery(
     "
       select -- summary of Snowflake data
@@ -83,7 +83,7 @@ summary_data <-
   )
 
 controls <-
-  snow_db %>% 
+  snow_db |> 
   dbGetQuery(
     "
       select -- controls Cq performance (2022)
@@ -103,10 +103,10 @@ controls <-
     "
   )
 
-controls %>% jsonlite::write_json("controls.json")
+controls |> jsonlite::write_json("controls.json")
 
 aggregated <- 
-  snow_db %>% 
+  snow_db |> 
   dbGetQuery(
     "
       select -- aggregate quality data by week (2022)
@@ -127,6 +127,6 @@ aggregated <-
     "
   )
 
-aggregated %>% jsonlite::write_json("aggregated.json")
+aggregated |> jsonlite::write_json("aggregated.json")
 
 ```
