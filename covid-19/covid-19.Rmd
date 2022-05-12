@@ -572,7 +572,7 @@ doParallel::registerDoParallel()
 # global analysis
 
 global_risk_predictions <- global_cases |> distinct(country)
-global_risk_predictions <- global_risk_predictions |>  # calculate risk prediction for each country
+global_risk_predictions <- global_risk_predictions %>%  # calculate risk prediction for each country
   mutate(
     risk_prediction = map_dbl(global_risk_predictions$country,
                             ~ calculate_risk_prediction_country_c(.)
@@ -644,7 +644,7 @@ p_us <- covid()
 
 # calculate state risk predictions
 state_risk_predictions <- state_df |> distinct(state)
-state_risk_predictions <- state_risk_predictions |> # calculate risk prediction for each state
+state_risk_predictions <- state_risk_predictions %>% # calculate risk prediction for each state
   mutate(
     risk_prediction = map_dbl(state_risk_predictions$state,
                             ~ calculate_risk_prediction_state_c(.)
@@ -681,7 +681,7 @@ cnty_risk_predictions <- county_df |>
   distinct(county, state, fips) |>
   mutate(state = as.character(state), county = as.character(county))
 
-cnty_risk_predictions <- cnty_risk_predictions |> # add current risk predictions
+cnty_risk_predictions <- cnty_risk_predictions %>% # add current risk predictions
   mutate(risk_prediction = map2_dbl(cnty_risk_predictions$county,
                               cnty_risk_predictions$state,
                               ~ calculate_risk_prediction_cnty_c(.x, .y)
@@ -1494,7 +1494,7 @@ us_mobility <- community_mobility |>  # u.s. mobility data
     -(iso_3166_2_code:census_fips_code)
   )
 
-us_mobility_pivot <- us_mobility |>
+us_mobility_pivot <- us_mobility %>%
   setNames(gsub("_percent_change_from_baseline", "", names(.))) |>
   pivot_longer(cols = retail_and_recreation:residential, names_to = "activity_category", values_to = "change_from_baseline")
 
