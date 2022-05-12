@@ -158,7 +158,7 @@ select -- aggregate quality data by week (2022)
 from
   SALESFORCESNOWFLAKE.LIMS_SAMPLE_C
 where
-  RECEIVED_DATE_TIME_C like '%2022%'
+  RECEIVED_DATE_TIME_C like '2022%'
 group by week, SAMPLE_TYPE_C, CALL_C
 order by week, SAMPLE_TYPE_C, CALL_C ;
 
@@ -174,7 +174,7 @@ select -- controls Cq performance (2022)
 from
   SALESFORCESNOWFLAKE.LIMS_SAMPLE_C
 where
-  RECEIVED_DATE_TIME_C like '%2022%'
+  RECEIVED_DATE_TIME_C like '2022%'
     and
   SAMPLE_TYPE_C not in ('Clinical Samples', 'Filler') ;
 
