@@ -1,4 +1,4 @@
-# (decode library version 0.8.2)
+# (decode library version 0.8.3)
 
 #    decode_recode
 #
@@ -60,8 +60,7 @@ decode_connect <- function(.con_name) {
 
   if (.con_name == "library") {
     .con <-
-      connections::connection_open(
-      #DBI::dbConnect( # library database (AWS)
+      DBI::dbConnect( # library database (AWS)
         RMariaDB::MariaDB(),
         dbname = "library",
         host = "coradbinstance.chkmsmjosdxs.us-west-1.rds.amazonaws.com",
@@ -90,8 +89,7 @@ decode_connect <- function(.con_name) {
   } else if (.con_name == "development") {
 
     .con <-
-      connections::connection_open(
-      #DBI::dbConnect( # development database (AWS)
+      DBI::dbConnect( # development database (AWS)
         RMariaDB::MariaDB(),
         dbname = "development",
         host = "coradbinstance.chkmsmjosdxs.us-west-1.rds.amazonaws.com",
@@ -120,8 +118,7 @@ decode_connect <- function(.con_name) {
   } else if (.con_name == "local") {
 
     .con <-
-      connections::connection_open(
-      #DBI::dbConnect( # local MySQL database
+      DBI::dbConnect( # local MySQL database
         RMariaDB::MariaDB(),
         dbname = "minic",
         host = "localhost",
@@ -138,16 +135,13 @@ decode_connect <- function(.con_name) {
 decode_disconnect <- function(.con_name) {
   if (.con_name == "library") {
     .con <- get("global_library_con", envir = .GlobalEnv)
-    connections::connection_close(.con)
-    #DBI::dbDisconnect(.con) # library database (AWS)
+    DBI::dbDisconnect(.con) # library database (AWS)
   } else if (.con_name == "development") {
     .con <- get("global_development_con", envir = .GlobalEnv)
-    connections::connection_close(.con)
-    #DBI::dbDisconnect(.con) # development database (AWS)
+    DBI::dbDisconnect(.con) # development database (AWS)
   } else if (.con_name == "local") {
     .con <- get("global_local_con", envir = .GlobalEnv)
-    connections::connection_close(.con)
-    #DBI::dbDisconnect(.con) # local database
+    DBI::dbDisconnect(.con) # local database
   }
 }
 
@@ -239,7 +233,7 @@ decode_create <- function(.data, .con_name, .dob_name) {
 
     decode_disconnect("local")
   } else if (.con_name == "code") {
-    .data %>%
+    .data |>
       jsonlite::write_json(
         stringr::str_glue("~/repos/code/library/library.{.dob_name}.json")
       )
