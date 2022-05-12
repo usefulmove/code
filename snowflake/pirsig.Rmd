@@ -137,11 +137,15 @@ de_samples <-
   dbGetQuery(
     "
       select
+        s.SAMPLE_BARCODE_C,
+        s.STATUS_C as SAMPLE_STATUS,
+        trf.COLLECTION_DATE_TIME_C,
         s.CREATED_DATE,
         s.LAST_MODIFIED_DATE,
         s.SYSTEM_MODSTAMP,
         s.CALL_C,
-        s.STATUS_C,
+        p.LIMS_PLATE_NAME_C,
+        p.LIMS_STATUS_C as PLATE_STATUS,
         s.RECEIVED_DATE_TIME_C,
         s.REPORTED_DATE_TIME_C,
         s.REVIEWED_BY_C,
@@ -150,15 +154,11 @@ de_samples <-
         s.RP_CQ_1_C,
         s.SAMPLE_TYPE_C,
         s.RACK_POSITION_ID_C,
-        trf.COLLECTION_DATE_C,
-        trf.COLLECTION_DATE_TIME_C,
         trf.SPECIMEN_SOURCE_C,
         trf.TRANSPORT_MEDIA_C,
         trf.TEST_LOCATION_C,
         trf.DATA_SOURCE_C,
         r.RACK_NAME_NUMBER_C,
-        p.LIMS_PLATE_NAME_C,
-        p.LIMS_STATUS_C as PLATE_STATUS,
         e.NAME as EQUIPMENT_NAME
       from
         SALESFORCESNOWFLAKE.LIMS_SAMPLE_C as s
@@ -179,5 +179,3 @@ de_samples <-
     "
   )
 ```
-
-LIMS_ALIQUOT_CHILD_NUMBER_COUNTER_C
