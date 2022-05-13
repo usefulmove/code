@@ -131,13 +131,18 @@ aggregated |> jsonlite::write_json("aggregated.json")
 
 ```
 
-```{r}
-de_samples <- 
+```{r personal_samples}
+dedmonds_samples <- 
   snow_db |> 
   dbGetQuery(
     "
       select
         s.SAMPLE_BARCODE_C,
+        sbj.LAST_NAME_C,
+        sbj.FIRST_NAME_C,
+        sbj.MIDDLE_NAME_C,
+        sbj.CITY_C,
+        sbj.ZIP_CODE_C,
         s.STATUS_C as SAMPLE_STATUS,
         trf.COLLECTION_DATE_TIME_C,
         s.CREATED_DATE,
@@ -174,8 +179,98 @@ de_samples <-
           left join
         SALESFORCESNOWFLAKE.LIMS_EQUIPMENT_C as e
             on p.EXTRACTION_UNIT_C = e.ID
+          left join
+        SALESFORCESNOWFLAKE.LIMS_SUBJECT_C sbj
+            on trf.SUBJECT_C = sbj.ID
       where
-        SAMPLE_BARCODE_C in ('01395920', '25934334')
+        LAST_NAME_C like 'Edmonds'
+          and
+        FIRST_NAME_C like 'Robert'
+          and
+        DOB_C like '1975-12-10'
+      order by
+        trf.COLLECTION_DATE_TIME_C desc
     "
   )
+```
+
+```{r collected_by_date}
+date_samples <- 
+  snow_db |> 
+  dbGetQuery(
+    "
+      select
+        s.SAMPLE_BARCODE_C,
+        trf.COLLECTION_DATE_TIME_C,
+        s.RECEIVED_DATE_TIME_C,
+        s.STATUS_C as SAMPLE_STATUS,
+        s.CREATED_DATE,
+        s.LAST_MODIFIED_DATE,
+        s.SYSTEM_MODSTAMP,
+        s.CALL_C,
+        p.LIMS_PLATE_NAME_C,
+        p.LIMS_STATUS_C as PLATE_STATUS,
+        s.REPORTED_DATE_TIME_C,
+        s.REVIEWED_BY_C,
+        s.N_1_CQ_1_C,
+        s.N_2_CQ_1_C,
+        s.RP_CQ_1_C,
+        s.SAMPLE_TYPE_C,
+        s.RACK_POSITION_ID_C,
+        trf.SPECIMEN_SOURCE_C,
+        trf.TRANSPORT_MEDIA_C,
+        trf.TEST_LOCATION_C,
+        trf.DATA_SOURCE_C,
+        r.RACK_NAME_NUMBER_C,
+        e.NAME as EQUIPMENT_NAME
+      from
+        SALESFORCESNOWFLAKE.LIMS_SAMPLE_C as s
+          left join
+        SALESFORCESNOWFLAKE.LIMS_REQUISITION_C as trf
+            using (SAMPLE_BARCODE_C)
+          left join
+        SALESFORCESNOWFLAKE.LIMS_RACK_C as r
+            on s.LIMS_RACK_ID_C = r.ID
+          left join
+        SALESFORCESNOWFLAKE.LIMS_PLATES_C as p
+            on s.LIMS_PLATE_C = p.ID
+          left join
+        SALESFORCESNOWFLAKE.LIMS_EQUIPMENT_C as e
+            on p.EXTRACTION_UNIT_C = e.ID
+      where
+        trf.COLLECTION_DATE_TIME_C like '2022-05-11%'
+      order by
+        trf.COLLECTION_DATE_TIME_C
+    "
+  )
+```
+
+```{r states}
+states <- 
+  snow_db |> 
+  dbGetQuery(
+    "
+      select
+        sbj.ZIP_CODE_C
+      from
+        SALESFORCESNOWFLAKE.LIMS_SAMPLE_C as s
+          left join
+        SALESFORCESNOWFLAKE.LIMS_REQUISITION_C as trf
+            using (SAMPLE_BARCODE_C)
+          left join
+        SALESFORCESNOWFLAKE.LIMS_SUBJECT_C sbj
+            on trf.SUBJECT_C = sbj.ID
+      where
+        s.RECEIVED_DATE_TIME_C like '2022%'
+    "
+  ) |> 
+  mutate(
+    zip = as.double(str_extract(ZIP_CODE_C, "[0-9]{5}"))
+  ) |> 
+  left_join(zipcodes, by = c("zip" = "zipcode")) |> 
+  group_by(state) |> 
+  summarise(
+    count = n()
+  ) |> 
+  arrange(-count)
 ```
