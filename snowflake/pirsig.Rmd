@@ -16,11 +16,9 @@ body {text-align: justify}
 
 <br>
 
-# Heading One
+# Snowflake LIMS Archive
 
-## Heading Two
-
-### Heading Three
+## Data Analysis
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint o
 
@@ -140,14 +138,11 @@ dedmonds_samples <-
         s.SAMPLE_BARCODE_C,
         sbj.LAST_NAME_C,
         sbj.FIRST_NAME_C,
-        sbj.MIDDLE_NAME_C,
         sbj.CITY_C,
         sbj.ZIP_CODE_C,
         s.STATUS_C as SAMPLE_STATUS,
         trf.COLLECTION_DATE_TIME_C,
         s.CREATED_DATE,
-        s.LAST_MODIFIED_DATE,
-        s.SYSTEM_MODSTAMP,
         s.CALL_C,
         p.LIMS_PLATE_NAME_C,
         p.LIMS_STATUS_C as PLATE_STATUS,
@@ -161,7 +156,6 @@ dedmonds_samples <-
         s.RACK_POSITION_ID_C,
         trf.SPECIMEN_SOURCE_C,
         trf.TRANSPORT_MEDIA_C,
-        trf.TEST_LOCATION_C,
         trf.DATA_SOURCE_C,
         r.RACK_NAME_NUMBER_C,
         e.NAME as EQUIPMENT_NAME
@@ -192,6 +186,8 @@ dedmonds_samples <-
         trf.COLLECTION_DATE_TIME_C desc
     "
   )
+
+dedmonds_samples |> View()
 ```
 
 ```{r collected_by_date}
