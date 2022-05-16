@@ -1,0 +1,29 @@
+---
+title: "Objectives"
+author: "Duane Edmonds"
+date: '20220515'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Objectives
+
+This is the implementation of Objectives and Key Results ( OKRs ). The basic implementation is of a single objective datatype that could be represented in code as an custom object data structure cleverly using object-oriented program methodology to optimize the efficiency and beauty of the design and the code. That may be the direction I take as a poet.
+
+On the other hand, there is another more relational approach that could become something that is perhaps just as delicious in a tidy and elegantly creative relational database implementation. Perhaps there's time for both. We'll start here. I'll choose MariaDB as the relational database management system. ( SQLite would be light and fast, but I want a more common standard-ish SQL interface. A mobile version would probably be done using SQLite. ) 
+
+```{r objectives}
+objectives <- 
+  data.frame(
+    id = TODO,
+    description = TODO, 
+    due_date = TODO, 
+    comments = TODO, 
+    rank = TODO, 
+    sup_id = TODO
+  )
+```
