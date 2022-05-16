@@ -1,0 +1,11 @@
+command line usage:  % pat filename
+
+text file is transformed to the phat format ( parentheses are open ).
+
+could this be an awk zsh script implementation?
+
+pat is a shell script that calls awk on the file and takes the return file object,
+then uses that transformed file object and removes trailing spaces by calling
+the de_clean shell script.
+
+define pat as a zsh shell script in TODO
