@@ -2,10 +2,15 @@ command line usage:  % pat filename
 
 text file is transformed to the phat format ( parentheses are open ).
 
-could this be an awk zsh script implementation?
+could this be an sed bash or zsh script implementation?
 
-pat is a shell script that calls awk on the file and takes the return file object,
+pat is a shell script that calls sed on the file and takes the return file object,
 then uses that transformed file object and removes trailing spaces by calling
 the de_clean shell script.
 
-define pat as a zsh shell script in TODO
+define pat as a zsh shell script and call either an sed command or vim script on the file passed to the pat command. within vim, the instructions would be:
+
+:%s/(\([^ ]\)/( \1/g
+:%s/\([^ ]\))/\1 )/g
+
+(test)
