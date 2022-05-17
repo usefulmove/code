@@ -242,12 +242,14 @@ date_samples <-
 ```
 
 ```{r states}
+zipcodes <- jsonlite::read_json("zipcodes.json", simplifyVector = TRUE)
+
 states <- 
   snow_db |> 
   dbGetQuery(
     "
       select
-        sbj.ZIP_CODE_C
+        sbj.ZIP_CODE_C, a.NAME as ACCOUNT
       from
         SALESFORCESNOWFLAKE.LIMS_SAMPLE_C as s
           left join
@@ -256,17 +258,47 @@ states <-
           left join
         SALESFORCESNOWFLAKE.LIMS_SUBJECT_C sbj
             on trf.SUBJECT_C = sbj.ID
+          left join
+        SALESFORCESNOWFLAKE.ACCOUNT as a
+            on s.CLIENT_C = a.ID
       where
-        s.RECEIVED_DATE_TIME_C like '2022%'
+        s.RECEIVED_DATE_TIME_C regexp '2022-0[45].+'
+          and 
+        s.SAMPLE_TYPE_C like 'Clinical Samples'
+      order by s.RECEIVED_DATE_TIME_C
     "
-  ) |> 
+  ) |>
   mutate(
-    zip = as.double(str_extract(ZIP_CODE_C, "[0-9]{5}"))
+    zip = str_extract(ZIP_CODE_C, "[0-9]{5}")
   ) |> 
-  left_join(zipcodes, by = c("zip" = "zipcode")) |> 
-  group_by(state) |> 
+  left_join(zipcodes, by = c("zip" = "zipcode"))
+
+state_ag <- 
+  states |> 
+  group_by(
+    state
+  ) |> 
   summarise(
     count = n()
   ) |> 
-  arrange(-count)
+  arrange(
+    -count
+  )
+
+state_acct_ag <- 
+  states |> 
+  group_by(
+    ACCOUNT,
+    state
+  ) |> 
+  summarise(
+    count = n()
+  ) |> 
+  arrange(
+    ACCOUNT,
+    -count
+  )
+
+state_ag |> View()
+state_acct_ag |> View()
 ```
