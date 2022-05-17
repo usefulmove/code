@@ -10,7 +10,6 @@ the de_clean shell script.
 
 define pat as a zsh shell script and call either an sed command or vim script on the file passed to the pat command. within vim, the instructions would be:
 
-:%s/(\([^ ]\)/( \1/g
+:%s/(\([^ ]\)/( \1/g 
 :%s/\([^ ]\))/\1 )/g
 
-(test)
