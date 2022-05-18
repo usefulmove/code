@@ -1,5 +1,5 @@
 ---
-title: ""
+title: "Snowflake DB"
 author: ""
 output:
   html_document:
@@ -17,10 +17,6 @@ body {text-align: justify}
 <br>
 
 # Snowflake LIMS Archive
-
-## Data Analysis
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint o
 
 ```{r setup, include = FALSE}
 
@@ -58,6 +54,27 @@ snow_db <-
     Schema       = "SALESFORCESNOWFLAKE"
   )
 
+```
+
+```{r sb_status}
+status <- 
+  snow_db |> 
+  dbGetQuery(
+    "
+      select
+        STATUS_C as status,
+        count(*) as count
+      from SALESFORCESNOWFLAKE.LIMS_SAMPLE_C
+      where
+        CREATED_DATE like '2022-05%'
+          and
+        STATUS_C in ('Released', 'Received', 'In Process', 'Retest', 'Rack Retest Required')
+      group by STATUS_C
+      order by count desc
+    "
+  )
+
+status
 ```
 
 ```{r}
