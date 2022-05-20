@@ -74,7 +74,17 @@ status <-
     "
   )
 
+process_time <-
+  status |> 
+  filter(
+    STATUS %in% c("Received", "In Process", "Retest", "Rack Retest Required")
+  ) |> 
+  summarise(
+    sb_proces_time = sum(COUNT) / 1300.0 / 4.0
+  )
+
 status
+process_time
 ```
 
 ```{r}
