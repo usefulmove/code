@@ -21,7 +21,8 @@ status <-
     "
       select
         STATUS_C as status,
-        count(*) as count
+        count(*) as count,
+        max(LAST_MODIFIED_DATE) as last_updated
       from SALESFORCESNOWFLAKE.LIMS_SAMPLE_C
       where
         CREATED_DATE like '2022-05%'
@@ -44,4 +45,20 @@ process_time <-
 snow_db |> DBI::dbDisconnect()
 
 # return
-cat(stringr::str_glue("SB process time remaining: {format(process_time$sb_proces_time, digits = 3)} hours"))
+c_accessioned <- status |> filter(STATUS == "Received") |> pull(COUNT)
+c_inprocess <- status |> filter(STATUS == "In Process") |> pull(COUNT)
+c_retest <- status |> filter(STATUS == "Retest") |> pull(COUNT)
+c_rackretest <- status |> filter(STATUS == "Rack Retest Required") |> pull(COUNT)
+last_update <- stringr::str_extract(max(status$LAST_UPDATED), ".*[^UTC]$")
+
+return_message <-
+  stringr::str_glue("\n
+                     SB process time remaining: {format(process_time$sb_proces_time, digits = 3)} hours
+                       accessioned: {c_accessioned}
+                       in process: {c_inprocess}
+                       retest: {c_retest}
+                       rack retest req.: {c_rackretest}
+                     \n
+                     (Updated: {last_update})
+                     \n")
+print(return_message)
