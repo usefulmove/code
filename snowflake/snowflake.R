@@ -65,14 +65,14 @@ add_message <- function(.string_name, .additional_string) {
 return <-
   str_glue("\n\r\n\rSB process time remaining: {format(process_time$sb_proces_time, digits = 3)} hours ( estimate )\n\r")
 
-status_msgs <- 
+status_messages <- 
   status |> 
     mutate(
       message = purrr::map2_chr(STATUS, COUNT, ~ str_glue("  {str_to_lower(.x)}: {format(.y, big.mark=\",\")}"))
     ) |> 
     pull(message)
 
-for (i in 1:length(status_msgs)) add_message("return", str_glue("{status_msgs[[i]]}"))
+for (i in 1:length(status_messages)) add_message("return", str_glue("{status_messages[[i]]}"))
 
 add_message("return", "")
 
