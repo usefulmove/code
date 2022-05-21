@@ -32,6 +32,8 @@ status <-
           max(LAST_MODIFIED_DATE) as last_updated
         from SALESFORCESNOWFLAKE.LIMS_SAMPLE_C
         where
+          TESTING_RECORD_C = FALSE
+            and
           CREATED_DATE > '{from_date}'
             and
           STATUS_C in ('Released', 'Received', 'In Process', 'Retest', 'Rack Retest Required')
