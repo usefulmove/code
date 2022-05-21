@@ -1,0 +1,14 @@
+repo-% curl dict.sh
+
+usage
+repo-% define integrity
+
+where
+alias dict="$REPO/code/dict/dict.sh"
+
+and dict.sh
+!#/bin/bash
+open https://www.lexico.com/en/definition/$1
+
+
+
