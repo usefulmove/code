@@ -55,12 +55,15 @@ process_time <-
   )
 
 
-# return message
-data_from_date <- str_extract(min(status$FIRST_UPDATED), ".*[^UTC]$")
-data_to_date <- str_extract(max(status$LAST_UPDATED), ".*[^UTC]$")
+# build return message
 
-return_msg <-
-  str_glue("\n\nSB process time remaining: {format(process_time$sb_proces_time, digits = 3)} hours ( estimate )\n")
+add_message <- function(.string_name, .additional_string) {
+  get(.string_name, envir = .GlobalEnv)
+  assign(.string_name, return |> str_glue("{.additional_string}\n\r"), envir = .GlobalEnv)
+}
+
+return <-
+  str_glue("\n\r\n\rSB process time remaining: {format(process_time$sb_proces_time, digits = 3)} hours ( estimate )\n\r")
 
 status_msgs <- 
   status |> 
@@ -69,11 +72,18 @@ status_msgs <-
     ) |> 
     pull(message)
 
-for (i in 1:length(status_msgs)) return_msg <- return_msg |> str_glue("\n{status_msgs[[i]]}\n")
+for (i in 1:length(status_msgs)) add_message("return", str_glue("{status_msgs[[i]]}"))
 
-return_msg <- 
-  return_msg |>
-  str_glue("\n\n( start: {data_from_date} )\n") |>
-  str_glue("\n( end: {data_to_date} )\n\n")
+add_message("return", "")
 
-print(return_msg)
+add_message(
+  "return",
+  str_glue("( start: {str_extract(min(status$FIRST_UPDATED), \".*[^UTC]$\")} )")
+)
+
+add_message(
+  "return",
+  str_glue("( end: {str_extract(max(status$LAST_UPDATED), \".*[^UTC]$\")} )")
+)
+
+print(return)
