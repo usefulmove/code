@@ -1,9 +1,11 @@
 # Snowflake LIMS Archive
 
 library(dplyr)
+library(stringr)
+library(DBI)
 
 snow_db <-
-  DBI::dbConnect(
+  dbConnect(
     odbc::odbc(),
     Driver       = "/opt/snowflake/snowflakeodbc/lib/universal/libSnowflake.dylib",
     Server       = "lha61820.snowflakecomputing.com",
@@ -18,12 +20,13 @@ from_date <- Sys.Date() - 7
 
 status <- 
   snow_db |> 
-  DBI::dbGetQuery(
-    stringr::str_glue(
+  dbGetQuery(
+    str_glue(
       "
         select
           STATUS_C as status,
           count(*) as count,
+          min(LAST_MODIFIED_DATE) as first_updated,
           max(LAST_MODIFIED_DATE) as last_updated
         from SALESFORCESNOWFLAKE.LIMS_SAMPLE_C
         where
@@ -36,6 +39,8 @@ status <-
     )
   )
 
+snow_db |> dbDisconnect()
+
 process_time <-
   status |> 
   filter(
@@ -45,26 +50,26 @@ process_time <-
     sb_proces_time = sum(COUNT) / 1300.0 / 4.0
   )
 
-snow_db |> DBI::dbDisconnect()
 
-# return
-c_released <- status |> filter(STATUS == "Released") |> pull(COUNT)
-c_accessioned <- status |> filter(STATUS == "Received") |> pull(COUNT)
-c_inprocess <- status |> filter(STATUS == "In Process") |> pull(COUNT)
-c_retest <- status |> filter(STATUS == "Retest") |> pull(COUNT)
-c_rackretest <- status |> filter(STATUS == "Rack Retest Required") |> pull(COUNT)
-last_update <- stringr::str_extract(max(status$LAST_UPDATED), ".*[^UTC]$")
+# return message
+data_from_date <- str_extract(min(status$FIRST_UPDATED), ".*[^UTC]$")
+data_to_date <- str_extract(max(status$LAST_UPDATED), ".*[^UTC]$")
 
-msg <-
-  stringr::str_glue("\n
-                     SB process time remaining: {format(process_time$sb_proces_time, digits = 3)} hours\n
-                       released: {c_released}
-                       accessioned: {c_accessioned}
-                       in process: {c_inprocess}
-                       retest: {c_retest}
-                       rack retest req.: {c_rackretest}
-                       (since: {from_date})\n
-                     (updated: {last_update})
-                     \n")
+return_msg <-
+  str_glue("\n\nSB process time remaining: {format(process_time$sb_proces_time, digits = 3)} hours ( estimate )\n")
 
-print(msg)
+status_msgs <- 
+  status |> 
+    mutate(
+      message = purrr::map2_chr(STATUS, COUNT, ~ str_glue("  {str_to_lower(.x)}: {.y}"))
+    ) |> 
+    pull(message)
+
+for (i in 1:length(status_msgs)) return_msg <- return_msg |> str_glue("\n{status_msgs[[i]]}\n")
+
+return_msg <- 
+  return_msg |>
+  str_glue("\n\n( start: {data_from_date} )\n") |>
+  str_glue("\n( end: {data_to_date} )\n\n")
+
+print(return_msg)
