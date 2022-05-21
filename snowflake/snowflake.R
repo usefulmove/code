@@ -3,7 +3,6 @@
 library(dplyr)
 
 snow_db <-
-  #connections::connection_open(
   DBI::dbConnect(
     odbc::odbc(),
     Driver       = "/opt/snowflake/snowflakeodbc/lib/universal/libSnowflake.dylib",
@@ -64,7 +63,7 @@ msg <-
                        in process: {c_inprocess}
                        retest: {c_retest}
                        rack retest req.: {c_rackretest}
-                       (since {from_date})\n
+                       (since: {from_date})\n
                      (updated: {last_update})
                      \n")
 
