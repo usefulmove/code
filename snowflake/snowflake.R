@@ -1,8 +1,10 @@
 # Snowflake LIMS Archive
 
-library(dplyr)
-library(stringr)
-library(DBI)
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(stringr))
+suppressPackageStartupMessages(library(DBI))
+
+print(str_glue("\n\n( connecting to Snowflake database )\n\n"))
 
 snow_db <-
   dbConnect(
