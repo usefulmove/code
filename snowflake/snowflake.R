@@ -61,7 +61,7 @@ return_msg <-
 status_msgs <- 
   status |> 
     mutate(
-      message = purrr::map2_chr(STATUS, COUNT, ~ str_glue("  {str_to_lower(.x)}: {.y}"))
+      message = purrr::map2_chr(STATUS, COUNT, ~ str_glue("  {str_to_lower(.x)}: {format(.y, big.mark=\",\")}"))
     ) |> 
     pull(message)
 
