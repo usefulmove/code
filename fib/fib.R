@@ -3,19 +3,19 @@
 # read argument
 args <- commandArgs(trailingOnly = TRUE)
 if (length(args) == 0) {
-  n <- 0
+  o <- 0
 } else if (!is.numeric(as.numeric(args[1]))) {
   print("( error: non-numeric argument )")
-  n <- 0
+  o <- 0
 } else {
-  n <- as.numeric(args[1])
+  o <- as.numeric(args[1])
 }
 
 # truncate argument to integer and make 0 if negative
-if (n < 0) {
-  n <- 0
+if (o < 0) {
+  o <- 0
 } else {
-  n <- n %/% 1
+  o <- as.integer(o)
 }
 
 fib <- function(n) {
@@ -28,4 +28,4 @@ fib <- function(n) {
   }
 }
 
-print(stringr::str_glue("{fib(n)}"))
+print(stringr::str_glue("{fib(o)}"))
