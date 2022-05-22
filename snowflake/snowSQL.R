@@ -23,9 +23,14 @@ if (length(args) == 0) {
   dir <- getwd()
 }
 
-print(str_glue("dir", "file_name")) # debug only (REMOVE)
+print(str_glue("{dir}", "{file_name}")) # debug only (REMOVE)
 
 print(str_glue("\n\n( connecting to Snowflake database )\n\n"))
+
+SQL_query <- readr::read_file(str_glue("{dir}","{file_name}"))
+
+print(SQL_query) # debug only (REMOVE)
+
 
 snow_db <-
   dbConnect(
