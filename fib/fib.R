@@ -1,4 +1,4 @@
-#!/usr/bin/R
+#!/usr/bin/Rscript
 
 # read argument
 args <- commandArgs(trailingOnly = TRUE)
