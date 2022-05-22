@@ -14,14 +14,11 @@ args <- commandArgs(trailingOnly = TRUE)
 
 if (length(args) == 0) {
   stop("( error: at least one argument must be supplied (SQL file) )")
-} else {
-  file_name <- args[1]
-  dir <- getwd()
 }
 
-print(str_glue("\n\n( connecting to Snowflake database )\n\n"))
+SQL_query <- readr::read_file(str_glue("{args[1]}"))
 
-SQL_query <- readr::read_file(str_glue("{dir}/","{file_name}"))
+print(str_glue("\n\r( connecting to Snowflake database )\n\r"))
 
 snow_db <-
   dbConnect(
@@ -35,7 +32,7 @@ snow_db <-
     Schema       = "SALESFORCESNOWFLAKE"
   )
 
-return <- snow_db |> dbGetQuery(str_glue("{SQL_query}"))
+#return <- snow_db |> dbGetQuery(str_glue("{SQL_query}"))
 
 snow_db |> dbDisconnect()
 
