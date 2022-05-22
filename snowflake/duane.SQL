@@ -1,28 +1,28 @@
 select
-  s.SAMPLE_BARCODE_C,
-  sbj.LAST_NAME_C,
-  sbj.FIRST_NAME_C,
-  sbj.CITY_C,
-  sbj.ZIP_CODE_C,
-  s.STATUS_C as SAMPLE_STATUS,
-  trf.COLLECTION_DATE_TIME_C,
-  s.CREATED_DATE,
-  s.CALL_C,
-  p.LIMS_PLATE_NAME_C,
-  p.LIMS_STATUS_C as PLATE_STATUS,
-  s.RECEIVED_DATE_TIME_C,
-  s.REPORTED_DATE_TIME_C,
-  s.REVIEWED_BY_C,
-  s.N_1_CQ_1_C,
-  s.N_2_CQ_1_C,
-  s.RP_CQ_1_C,
-  s.SAMPLE_TYPE_C,
-  s.RACK_POSITION_ID_C,
-  trf.SPECIMEN_SOURCE_C,
-  trf.TRANSPORT_MEDIA_C,
-  trf.DATA_SOURCE_C,
-  r.RACK_NAME_NUMBER_C,
-  e.NAME as EQUIPMENT_NAME
+  s.SAMPLE_BARCODE_C as barcode,
+  -- sbj.LAST_NAME_C as lname,
+  -- sbj.FIRST_NAME_C as fname,
+  -- sbj.CITY_C as city,
+  -- sbj.ZIP_CODE_C as zipcode,
+  s.STATUS_C as status,
+  trf.COLLECTION_DATE_TIME_C as collection,
+  -- s.CREATED_DATE as created,
+  s.CALL_C as call,
+  p.LIMS_PLATE_NAME_C as plate,
+  p.LIMS_STATUS_C as plate_status,
+  -- s.RECEIVED_DATE_TIME_C as received,
+  -- s.REPORTED_DATE_TIME_C as reported,
+  -- s.REVIEWED_BY_C as reviewed,
+  s.N_1_CQ_1_C as n1,
+  s.N_2_CQ_1_C as n2,
+  s.RP_CQ_1_C as rp,
+  -- s.SAMPLE_TYPE_C as sample_type,
+  -- s.RACK_POSITION_ID_C as rack_pos,
+  -- trf.SPECIMEN_SOURCE_C as source,
+  -- trf.TRANSPORT_MEDIA_C as media,
+  -- trf.DATA_SOURCE_C as data_source,
+  -- r.RACK_NAME_NUMBER_C as rack_name,
+  e.NAME as equip
 from
   SALESFORCESNOWFLAKE.LIMS_SAMPLE_C as s
     left join
@@ -48,3 +48,4 @@ from
         DOB_C like '1975-12-10'
       order by
         trf.COLLECTION_DATE_TIME_C desc
+limit 20

@@ -32,8 +32,8 @@ snow_db <-
     Schema       = "SALESFORCESNOWFLAKE"
   )
 
-#return <- snow_db |> dbGetQuery(str_glue("{SQL_query}"))
+return <- snow_db |> dbGetQuery(str_glue("{SQL_query}"))
 
 snow_db |> dbDisconnect()
 
-print(return)
+print(as_tibble(return))
