@@ -18,7 +18,12 @@ print(getwd()) # debug only (REMOVE)
 
 if (length(args) == 0) {
   stop("( error: at least one argument must be supplied (SQL file) )")
+} else {
+  file_name <- args[1]
+  dir <- getwd()
 }
+
+print(str_glue("dir", "file_name")) # debug only (REMOVE)
 
 print(str_glue("\n\n( connecting to Snowflake database )\n\n"))
 
