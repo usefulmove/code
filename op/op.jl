@@ -47,13 +47,16 @@ op = ARGS
 
 # list evaluation engine
 function evaluate_list(String[], TODO )
+  register = 0.0::Float64
+  stack = Vector{Float64}(undef, 32)
+
   if (length(op) == 0)
     return TODO
   end
 
   for i in length(op)
-    # pop node off list and update register
-    # based on operation
+    # pop node off list and update stack
+    # and register based on operation
     register = process_node( op[i] ) 
   end
 
