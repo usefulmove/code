@@ -15,16 +15,23 @@
 
 =#
 
+debug = false
+
 args = ARGS
 
 @enum Command begin
-  CNULL = 0
-  CADD = 1
-  CSUB = 2
-  CMUL = 3
-  CDIV = 4
-  CSQRT = 5
-  CINV = 6
+  CNULL  =  0  # no op
+  CADD   =  1  # add
+  CSUB   =  2  # subtract
+  CMUL   =  3  # multiply
+  CDIV   =  4  # divide
+  CSQT   =  5  # squart root
+  CINV   =  6  # invert (1/x)
+  CCHS   =  7  # change sign
+  CPOW   =  8  # power
+  CDUP   =  9  # duplicate
+  CREV   = 10  # reverse x and y
+  CMOD   = 11  # modulus
 end
 
 #=
@@ -57,8 +64,8 @@ end
 
 # list evaluation engine
 function evaluate_list(stack_in, oplist)
-  println(string("( evaluate_list.stack_in: ", stack_in, " )"))
-  println(string("( evaluate_list.oplist: ", oplist, " )"))
+  debug_print(string("( evaluate_list.stack_in: ", stack_in, " )"))
+  debug_print(string("( evaluate_list.oplist: ", oplist, " )"))
 
   if (length(oplist) == 0)
     return stack_in
@@ -67,7 +74,7 @@ function evaluate_list(stack_in, oplist)
   end
 
   for i in 1:length(oplist)
-    println(string("( evaluate_list.i: ", i, " )"))
+    debug_print(string("( evaluate_list.i: ", i, " )"))
     stack_out = process_node(stack_out, oplist[i])
   end
 
@@ -106,9 +113,19 @@ function iscommand(sinput)
   elseif sinput == ":/"
     return CDIV
   elseif sinput == ":sqrt"
-    return CSQRT
+    return CSQT
   elseif sinput == ":inv"
     return CINV
+  elseif sinput == ":chs"
+    return CCHS
+  elseif sinput == ":pow" 
+    return CPOW
+  elseif sinput == ":dup" 
+    return CDUP
+  elseif sinput == ":rev"
+    return CREV
+  elseif sinput == ":%"
+    return CMOD
   else
     return CNULL
   end
@@ -117,8 +134,8 @@ end
 function execute_command(stack_in, command_id)
   o = stack_in
 
-  println(string("( execute_command.stack_in: ", stack_in, " )"))
-  println(string("( execute_command.command_id: ", command_id, " )"))
+  debug_print(string("( execute_command.stack_in: ", stack_in, " )"))
+  debug_print(string("( execute_command.command_id: ", command_id, " )"))
 
   if command_id == CADD
     o[end-1] += pop!(o)
@@ -128,15 +145,29 @@ function execute_command(stack_in, command_id)
     o[end-1] *= pop!(o)
   elseif command_id == CDIV
     o[end-1] /= pop!(o)
-  elseif command_id == CSQRT
+  elseif command_id == CSQT
     o[end] = sqrt( o[end] )
   elseif command_id == CINV
-    o[end] = 1 /  o[end]
-  #elseif command_id == CMOD
-  #  TODO
+    o[end] = 1 / o[end]
+  elseif command_id == CCHS
+    o[end] = -1 * o[end]
+  elseif command_id == CPOW
+    o[end-1] *= pop!(o)
+  elseif command_id == CDUP
+    push!(o, o[end])
+  elseif command_id == CREV
+    x = o[end]
+    o[end] = o[end-1]
+    o[end-1] = x
+  elseif command_id == CMOD
+    o[end-1] = o[end-1] % pop!(o)
   end
 
   return o
+end
+
+function debug_print(message)
+  if debug println(message) end
 end
 
 function main(ops)
