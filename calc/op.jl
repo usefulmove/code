@@ -17,6 +17,14 @@
 
 op = ARGS
 
+@enum Command begin
+  CNUL = 0
+  CADD = 1
+  CSUB = 2
+  CMUL = 3
+  CDIV = 4
+end
+
 #=
 
   note: implement linked list as the base
@@ -72,7 +80,7 @@ function process_node(sin, op)
 
   # pop node off list and update stack
   # based on operation
-  if symbol_id # ( symbol )
+  if symbol_id != CNUL # ( symbol )
     # parse string for symbol and identify id
     # update stack based on symbol_id
     sout = execute_command(sout, symbol_id)
@@ -87,6 +95,14 @@ end
 function is_symbol(str) # returns command_id
   if str == ":+"
     return CADD
+  elsif str == ":-"
+    return CSUB
+  elsif str == ":*"
+    return CMUL
+  elsif str == ":/"
+    return CDIV
+  else
+    return CNUL
 end
 
 function execute_command(sin, command_id)
