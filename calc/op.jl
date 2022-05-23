@@ -45,35 +45,58 @@ op = ARGS
 
 =#
 
+stack = Vector{Float64}(undef, 32)
+
 # list evaluation engine
-function evaluate_list(String[], op_list)
-  register = 0.0::Float64
-  stack = Vector{Float64}(undef, 32)
+function evaluate_list(Float64[]::current_stack, String[]::ops)
 
-  if (length(op_list) == 0)
-    return TODO
+  if (length(ops) == 0)
+    return current_staack
+  else
+    updated_stack = current_stack
   end
 
-  for i in length(op_list)
-    # pop node off list and update stack
-    # and register based on operation
-    register = process_node( op_list[i] ) 
+  while length(ops) > 0
+    updated_stack = process_node( updated_stack, ops[i] ) 
   end
 
-  return register
+  return updated_stack
 end
 
 # operation execution - need two versions:
 #  f(double, string) and f(double, double)
-function process_node(current_register, op)
+function process_node(current_stack, op)
+  # pop node off list and update stack
+  # based on operation
   if TODO # value
-    # update stack
+    # add to stack
     value = parse(Float64, op)
+    TODO
   else # symbol
-    # TODO parse string for symbol and identify id
-    # update register and stack
-    register = execute_command(register, symbol_id)
+    # parse string for symbol and identify id
+    # update stack based on symbol_id
+    updated_stack = execute_command(updated_stack, symbol_id)
   end
+
+  return updated_stack
+end
+
+function execute_command(current_stack, command_id)
+  updated_stack = current_stack
+
+  if command_id == CADD
+    TODO
+  elseif command_id == CSUB
+    TODO
+  elseif command_id == CMUL
+    TODO
+  elseif command_id == CDIV
+    TODO
+  elseif command_id == CMOD
+    TODO
+  end
+
+  return updated_stack
 end
 
 
