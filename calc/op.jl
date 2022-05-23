@@ -45,58 +45,58 @@ op = ARGS
 
 =#
 
-stack = Vector{Float64}(undef, 32)
+stack = Vector{Float64}(undef, 0)
 
 # list evaluation engine
-function evaluate_list(Float64[]::current_stack, String[]::ops)
+function evaluate_list(Float64[]::i_stack, String[]::ops)
 
   if (length(ops) == 0)
-    return current_staack
+    return input_stack
   else
-    updated_stack = current_stack
+    o_stack = i_stack
   end
 
   while length(ops) > 0
-    updated_stack = process_node( updated_stack, ops[i] ) 
+    o_stack = process_node( o_stack, ops[i] ) 
   end
 
-  return updated_stack
+  return o_stack
 end
 
 # operation execution - need two versions:
 #  f(double, string) and f(double, double)
-function process_node(current_stack, op)
+function process_node(sin, op)
+  sout = sin
   # pop node off list and update stack
   # based on operation
   if TODO # value
     # add to stack
-    value = parse(Float64, op)
-    TODO
+    push!(sout, parse(Float64, op)
   else # symbol
     # parse string for symbol and identify id
     # update stack based on symbol_id
-    updated_stack = execute_command(updated_stack, symbol_id)
+    sout = execute_command(sout, symbol_id)
   end
 
-  return updated_stack
+  return sout
 end
 
-function execute_command(current_stack, command_id)
-  updated_stack = current_stack
+function execute_command(sin, command_id)
+  sout = sin
 
   if command_id == CADD
-    TODO
+    sout[length(sout)-1] += pop!(sout)
   elseif command_id == CSUB
-    TODO
+    sout[length(sout)-1] -= pop!(sout)
   elseif command_id == CMUL
-    TODO
+    sout[length(sout)-1] *= pop!(sout)
   elseif command_id == CDIV
-    TODO
-  elseif command_id == CMOD
-    TODO
+    sout[length(sout)-1] /= pop!(sout)
+  #elseif command_id == CMOD
+  #  TODO
   end
 
-  return updated_stack
+  return sout
 end
 
 
