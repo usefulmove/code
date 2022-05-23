@@ -15,7 +15,7 @@
 
 =#
 
-op = ARGS
+args = ARGS
 
 @enum Command begin
   CNUL = 0
@@ -53,22 +53,20 @@ end
 
 =#
 
-stack = Vector{Float64}(undef, 0)
-
 # list evaluation engine
-function evaluate_list(Float64[]::i_stack, String[]::ops)
+function evaluate_list(sin, ops)
 
   if (length(ops) == 0)
-    return input_stack
+    return sin
   else
-    o_stack = i_stack
+    sout = sin
   end
 
   while length(ops) > 0
-    o_stack = process_node( o_stack, ops[i] ) 
+    sout = process_node( sout, ops[i] ) # TODO correct this
   end
 
-  return o_stack
+  return sout
 end
 
 # operation execution - need two versions:
@@ -86,23 +84,25 @@ function process_node(sin, op)
     sout = execute_command(sout, symbol_id)
   else # ( value )
     # add to stack
-    push!(sout, parse(Float64, op)
+    push!(sout, parse(Float64, op))
   end
 
   return sout
 end
 
-function is_symbol(str) # returns command_id
-  if str == ":+"
+# returns command_id given string input
+function is_symbol(sinput) 
+  if sinput == ":+"
     return CADD
-  elsif str == ":-"
+  elseif sinput == ":-"
     return CSUB
-  elsif str == ":*"
+  elseif sinput == ":*"
     return CMUL
-  elsif str == ":/"
+  elseif sinput == ":/"
     return CDIV
   else
     return CNUL
+  end
 end
 
 function execute_command(sin, command_id)
@@ -123,11 +123,20 @@ function execute_command(sin, command_id)
   return sout
 end
 
+function main(ops)
+  # create stack
+  stack = Vector{Float64}(undef, 0) 
 
-# return result of argument list evaluation
-println(
-  string(
-    string( evaluate_list(op) ),
-    "\r"
+  # evaluate list of arguments and update stack
+  stack = evaluate_list(stack, ops) 
+
+  # return result of argument list evaluation
+  println(
+    string(
+      string( stack ),
+      "\r"
+    )
   )
-)
+end
+
+main(args)
