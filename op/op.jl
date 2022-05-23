@@ -46,18 +46,18 @@ op = ARGS
 =#
 
 # list evaluation engine
-function evaluate_list(String[], TODO )
+function evaluate_list(String[], op_list)
   register = 0.0::Float64
   stack = Vector{Float64}(undef, 32)
 
-  if (length(op) == 0)
+  if (length(op_list) == 0)
     return TODO
   end
 
-  for i in length(op)
+  for i in length(op_list)
     # pop node off list and update stack
     # and register based on operation
-    register = process_node( op[i] ) 
+    register = process_node( op_list[i] ) 
   end
 
   return register
@@ -66,7 +66,14 @@ end
 # operation execution - need two versions:
 #  f(double, string) and f(double, double)
 function process_node(current_register, op)
-  TODO
+  if TODO # value
+    # update stack
+    value = parse(Float64, op)
+  else # symbol
+    # TODO parse string for symbol and identify id
+    # update register and stack
+    register = execute_command(register, symbol_id)
+  end
 end
 
 
