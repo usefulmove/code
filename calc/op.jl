@@ -67,18 +67,26 @@ end
 #  f(double, string) and f(double, double)
 function process_node(sin, op)
   sout = sin
+
+  symbol_id = is_symbol(op)
+
   # pop node off list and update stack
   # based on operation
-  if TODO # value
-    # add to stack
-    push!(sout, parse(Float64, op)
-  else # symbol
+  if symbol_id # ( symbol )
     # parse string for symbol and identify id
     # update stack based on symbol_id
     sout = execute_command(sout, symbol_id)
+  else # ( value )
+    # add to stack
+    push!(sout, parse(Float64, op)
   end
 
   return sout
+end
+
+function is_symbol(str) # returns command_id
+  if str == ":+"
+    return CADD
 end
 
 function execute_command(sin, command_id)
