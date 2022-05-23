@@ -152,7 +152,7 @@ function execute_command(stack_in, command_id)
   elseif command_id == CCHS
     o[end] = -1 * o[end]
   elseif command_id == CPOW
-    o[end-1] *= pop!(o)
+    o[end-1] ^= pop!(o)
   elseif command_id == CDUP
     push!(o, o[end])
   elseif command_id == CREV
