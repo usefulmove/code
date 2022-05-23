@@ -18,26 +18,28 @@
 args = ARGS
 
 @enum Command begin
-  CNUL = 0
+  CNULL = 0
   CADD = 1
   CSUB = 2
   CMUL = 3
   CDIV = 4
+  CSQRT = 5
+  CINV = 6
 end
 
 #=
 
   note: implement linked list as the base
   data structure (stack). atoms on the list
-  will either be symbols or values. each
-  calculation is its own linked list of op-
-  erations that processed according to
-  their content and order of the list. this
-  is Lisp construct. i will need to build
-  a list evaluation engine.
+  will either be symbols (commands) or values.
+  each calculation is its own linked list of
+  operations that processed according to their
+  content and order of the list. this is a
+  Lisp construct. we will need to build a list
+  evaluation engine.
 
   list structure
-  (object - symbol or value string)
+  (object - command or value string)
   "32e3"
   "3400"
   "+"
@@ -54,73 +56,87 @@ end
 =#
 
 # list evaluation engine
-function evaluate_list(sin, ops)
+function evaluate_list(stack_in, oplist)
+  println(string("( evaluate_list.stack_in: ", stack_in, " )"))
+  println(string("( evaluate_list.oplist: ", oplist, " )"))
 
-  if (length(ops) == 0)
-    return sin
+  if (length(oplist) == 0)
+    return stack_in
   else
-    sout = sin
+    stack_out = stack_in
   end
 
-  while length(ops) > 0
-    sout = process_node( sout, ops[i] ) # TODO correct this
+  for i in 1:length(oplist)
+    println(string("( evaluate_list.i: ", i, " )"))
+    stack_out = process_node(stack_out, oplist[i])
   end
 
-  return sout
+  return stack_out
 end
 
 # operation execution - need two versions:
 #  f(double, string) and f(double, double)
-function process_node(sin, op)
-  sout = sin
+function process_node(stack_in, cmd_or_val)
+  stack_out = stack_in
 
-  symbol_id = is_symbol(op)
+  command_id = iscommand(cmd_or_val)
 
   # pop node off list and update stack
   # based on operation
-  if symbol_id != CNUL # ( symbol )
-    # parse string for symbol and identify id
-    # update stack based on symbol_id
-    sout = execute_command(sout, symbol_id)
+  if command_id != CNULL # ( command )
+    # parse string for command and identify command_id
+    # and update stack based on command_id
+    stack_out = execute_command(stack_out, command_id)
   else # ( value )
     # add to stack
-    push!(sout, parse(Float64, op))
+    push!(stack_out, parse(Float64, cmd_or_val))
   end
 
-  return sout
+  return stack_out
 end
 
 # returns command_id given string input
-function is_symbol(sinput) 
+function iscommand(sinput) 
   if sinput == ":+"
     return CADD
   elseif sinput == ":-"
     return CSUB
-  elseif sinput == ":*"
+  elseif sinput == ":x"
     return CMUL
   elseif sinput == ":/"
     return CDIV
+  elseif sinput == ":sqrt"
+    return CSQRT
+  elseif sinput == ":inv"
+    return CINV
   else
-    return CNUL
+    return CNULL
   end
 end
 
-function execute_command(sin, command_id)
-  sout = sin
+function execute_command(stack_in, command_id)
+  o = stack_in
+
+  println(string("( execute_command.stack_in: ", stack_in, " )"))
+  println(string("( execute_command.command_id: ", command_id, " )"))
 
   if command_id == CADD
-    sout[length(sout)-1] += pop!(sout)
+    o[end-1] += pop!(o)
   elseif command_id == CSUB
-    sout[length(sout)-1] -= pop!(sout)
+    o[end-1] -= pop!(o)
   elseif command_id == CMUL
-    sout[length(sout)-1] *= pop!(sout)
+    o[end-1] *= pop!(o)
   elseif command_id == CDIV
-    sout[length(sout)-1] /= pop!(sout)
+    o[end-1] /= pop!(o)
+  elseif command_id == CSQRT
+    o[end] = sqrt( o[end] )
+  elseif command_id == CINV
+    o[end] = 1 /  o[end]
   #elseif command_id == CMOD
   #  TODO
   end
 
-  return sout
+  return o
 end
 
 function main(ops)
