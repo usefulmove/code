@@ -1,4 +1,4 @@
-#!/usr/bin/julia
+#!/usr/local/bin/julia
 
 #=
   golden ratio
@@ -15,7 +15,7 @@
 
 =#
 
-debug = true
+debug = false
 
 args = ARGS
 
@@ -224,7 +224,7 @@ function execute_command(stack_in, command_id)
     o[end] = o[end] * pi / 180
   elseif command_id == CRTD
     o[end] = o[end] * 180 / pi
-  elseif command_id == CRTD
+  elseif command_id == CFAC
     o[end] = factorial(Int64(o[end]))
   end
 
