@@ -15,7 +15,7 @@
 
 =#
 
-debug = false
+debug = true
 
 args = ARGS
 
@@ -32,6 +32,19 @@ args = ARGS
   CDUP   =  9  # duplicate
   CREV   = 10  # reverse x and y
   CMOD   = 11  # modulus
+  CSIN   = 12  # sine
+  CCOS   = 13  # cosine
+  CTAN   = 14  # tangent
+  CASN   = 15  # arcsine
+  CACN   = 16  # arccosine
+  CATN   = 17  # arctangent
+  CPI    = 18  # pi
+  CEUL   = 19  # e
+  CLOG   = 20  # log 10
+  CNLG   = 21  # natural log
+  CDTR   = 22  # degrees to radians
+  CRTD   = 23  # radians to degrees
+  CFAC   = 24  # factorial
 end
 
 #=
@@ -126,6 +139,32 @@ function iscommand(sinput)
     return CREV
   elseif sinput == ":%"
     return CMOD
+  elseif sinput == ":sin"
+    return CSIN
+  elseif sinput == ":cos"
+    return CCOS
+  elseif sinput == ":tan"
+    return CTAN
+  elseif sinput == ":asin"
+    return CASN
+  elseif sinput == ":acos"
+    return CACN
+  elseif sinput == ":atan"
+    return CATN
+  elseif sinput == ":pi"
+    return CPI
+  elseif sinput == ":e"
+    return CEUL
+  elseif sinput == ":log"
+    return CLOG
+  elseif sinput == ":ln"
+    return CNLG
+  elseif sinput == ":dtor"
+    return CDTR
+  elseif sinput == ":rtod"
+    return CRTD
+  elseif sinput == ":!"
+    return CFAC
   else
     return CNULL
   end
@@ -161,6 +200,32 @@ function execute_command(stack_in, command_id)
     o[end-1] = x
   elseif command_id == CMOD
     o[end-1] = o[end-1] % pop!(o)
+  elseif command_id == CSIN
+    o[end] = sin( o[end] )
+  elseif command_id == CCOS
+    o[end] = cos( o[end] )
+  elseif command_id == CTAN
+    o[end] = tan( o[end] )
+  elseif command_id == CASN
+    o[end] = asin( o[end] )
+  elseif command_id == CACN
+    o[end] = acos( o[end] )
+  elseif command_id == CATN
+    o[end] = atan( o[end] )
+  elseif command_id == CPI
+    push!(o, pi)
+  elseif command_id == CEUL
+    push!(o, ℯ)
+  elseif command_id == CLOG
+    o[end] = log10( o[end] )
+  elseif command_id == CNLG
+    o[end] = log( o[end] )
+  elseif command_id == CDTR
+    o[end] = o[end] * pi / 180
+  elseif command_id == CRTD
+    o[end] = o[end] * 180 / pi
+  elseif command_id == CRTD
+    o[end] = factorial(Int64(o[end]))
   end
 
   return o
