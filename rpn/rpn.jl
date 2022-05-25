@@ -1,4 +1,4 @@
-#!/usr/local/bin/julia
+#!/usr/bin/julia
 
 #=
   golden ratio
@@ -45,6 +45,7 @@ args = ARGS
   CDTR   = 22  # degrees to radians
   CRTD   = 23  # radians to degrees
   CFAC   = 24  # factorial
+  CABS   = 25  # absolute value
 end
 
 #=
@@ -131,7 +132,7 @@ function iscommand(sinput)
     return CINV
   elseif sinput == ":chs"
     return CCHS
-  elseif sinput == ":pow" 
+  elseif (sinput == ":pow") | (sinput == ":exp")
     return CPOW
   elseif sinput == ":dup" 
     return CDUP
@@ -165,6 +166,8 @@ function iscommand(sinput)
     return CRTD
   elseif sinput == ":!"
     return CFAC
+  elseif sinput == ":abs"
+    return CABS
   else
     return CNULL
   end
@@ -225,7 +228,9 @@ function execute_command(stack_in, command_id)
   elseif command_id == CRTD
     o[end] = o[end] * 180 / pi
   elseif command_id == CFAC
-    o[end] = factorial(Int64(o[end]))
+    o[end] = factorial( Int64(o[end]) )
+  elseif command_id == CABS
+    o[end] = abs( o[end] )
   end
 
   return o
