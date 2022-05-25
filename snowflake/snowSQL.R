@@ -18,7 +18,7 @@ if (length(args) == 0) {
 
 SQL_query <- readr::read_file(str_glue("{args[1]}"))
 
-print(str_glue("\n\r( connecting to Snowflake database )\n\r"))
+print(str_glue("\n\n( connecting to Snowflake database )\n\n"))
 
 snow_db <-
   dbConnect(
