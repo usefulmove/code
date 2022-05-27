@@ -20,33 +20,33 @@ debug = false
 args = ARGS
 
 @enum Command begin
-  CNULL  =  0  # no op
-  CADD   =  1  # add
-  CSUB   =  2  # subtract
-  CMUL   =  3  # multiply
-  CDIV   =  4  # divide
-  CSQT   =  5  # squart root
-  CINV   =  6  # invert (1/x)
-  CCHS   =  7  # change sign
-  CPOW   =  8  # power
-  CDUP   =  9  # duplicate
-  CREV   = 10  # reverse x and y
-  CMOD   = 11  # modulus
-  CSIN   = 12  # sine
-  CCOS   = 13  # cosine
-  CTAN   = 14  # tangent
-  CASN   = 15  # arcsine
-  CACN   = 16  # arccosine
-  CATN   = 17  # arctangent
-  CPI    = 18  # pi
-  CEUL   = 19  # e
-  CLOG   = 20  # log 10
-  CNLG   = 21  # natural log
-  CDTR   = 22  # degrees to radians
-  CRTD   = 23  # radians to degrees
-  CFAC   = 24  # factorial
-  CABS   = 25  # absolute value
-  CGOL   = 26  # golden ratio
+  CNULL # no op
+  CADD  # add
+  CSUB  # subtract
+  CMUL  # multiply
+  CDIV  # divide
+  CSQT  # squart root
+  CINV  # invert (1/x)
+  CCHS  # change sign
+  CPOW  # power
+  CDUP  # duplicate
+  CREV  # reverse x and y
+  CMOD  # modulus
+  CSIN  # sine
+  CCOS  # cosine
+  CTAN  # tangent
+  CASN  # arcsine
+  CACN  # arccosine
+  CATN  # arctangent
+  CPI   # pi
+  CEUL  # e
+  CLOG  # log 10
+  CNLG  # natural log
+  CDTR  # degrees to radians
+  CRTD  # radians to degrees
+  CFAC  # factorial
+  CABS  # absolute value
+  CGOL  # golden ratio
 end
 
 #=
