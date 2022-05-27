@@ -46,6 +46,7 @@ args = ARGS
   CRTD   = 23  # radians to degrees
   CFAC   = 24  # factorial
   CABS   = 25  # absolute value
+  CGOL   = 26  # golden ratio
 end
 
 #=
@@ -168,6 +169,8 @@ function iscommand(sinput)
     return CFAC
   elseif sinput == ":abs"
     return CABS
+  elseif sinput == ":gold"
+    return CGOL
   else
     return CNULL
   end
@@ -231,6 +234,8 @@ function execute_command(stack_in, command_id)
     o[end] = factorial( Int64(o[end]) )
   elseif command_id == CABS
     o[end] = abs( o[end] )
+  elseif command_id == CGOL
+    push!(o, (sqrt(5)-1)/2)
   end
 
   return o
