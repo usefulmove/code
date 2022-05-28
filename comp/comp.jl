@@ -2,13 +2,13 @@
 
 #=
   golden ratio
-  % op 5 sqrt 1 - 2 / eval
+  % comp 5 sqrt 1 - 2 / eval
   
   time left at full throughput
-  % op 3.2e3 4500 + 1300 / 4 / e[val]
+  % comp 3.2e3 4500 + 1300 / 4 / e[val]
   
   memory assignment
-  % op 3 x =
+  % comp 3 x =
 
   read argument list
   args = ARGS
@@ -77,30 +77,8 @@ end
 
 =#
 
-# list evaluation engine
-function evaluate_list(stack_in, oplist)
-  debug_print(string("( evaluate_list.stack_in: ", stack_in, " )"))
-  debug_print(string("( evaluate_list.oplist: ", oplist, " )"))
-
-  if (length(oplist) == 0)
-    return stack_in
-  else
-    stack_out = stack_in
-  end
-
-  for i in 1:length(oplist)
-    debug_print(string("( evaluate_list.i: ", i, " )"))
-    stack_out = process_node(stack_out, oplist[i])
-  end
-
-  return stack_out
-end
-
-# operation execution - need two versions:
-#  f(double, string) and f(double, double)
-function process_node(stack_in, cmd_or_val)
-  stack_out = stack_in
-
+# operation execution
+function process_node(cmd_or_val)
   command_id = iscommand(cmd_or_val)
 
   # pop node off list and update stack
@@ -108,13 +86,11 @@ function process_node(stack_in, cmd_or_val)
   if command_id != CNULL # ( command )
     # parse string for command and identify command_id
     # and update stack based on command_id
-    stack_out = execute_command(stack_out, command_id)
+    execute_command(command_id)
   else # ( value )
     # add to stack
-    push!(stack_out, parse(Float64, cmd_or_val))
+    push!(cstack, parse(Float64, cmd_or_val))
   end
-
-  return stack_out
 end
 
 # returns command_id given string input
@@ -176,86 +152,84 @@ function iscommand(sinput)
   end
 end
 
-function execute_command(stack_in, command_id)
-  o = stack_in
-
-  debug_print(string("( execute_command.stack_in: ", stack_in, " )"))
+function execute_command(command_id)
+  debug_print(string("( execute_command.cstack: ", cstack, " )"))
   debug_print(string("( execute_command.command_id: ", command_id, " )"))
 
   if command_id == CADD
-    o[end-1] += pop!(o)
+    cstack[end-1] += pop!(cstack)
   elseif command_id == CSUB
-    o[end-1] -= pop!(o)
+    cstack[end-1] -= pop!(cstack)
   elseif command_id == CMUL
-    o[end-1] *= pop!(o)
+    cstack[end-1] *= pop!(cstack)
   elseif command_id == CDIV
-    o[end-1] /= pop!(o)
+    cstack[end-1] /= pop!(cstack)
   elseif command_id == CSQT
-    o[end] = sqrt( o[end] )
+    cstack[end] = sqrt( cstack[end] )
   elseif command_id == CINV
-    o[end] = 1 / o[end]
+    cstack[end] = 1 / cstack[end]
   elseif command_id == CCHS
-    o[end] = -1 * o[end]
+    cstack[end] = -1 * cstack[end]
   elseif command_id == CPOW
-    o[end-1] ^= pop!(o)
+    cstack[end-1] ^= pop!(cstack)
   elseif command_id == CDUP
-    push!(o, o[end])
+    push!(cstack, cstack[end])
   elseif command_id == CREV
-    x = o[end]
-    o[end] = o[end-1]
-    o[end-1] = x
+    x = cstack[end]
+    cstack[end] = cstack[end-1]
+    cstack[end-1] = x
   elseif command_id == CMOD
-    o[end-1] = o[end-1] % pop!(o)
+    cstack[end-1] = cstack[end-1] % pop!(cstack)
   elseif command_id == CSIN
-    o[end] = sin( o[end] )
+    cstack[end] = sin( cstack[end] )
   elseif command_id == CCOS
-    o[end] = cos( o[end] )
+    cstack[end] = cos( cstack[end] )
   elseif command_id == CTAN
-    o[end] = tan( o[end] )
+    cstack[end] = tan( cstack[end] )
   elseif command_id == CASN
-    o[end] = asin( o[end] )
+    cstack[end] = asin( cstack[end] )
   elseif command_id == CACN
-    o[end] = acos( o[end] )
+    cstack[end] = acos( cstack[end] )
   elseif command_id == CATN
-    o[end] = atan( o[end] )
+    cstack[end] = atan( cstack[end] )
   elseif command_id == CPI
-    push!(o, pi)
+    push!(cstack, pi)
   elseif command_id == CEUL
-    push!(o, ℯ)
+    push!(cstack, ℯ)
   elseif command_id == CLOG
-    o[end] = log10( o[end] )
+    cstack[end] = log10( cstack[end] )
   elseif command_id == CNLG
-    o[end] = log( o[end] )
+    cstack[end] = log( cstack[end] )
   elseif command_id == CDTR
-    o[end] = o[end] * pi / 180
+    cstack[end] = cstack[end] * pi / 180
   elseif command_id == CRTD
-    o[end] = o[end] * 180 / pi
+    cstack[end] = cstack[end] * 180 / pi
   elseif command_id == CFAC
-    o[end] = factorial( Int64(o[end]) )
+    cstack[end] = factorial( Int64(cstack[end]) )
   elseif command_id == CABS
-    o[end] = abs( o[end] )
+    cstack[end] = abs( cstack[end] )
   elseif command_id == CGOL
-    push!(o, (sqrt(5)-1)/2)
+    push!(cstack, (sqrt(5)-1)/2)
   end
-
-  return o
 end
 
 function debug_print(message)
   if debug println(message) end
 end
 
-function main(ops)
-  # create stack
-  stack = Vector{Float64}(undef, 0) 
+function main(oplist)
+  # create computation stack
+  global cstack = Vector{Float64}(undef, 0) 
 
-  # evaluate list of arguments and update stack
-  stack = evaluate_list(stack, ops) 
+  # evaluate list of arguments and update stack by
+  # mapping node evaluation to the operations list.
+  # the node evaluation function mutates the stack.
+  map(process_node, oplist)
 
   # return result of argument list evaluation
   println(
     string(
-      string( stack ),
+      string( cstack ),
       "\r"
     )
   )
