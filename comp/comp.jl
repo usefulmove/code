@@ -2,21 +2,19 @@
 
 #=
   golden ratio
-  % comp 5 sqrt 1 - 2 / eval
+  % comp 5 :sqrt 1 :- 2 :/
   
   time left at full throughput
-  % comp 3.2e3 4500 + 1300 / 4 / e[val]
+  % comp 3.2e3 4500 + 1300 :/ 4 :/
   
   memory assignment
-  % comp 3 x =
-
-  read argument list
-  args = ARGS
+  % comp 3 :a (?)
 
 =#
 
 debug = false
 
+# read operations list as argument
 args = ARGS
 
 @enum Command begin
@@ -78,7 +76,7 @@ end
 =#
 
 # operation execution
-function process_node(cmd_or_val)
+function process_node!(cmd_or_val)
   command_id = iscommand(cmd_or_val)
 
   # pop node off list and update stack
@@ -86,7 +84,7 @@ function process_node(cmd_or_val)
   if command_id != CNULL # ( command )
     # parse string for command and identify command_id
     # and update stack based on command_id
-    execute_command(command_id)
+    execute_cmd!(command_id)
   else # ( value )
     # add to stack
     push!(cstack, parse(Float64, cmd_or_val))
@@ -152,9 +150,9 @@ function iscommand(sinput)
   end
 end
 
-function execute_command(command_id)
-  debug_print(string("( execute_command.cstack: ", cstack, " )"))
-  debug_print(string("( execute_command.command_id: ", command_id, " )"))
+function execute_cmd!(command_id)
+  #debug_print(string("( execute_cmd!.cstack: ", cstack, " )"))
+  #debug_print(string("( execute_cmd!.command_id: ", command_id, " )"))
 
   if command_id == CADD
     cstack[end-1] += pop!(cstack)
@@ -224,7 +222,7 @@ function main(oplist)
   # evaluate list of arguments and update stack by
   # mapping node evaluation to the operations list.
   # the node evaluation function mutates the stack.
-  map(process_node, oplist)
+  map(process_node!, oplist)
 
   # return result of argument list evaluation
   println(
