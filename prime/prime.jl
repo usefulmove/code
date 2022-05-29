@@ -1,4 +1,4 @@
-#!/usr/bin/julia
+#!/usr/local/bin/julia
 
 args = ARGS
 

@@ -1,12 +1,12 @@
-#!/usr/bin/julia
+#!/usr/local/bin/julia
 
 #=
   golden ratio
   % comp 5 :sqrt 1 :- 2 :/
-  
+
   time left at full throughput
   % comp 3.2e3 4500 + 1300 :/ 4 :/
-  
+
   memory assignment
   % comp 3 :a (?)
 
@@ -36,7 +36,7 @@ args = ARGS
    "/"
 
    the list evaluation engine takes a list
-   of strings as an input and returns a 
+   of strings as an input and returns a
    value equal to the result of the eval-
    uation.
 
@@ -45,11 +45,11 @@ args = ARGS
 
 function main(oplist)
   # create computation stack
-  global cstack = Vector{Float64}(undef, 0) 
+  global cstack = Vector{Float64}(undef, 0)
 
   # evaluate list of arguments and update stack by
-  # mapping node evaluation to the operations list.
-  # the node evaluation function mutates the stack.
+  # mapping node evaluation to the operations list
+  # (node evaluation function mutates the stack)
   map(process_node!, oplist)
 
   # return result of argument list evaluation
@@ -72,16 +72,14 @@ function process_node!(cmd_or_val)
   getfield(Main, Symbol(cmdfunction(cmd_or_val)))(cmd_or_val)
 end
 
-# command function retrieval method
+# get command function
 function cmdfunction(sinput)
   for c in commands
     if c.symbol == sinput
       return c.command_f
     end
   end
-
-  # if not symbols match return stack function
-  # to add value to stack
+  # if not symbol add value to stack
   return :c_addtostack
 end
 
@@ -90,7 +88,7 @@ function c_addtostack(s)
 end
 
 # build command vector
-commands = Vector{Command}(undef, 0) 
+commands = Vector{Command}(undef, 0)
 
 # ( add )
 push!(commands, Command(":+", :c_add))
@@ -128,25 +126,25 @@ function c_invert(s)
   cstack[end] = 1 / cstack[end]
 end
 
-# ( change sign ) 
+# ( change sign )
 push!(commands, Command(":chs", :c_changesign))
 function c_changesign(s)
   cstack[end] = -1 * cstack[end]
 end
 
-# ( exponent - power ) 
+# ( exponent - power )
 push!(commands, Command(":exp", :c_exponent))
 function c_exponent(s)
   cstack[end-1] ^= pop!(cstack)
 end
 
-# ( duplicate ) 
+# ( duplicate )
 push!(commands, Command(":dup", :c_duplicate))
 function c_duplicate(s)
   push!(cstack, cstack[end])
 end
 
-# ( reverse x and y ) 
+# ( reverse x and y )
 push!(commands, Command(":rev", :c_reverse))
 function c_reverse(s)
   x = cstack[end]
