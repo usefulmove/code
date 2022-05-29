@@ -64,7 +64,8 @@ end
 # operation execution
 function process_node!(cmd_or_val)
   # execute command function for command or value
-  getfield(Main, Symbol(cmdfunction(cmd_or_val)))(cmd_or_val)
+  f = cmdfunction(cmd_or_val)
+  eval(f)(cmd_or_val)
 end
 
 # get command function
