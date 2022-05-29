@@ -12,10 +12,34 @@
 
 =#
 
-#debug = false
-
 # read operations list as argument
 args = ARGS
+
+#=
+   note: implement linked list as the base
+   data structure (stack). atoms on the list
+   will either be symbols (commands) or values.
+   each calculation is its own linked list of
+   operations that processed according to their
+   content and order of the list. this is a
+   Lisp construct. we will need to build a list
+   evaluation engine.
+
+   list structure
+   (object - command or value string)
+   "32e3"
+   "3400"
+   "+"
+   "2"
+   "/"
+
+   the list evaluation engine takes a list
+   of strings as an input and returns a 
+   value equal to the result of the eval-
+   uation.
+
+   <double> = evaluate_list( <string_list> )
+=#
 
 function main(oplist)
   # create computation stack
@@ -40,137 +64,13 @@ struct Command
   command_f # command function
 end
 
-# build command vector
-commands = Vector{Command}(undef, 0) 
-
-push!(commands, Command(":+", :c_add))
-push!(commands, Command(":-", :c_subtract))
-push!(commands, Command(":x", :c_multiply))
-push!(commands, Command(":/", :c_divide))
-
-#@enum Command begin
-#  CNULL # no op
-#  CADD  # add
-#  CSUB  # subtract
-#  CMUL  # multiply
-#  CDIV  # divide
-#  CSQT  # squart root
-#  CINV  # invert (1/x)
-#  CCHS  # change sign
-#  CPOW  # power
-#  CDUP  # duplicate
-#  CREV  # reverse x and y
-#  CMOD  # modulus
-#  CSIN  # sine
-#  CCOS  # cosine
-#  CTAN  # tangent
-#  CASN  # arcsine
-#  CACN  # arccosine
-#  CATN  # arctangent
-#  CPI   # pi
-#  CEUL  # e
-#  CLOG  # log 10
-#  CNLG  # natural log
-#  CDTR  # degrees to radians
-#  CRTD  # radians to degrees
-#  CFAC  # factorial
-#  CABS  # absolute value
-#  CGOL  # golden ratio
-#end
-
-#=
-
-  note: implement linked list as the base
-  data structure (stack). atoms on the list
-  will either be symbols (commands) or values.
-  each calculation is its own linked list of
-  operations that processed according to their
-  content and order of the list. this is a
-  Lisp construct. we will need to build a list
-  evaluation engine.
-
-  list structure
-  (object - command or value string)
-  "32e3"
-  "3400"
-  "+"
-  "2"
-  "/"
-
-  the list evaluation engine takes a list
-  of strings as an input and returns a 
-  value equal to the result of the eval-
-  uation.
-
-  <double> = evaluate_list( <string_list> )
-
-=#
-
 # operation execution
 function process_node!(cmd_or_val)
   # execute command function for command or value
   getfield(Main, Symbol(cmdfunction(cmd_or_val)))(cmd_or_val)
 end
 
-# returns command_id given string input
-#function iscommand(sinput) 
-#  if sinput == ":+"
-#    return CADD
-#  elseif sinput == ":-"
-#    return CSUB
-#  elseif sinput == ":x"
-#    return CMUL
-#  elseif sinput == ":/"
-#    return CDIV
-#  elseif sinput == ":sqrt"
-#    return CSQT
-#  elseif sinput == ":inv"
-#    return CINV
-#  elseif sinput == ":chs"
-#    return CCHS
-#  elseif (sinput == ":pow") | (sinput == ":exp")
-#    return CPOW
-#  elseif sinput == ":dup" 
-#    return CDUP
-#  elseif sinput == ":rev"
-#    return CREV
-#  elseif sinput == ":%"
-#    return CMOD
-#  elseif sinput == ":sin"
-#    return CSIN
-#  elseif sinput == ":cos"
-#    return CCOS
-#  elseif sinput == ":tan"
-#    return CTAN
-#  elseif sinput == ":asin"
-#    return CASN
-#  elseif sinput == ":acos"
-#    return CACN
-#  elseif sinput == ":atan"
-#    return CATN
-#  elseif sinput == ":pi"
-#    return CPI
-#  elseif sinput == ":e"
-#    return CEUL
-#  elseif sinput == ":log"
-#    return CLOG
-#  elseif sinput == ":ln"
-#    return CNLG
-#  elseif sinput == ":dtor"
-#    return CDTR
-#  elseif sinput == ":rtod"
-#    return CRTD
-#  elseif sinput == ":!"
-#    return CFAC
-#  elseif sinput == ":abs"
-#    return CABS
-#  elseif sinput == ":gold"
-#    return CGOL
-#  else
-#    return CNULL
-#  end
-#end
-
+# command function retrieval method
 function cmdfunction(sinput)
   for c in commands
     if c.symbol == sinput
@@ -183,89 +83,169 @@ function cmdfunction(sinput)
   return :c_addtostack
 end
 
-function c_addtostack(str)
-  push!(cstack, parse(Float64, str))
+function c_addtostack(s)
+  push!(cstack, parse(Float64, s))
 end
 
-function c_add(str)
+# build command vector
+commands = Vector{Command}(undef, 0) 
+
+# ( add )
+push!(commands, Command(":+", :c_add))
+function c_add(s)
   cstack[end-1] += pop!(cstack)
 end
 
-function c_subtract(str)
+# ( subtract )
+push!(commands, Command(":-", :c_subtract))
+function c_subtract(s)
   cstack[end-1] -= pop!(cstack)
 end
 
-function c_multiply(str)
+# ( multiply )
+push!(commands, Command(":x", :c_multiply))
+function c_multiply(s)
   cstack[end-1] *= pop!(cstack)
 end
 
-function c_divide(str)
+# ( divide )
+push!(commands, Command(":/", :c_divide))
+function c_divide(s)
   cstack[end-1] /= pop!(cstack)
 end
 
-#function execute_cmd!(command_id)
-#  #debug_print(string("( execute_cmd!.cstack: ", cstack, " )"))
-#  #debug_print(string("( execute_cmd!.command_id: ", command_id, " )"))
-#
-#  if command_id == CADD
-#    cstack[end-1] += pop!(cstack)
-#  elseif command_id == CSUB
-#    cstack[end-1] -= pop!(cstack)
-#  elseif command_id == CMUL
-#    cstack[end-1] *= pop!(cstack)
-#  elseif command_id == CDIV
-#    cstack[end-1] /= pop!(cstack)
-#  elseif command_id == CSQT
-#    cstack[end] = sqrt( cstack[end] )
-#  elseif command_id == CINV
-#    cstack[end] = 1 / cstack[end]
-#  elseif command_id == CCHS
-#    cstack[end] = -1 * cstack[end]
-#  elseif command_id == CPOW
-#    cstack[end-1] ^= pop!(cstack)
-#  elseif command_id == CDUP
-#    push!(cstack, cstack[end])
-#  elseif command_id == CREV
-#    x = cstack[end]
-#    cstack[end] = cstack[end-1]
-#    cstack[end-1] = x
-#  elseif command_id == CMOD
-#    cstack[end-1] = cstack[end-1] % pop!(cstack)
-#  elseif command_id == CSIN
-#    cstack[end] = sin( cstack[end] )
-#  elseif command_id == CCOS
-#    cstack[end] = cos( cstack[end] )
-#  elseif command_id == CTAN
-#    cstack[end] = tan( cstack[end] )
-#  elseif command_id == CASN
-#    cstack[end] = asin( cstack[end] )
-#  elseif command_id == CACN
-#    cstack[end] = acos( cstack[end] )
-#  elseif command_id == CATN
-#    cstack[end] = atan( cstack[end] )
-#  elseif command_id == CPI
-#    push!(cstack, pi)
-#  elseif command_id == CEUL
-#    push!(cstack, ℯ)
-#  elseif command_id == CLOG
-#    cstack[end] = log10( cstack[end] )
-#  elseif command_id == CNLG
-#    cstack[end] = log( cstack[end] )
-#  elseif command_id == CDTR
-#    cstack[end] = cstack[end] * pi / 180
-#  elseif command_id == CRTD
-#    cstack[end] = cstack[end] * 180 / pi
-#  elseif command_id == CFAC
-#    cstack[end] = factorial( Int64(cstack[end]) )
-#  elseif command_id == CABS
-#    cstack[end] = abs( cstack[end] )
-#  elseif command_id == CGOL
-#    push!(cstack, (sqrt(5)-1)/2)
-#  end
-#end
-#
-#function debug_print(message)
-#  if debug println(message) end
-#end
+# ( square root )
+push!(commands, Command(":sqrt", :c_squareroot))
+function c_squareroot(s)
+  cstack[end] = sqrt( cstack[end] )
+end
+
+# ( invert )
+push!(commands, Command(":inv", :c_invert))
+function c_invert(s)
+  cstack[end] = 1 / cstack[end]
+end
+
+# ( change sign ) 
+push!(commands, Command(":chs", :c_changesign))
+function c_changesign(s)
+  cstack[end] = -1 * cstack[end]
+end
+
+# ( exponent - power ) 
+push!(commands, Command(":exp", :c_exponent))
+function c_exponent(s)
+  cstack[end-1] ^= pop!(cstack)
+end
+
+# ( duplicate ) 
+push!(commands, Command(":dup", :c_duplicate))
+function c_duplicate(s)
+  push!(cstack, cstack[end])
+end
+
+# ( reverse x and y ) 
+push!(commands, Command(":rev", :c_reverse))
+function c_reverse(s)
+  x = cstack[end]
+  cstack[end] = cstack[end-1]
+  cstack[end-1] = x
+end
+
+# ( modulus )
+push!(commands, Command(":%", :c_modulus))
+function c_modulus(s)
+  cstack[end-1] = cstack[end-1] % pop!(cstack)
+end
+
+# ( sine )
+push!(commands, Command(":sin", :c_sine))
+function c_sine(s)
+  cstack[end] = sin( cstack[end] )
+end
+
+# ( cosine )
+push!(commands, Command(":cos", :c_cosine))
+function c_cosine(s)
+  cstack[end] = cos( cstack[end] )
+end
+
+# ( tangent )
+push!(commands, Command(":tan", :c_tangent))
+function c_tangent(s)
+  cstack[end] = tan( cstack[end] )
+end
+
+# ( arcsine )
+push!(commands, Command(":asin", :c_arcsine))
+function c_arcsine(s)
+  cstack[end] = asin( cstack[end] )
+end
+
+# ( arccosine )
+push!(commands, Command(":acos", :c_arccosine))
+function c_arccosine(s)
+  cstack[end] = acos( cstack[end] )
+end
+
+# ( arctangent )
+push!(commands, Command(":atan", :c_arctangent))
+function c_arctangent(s)
+  cstack[end] = atan( cstack[end] )
+end
+
+# ( pi )
+push!(commands, Command(":atan", :c_pi))
+function c_pi(s)
+  push!(cstack, pi)
+end
+
+# ( Euler's number )
+push!(commands, Command(":e", :c_euler))
+function c_euler(s)
+  push!(cstack, ℯ)
+end
+
+# ( log 10 )
+push!(commands, Command(":log", :c_log10))
+function c_log10(s)
+  cstack[end] = log10( cstack[end] )
+end
+
+# ( natural log )
+push!(commands, Command(":ln", :c_ln))
+function c_ln(s)
+  cstack[end] = log( cstack[end] )
+end
+
+# ( degrees to radians )
+push!(commands, Command(":dtor", :c_degreestoradians))
+function c_degreestoradians(s)
+  cstack[end] = cstack[end] * pi / 180
+end
+
+# ( radians to degrees )
+push!(commands, Command(":rtod", :c_radianstodegrees))
+function c_radianstodegrees(s)
+  cstack[end] = cstack[end] * 180 / pi
+end
+
+# ( factorial )
+push!(commands, Command(":!", :c_factorial))
+function c_factorial(s)
+  cstack[end] = factorial( Int64(cstack[end]) )
+end
+
+# ( absolute value )
+push!(commands, Command(":!", :c_absolutevalue))
+function c_absolutevalue(s)
+  cstack[end] = abs( cstack[end] )
+end
+
+# ( golden ratio )
+push!(commands, Command(":!", :c_goldenratio))
+function c_goldenratio(s)
+  push!(cstack, (sqrt(5)-1)/2)
+end
 
 main(args)
