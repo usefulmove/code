@@ -1,6 +1,6 @@
 #!/usr/bin/julia
 
-comp_version = "0.8.2"
+comp_version = "0.8.3"
 
 # read operations list as argument
 args = ARGS
@@ -40,8 +40,6 @@ function main(oplist)
 
   # return result of argument list evaluation
   println(string(cstack, "\r"))
-
-  return nothing
 end
 
 struct Command
