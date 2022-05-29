@@ -12,6 +12,8 @@
 
 =#
 
+comp_version = "0.6.1"
+
 # read operations list as argument
 args = ARGS
 
@@ -258,6 +260,8 @@ if args[1] == "--help"
     println("  ", string( c.symbol ))
   end
   return
+elseif args[1] == "--version"
+  println("comp version ", comp_version)
 else
   main(args)
 end
