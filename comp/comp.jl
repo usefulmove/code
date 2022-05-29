@@ -155,7 +155,8 @@ end
 # ( modulus )
 push!(commands, Command(":%", :c_modulus))
 function c_modulus(s)
-  cstack[end-1] = cstack[end-1] % pop!(cstack)
+  divisor = pop!(cstack)
+  cstack[end] = cstack[end] % divisor
 end
 
 # ( sine )
@@ -195,7 +196,7 @@ function c_arctangent(s)
 end
 
 # ( pi )
-push!(commands, Command(":atan", :c_pi))
+push!(commands, Command(":pi", :c_pi))
 function c_pi(s)
   push!(cstack, pi)
 end
@@ -237,15 +238,26 @@ function c_factorial(s)
 end
 
 # ( absolute value )
-push!(commands, Command(":!", :c_absolutevalue))
+push!(commands, Command(":abs", :c_absolutevalue))
 function c_absolutevalue(s)
   cstack[end] = abs( cstack[end] )
 end
 
 # ( golden ratio )
-push!(commands, Command(":!", :c_goldenratio))
+push!(commands, Command(":gold", :c_goldenratio))
 function c_goldenratio(s)
   push!(cstack, (sqrt(5)-1)/2)
 end
 
-main(args)
+
+if args[1] == "--help"
+  println("usage:  comp 5 :sqrt 1 :- 2 :/")
+  println()
+  println("commands:")
+  for c in commands
+    println("  ", string( c.symbol ))
+  end
+  return
+else
+  main(args)
+end
