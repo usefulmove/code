@@ -12,7 +12,7 @@
 
 =#
 
-comp_version = "0.6.1"
+comp_version = "0.6.2"
 
 # read operations list as argument
 args = ARGS
