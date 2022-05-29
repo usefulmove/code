@@ -1,6 +1,6 @@
 #!/usr/bin/julia
 
-comp_version = "0.8.0"
+comp_version = "0.8.1"
 
 # read operations list as argument
 args = ARGS
@@ -226,16 +226,25 @@ function c_abs!(s, cov)
 end
 
 
-if args[1] == "--help"
-  println("usage:  comp 5 :sqrt 1 :- 2 :/")
+if length(args) == 0
+  push!(args, "help")
+end
+
+if  args[1] == "--help" || args[1] == "help"
+  println("usage: comp <list>")
+  println()
+  println("  <list> contains a sequence of operations (commands or values)")
+  println()
+  println("  for example, 'comp 5 :sqrt 1 :- 2 :/' calculates the golden ratio")
   println()
   println("commands:")
   for c in commands
-    println("  ", string( c.symbol ))
+    print(string(c.symbol), "  ")
   end
+  println("\n")
   return
-elseif args[1] == "--version"
-  println("comp version ", comp_version)
+elseif args[1] == "--version" || args[1] == "version"
+  println("comp ", comp_version)
 else
   main(args)
 end
