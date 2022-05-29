@@ -53,12 +53,7 @@ function main(oplist)
   map(process_node!, oplist)
 
   # return result of argument list evaluation
-  println(
-    string(
-      string(cstack),
-      "\r"
-    )
-  )
+  println(string(cstack, "\r"))
 end
 
 struct Command
