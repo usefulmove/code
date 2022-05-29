@@ -55,7 +55,7 @@ function main(oplist)
   # return result of argument list evaluation
   println(
     string(
-      string( cstack ),
+      string(cstack),
       "\r"
     )
   )
