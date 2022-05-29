@@ -1,6 +1,6 @@
 #!/usr/bin/julia
 
-comp_version = "0.8.1"
+comp_version = "0.8.2"
 
 # read operations list as argument
 args = ARGS
@@ -40,6 +40,8 @@ function main(oplist)
 
   # return result of argument list evaluation
   println(string(cstack, "\r"))
+
+  return nothing
 end
 
 struct Command
@@ -47,11 +49,11 @@ struct Command
   command_f # command function
 end
 
-# operation execution
+# execute command function for command or value
 function process_node!(stack, cmd_or_val)
-  # execute command function for command or value
   f = cmdfunction(cmd_or_val)
   eval(f)(stack, cmd_or_val)
+  return nothing
 end
 
 # get command function
@@ -67,6 +69,7 @@ end
 
 function c_addtostack!(s, cov)
   push!(s, parse(Float64, cov))
+  return nothing
 end
 
 # build command vector
@@ -76,54 +79,63 @@ commands = Vector{Command}(undef, 0)
 push!(commands, Command(":+", :c_add!))
 function c_add!(s, cov)
   s[end-1] += pop!(s)
+  return nothing
 end
 
 # - subtract
 push!(commands, Command(":-", :c_sub!))
 function c_sub!(s, cov)
   s[end-1] -= pop!(s)
+  return nothing
 end
 
 # - multiply
 push!(commands, Command(":x", :c_mult!))
 function c_mult!(s, cov)
   s[end-1] *= pop!(s)
+  return nothing
 end
 
 # - divide
 push!(commands, Command(":/", :c_div!))
 function c_div!(s, cov)
   s[end-1] /= pop!(s)
+  return nothing
 end
 
 # - square root
 push!(commands, Command(":sqrt", :c_sqrt!))
 function c_sqrt!(s, cov)
   s[end] = sqrt( s[end] )
+  return nothing
 end
 
 # - invert
 push!(commands, Command(":inv", :c_inv!))
 function c_inv!(s, cov)
   s[end] = 1 / s[end]
+  return nothing
 end
 
 # - change sign
 push!(commands, Command(":chs", :c_chs!))
 function c_chs!(s, cov)
   s[end] = -1 * s[end]
+  return nothing
 end
 
 # - exponent - power
 push!(commands, Command(":exp", :c_exp!))
 function c_exp!(s, cov)
   s[end-1] ^= pop!(s)
+  return nothing
 end
 
 # - duplicate
 push!(commands, Command(":dup", :c_dup!))
 function c_dup!(s, cov)
   push!(s, s[end])
+  return nothing
 end
 
 # - reverse x and y
@@ -132,6 +144,7 @@ function c_reverse!(s, cov)
   x = s[end]
   s[end] = s[end-1]
   s[end-1] = x
+  return nothing
 end
 
 # - modulus
@@ -139,90 +152,105 @@ push!(commands, Command(":%", :c_mod!))
 function c_mod!(s, cov)
   divisor = pop!(s)
   s[end] = s[end] % divisor
+  return nothing
 end
 
 # - sine
 push!(commands, Command(":sin", :c_sin!))
 function c_sin!(s, cov)
   s[end] = sin( s[end] )
+  return nothing
 end
 
 # - cosine
 push!(commands, Command(":cos", :c_cos!))
 function c_cos!(s, cov)
   s[end] = cos( s[end] )
+  return nothing
 end
 
 # - tangent
 push!(commands, Command(":tan", :c_tan!))
 function c_tan!(s, cov)
   s[end] = tan( s[end] )
+  return nothing
 end
 
 # - arcsine
 push!(commands, Command(":asin", :c_asin!))
 function c_asin!(s, cov)
   s[end] = asin( s[end] )
+  return nothing
 end
 
 # - arccosine
 push!(commands, Command(":acos", :c_acos!))
 function c_acos!(s, cov)
   s[end] = acos( s[end] )
+  return nothing
 end
 
 # - arctangent
 push!(commands, Command(":atan", :c_atan!))
 function c_atan!(s, cov)
   s[end] = atan( s[end] )
+  return nothing
 end
 
 # - pi
 push!(commands, Command(":pi", :c_pi!))
 function c_pi!(s, cov)
   push!(s, pi)
+  return nothing
 end
 
 # - Euler's number
 push!(commands, Command(":e", :c_euler!))
 function c_euler!(s, cov)
   push!(s, ℯ)
+  return nothing
 end
 
 # - log 10
 push!(commands, Command(":log", :c_log10!))
 function c_log10!(s, cov)
   s[end] = log10( s[end] )
+  return nothing
 end
 
 # - natural log
 push!(commands, Command(":ln", :c_ln!))
 function c_ln!(s, cov)
   s[end] = log( s[end] )
+  return nothing
 end
 
 # - degrees to radians
 push!(commands, Command(":dtor", :c_dtor!))
 function c_dtor!(s, cov)
   s[end] = s[end] * pi / 180
+  return nothing
 end
 
 # - radians to degrees
 push!(commands, Command(":rtod", :c_rtod!))
 function c_rtod!(s, cov)
   s[end] = s[end] * 180 / pi
+  return nothing
 end
 
 # - factorial
 push!(commands, Command(":!", :c_factorial!))
 function c_factorial!(s, cov)
   s[end] = factorial( Int64(s[end]) )
+  return nothing
 end
 
 # - absolute value
 push!(commands, Command(":abs", :c_abs!))
 function c_abs!(s, cov)
   s[end] = abs( s[end] )
+  return nothing
 end
 
 
