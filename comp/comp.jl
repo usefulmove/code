@@ -1,56 +1,42 @@
-#!/usr/local/bin/julia
+#!/usr/bin/julia
 
-#=
-  golden ratio
-  % comp 5 :sqrt 1 :- 2 :/
-
-  time left at full throughput
-  % comp 3.2e3 4500 + 1300 :/ 4 :/
-
-  memory assignment
-  % comp 3 :a (?)
-
-=#
-
-comp_version = "0.6.2"
+comp_version = "0.8.0"
 
 # read operations list as argument
 args = ARGS
 
 #=
-   note: implement linked list as the base
-   data structure (stack). atoms on the list
-   will either be symbols (commands) or values.
-   each calculation is its own linked list of
-   operations that processed according to their
-   content and order of the list. this is a
-   Lisp construct. we will need to build a list
-   evaluation engine.
 
-   list structure
-   (object - command or value string)
-   "32e3"
-   "3400"
-   "+"
-   "2"
-   "/"
+    note: base data structure is a vector (linked
+    list) used as a stack. atoms on the list are
+    either be symbols (commands) or values. each
+    calculation is a list of operations that are
+    processed in order of occurrence. this is an
+    implementation of a Lisp construct.
 
-   the list evaluation engine takes a list
-   of strings as an input and returns a
-   value equal to the result of the eval-
-   uation.
+      operations list structure
+        (object : command or value)
+        "5"
+        ":sqrt"
+        "1
+        ":-"
+        "2"
+        ":/"
 
-   <double> = evaluate_list( <string_list> )
+    a list evaluation engine takes the list of
+    strings and executes the corresponding oper-
+    ations then returns the resulting mutated
+    stack.
+
 =#
 
 function main(oplist)
   # create computation stack
-  global cstack = Vector{Float64}(undef, 0)
+  cstack = Vector{Float64}(undef, 0)
 
   # evaluate list of arguments and update stack by
   # mapping node evaluation to the operations list
-  # (node evaluation function mutates the stack)
-  map(process_node!, oplist)
+  map(x -> process_node!(cstack, x), oplist)
 
   # return result of argument list evaluation
   println(string(cstack, "\r"))
@@ -62,10 +48,10 @@ struct Command
 end
 
 # operation execution
-function process_node!(cmd_or_val)
+function process_node!(stack, cmd_or_val)
   # execute command function for command or value
   f = cmdfunction(cmd_or_val)
-  eval(f)(cmd_or_val)
+  eval(f)(stack, cmd_or_val)
 end
 
 # get command function
@@ -76,173 +62,167 @@ function cmdfunction(sinput)
     end
   end
   # if not symbol add value to stack
-  return :c_addtostack
+  return :c_addtostack!
 end
 
-function c_addtostack(s)
-  push!(cstack, parse(Float64, s))
+function c_addtostack!(s, cov)
+  push!(s, parse(Float64, cov))
 end
 
 # build command vector
 commands = Vector{Command}(undef, 0)
 
-# ( add )
-push!(commands, Command(":+", :c_add))
-function c_add(s)
-  cstack[end-1] += pop!(cstack)
+# - add
+push!(commands, Command(":+", :c_add!))
+function c_add!(s, cov)
+  s[end-1] += pop!(s)
 end
 
-# ( subtract )
-push!(commands, Command(":-", :c_subtract))
-function c_subtract(s)
-  cstack[end-1] -= pop!(cstack)
+# - subtract
+push!(commands, Command(":-", :c_sub!))
+function c_sub!(s, cov)
+  s[end-1] -= pop!(s)
 end
 
-# ( multiply )
-push!(commands, Command(":x", :c_multiply))
-function c_multiply(s)
-  cstack[end-1] *= pop!(cstack)
+# - multiply
+push!(commands, Command(":x", :c_mult!))
+function c_mult!(s, cov)
+  s[end-1] *= pop!(s)
 end
 
-# ( divide )
-push!(commands, Command(":/", :c_divide))
-function c_divide(s)
-  cstack[end-1] /= pop!(cstack)
+# - divide
+push!(commands, Command(":/", :c_div!))
+function c_div!(s, cov)
+  s[end-1] /= pop!(s)
 end
 
-# ( square root )
-push!(commands, Command(":sqrt", :c_squareroot))
-function c_squareroot(s)
-  cstack[end] = sqrt( cstack[end] )
+# - square root
+push!(commands, Command(":sqrt", :c_sqrt!))
+function c_sqrt!(s, cov)
+  s[end] = sqrt( s[end] )
 end
 
-# ( invert )
-push!(commands, Command(":inv", :c_invert))
-function c_invert(s)
-  cstack[end] = 1 / cstack[end]
+# - invert
+push!(commands, Command(":inv", :c_inv!))
+function c_inv!(s, cov)
+  s[end] = 1 / s[end]
 end
 
-# ( change sign )
-push!(commands, Command(":chs", :c_changesign))
-function c_changesign(s)
-  cstack[end] = -1 * cstack[end]
+# - change sign
+push!(commands, Command(":chs", :c_chs!))
+function c_chs!(s, cov)
+  s[end] = -1 * s[end]
 end
 
-# ( exponent - power )
-push!(commands, Command(":exp", :c_exponent))
-function c_exponent(s)
-  cstack[end-1] ^= pop!(cstack)
+# - exponent - power
+push!(commands, Command(":exp", :c_exp!))
+function c_exp!(s, cov)
+  s[end-1] ^= pop!(s)
 end
 
-# ( duplicate )
-push!(commands, Command(":dup", :c_duplicate))
-function c_duplicate(s)
-  push!(cstack, cstack[end])
+# - duplicate
+push!(commands, Command(":dup", :c_dup!))
+function c_dup!(s, cov)
+  push!(s, s[end])
 end
 
-# ( reverse x and y )
-push!(commands, Command(":rev", :c_reverse))
-function c_reverse(s)
-  x = cstack[end]
-  cstack[end] = cstack[end-1]
-  cstack[end-1] = x
+# - reverse x and y
+push!(commands, Command(":rev", :c_reverse!))
+function c_reverse!(s, cov)
+  x = s[end]
+  s[end] = s[end-1]
+  s[end-1] = x
 end
 
-# ( modulus )
-push!(commands, Command(":%", :c_modulus))
-function c_modulus(s)
-  divisor = pop!(cstack)
-  cstack[end] = cstack[end] % divisor
+# - modulus
+push!(commands, Command(":%", :c_mod!))
+function c_mod!(s, cov)
+  divisor = pop!(s)
+  s[end] = s[end] % divisor
 end
 
-# ( sine )
-push!(commands, Command(":sin", :c_sine))
-function c_sine(s)
-  cstack[end] = sin( cstack[end] )
+# - sine
+push!(commands, Command(":sin", :c_sin!))
+function c_sin!(s, cov)
+  s[end] = sin( s[end] )
 end
 
-# ( cosine )
-push!(commands, Command(":cos", :c_cosine))
-function c_cosine(s)
-  cstack[end] = cos( cstack[end] )
+# - cosine
+push!(commands, Command(":cos", :c_cos!))
+function c_cos!(s, cov)
+  s[end] = cos( s[end] )
 end
 
-# ( tangent )
-push!(commands, Command(":tan", :c_tangent))
-function c_tangent(s)
-  cstack[end] = tan( cstack[end] )
+# - tangent
+push!(commands, Command(":tan", :c_tan!))
+function c_tan!(s, cov)
+  s[end] = tan( s[end] )
 end
 
-# ( arcsine )
-push!(commands, Command(":asin", :c_arcsine))
-function c_arcsine(s)
-  cstack[end] = asin( cstack[end] )
+# - arcsine
+push!(commands, Command(":asin", :c_asin!))
+function c_asin!(s, cov)
+  s[end] = asin( s[end] )
 end
 
-# ( arccosine )
-push!(commands, Command(":acos", :c_arccosine))
-function c_arccosine(s)
-  cstack[end] = acos( cstack[end] )
+# - arccosine
+push!(commands, Command(":acos", :c_acos!))
+function c_acos!(s, cov)
+  s[end] = acos( s[end] )
 end
 
-# ( arctangent )
-push!(commands, Command(":atan", :c_arctangent))
-function c_arctangent(s)
-  cstack[end] = atan( cstack[end] )
+# - arctangent
+push!(commands, Command(":atan", :c_atan!))
+function c_atan!(s, cov)
+  s[end] = atan( s[end] )
 end
 
-# ( pi )
-push!(commands, Command(":pi", :c_pi))
-function c_pi(s)
-  push!(cstack, pi)
+# - pi
+push!(commands, Command(":pi", :c_pi!))
+function c_pi!(s, cov)
+  push!(s, pi)
 end
 
-# ( Euler's number )
-push!(commands, Command(":e", :c_euler))
-function c_euler(s)
-  push!(cstack, ℯ)
+# - Euler's number
+push!(commands, Command(":e", :c_euler!))
+function c_euler!(s, cov)
+  push!(s, ℯ)
 end
 
-# ( log 10 )
-push!(commands, Command(":log", :c_log10))
-function c_log10(s)
-  cstack[end] = log10( cstack[end] )
+# - log 10
+push!(commands, Command(":log", :c_log10!))
+function c_log10!(s, cov)
+  s[end] = log10( s[end] )
 end
 
-# ( natural log )
-push!(commands, Command(":ln", :c_ln))
-function c_ln(s)
-  cstack[end] = log( cstack[end] )
+# - natural log
+push!(commands, Command(":ln", :c_ln!))
+function c_ln!(s, cov)
+  s[end] = log( s[end] )
 end
 
-# ( degrees to radians )
-push!(commands, Command(":dtor", :c_degreestoradians))
-function c_degreestoradians(s)
-  cstack[end] = cstack[end] * pi / 180
+# - degrees to radians
+push!(commands, Command(":dtor", :c_dtor!))
+function c_dtor!(s, cov)
+  s[end] = s[end] * pi / 180
 end
 
-# ( radians to degrees )
-push!(commands, Command(":rtod", :c_radianstodegrees))
-function c_radianstodegrees(s)
-  cstack[end] = cstack[end] * 180 / pi
+# - radians to degrees
+push!(commands, Command(":rtod", :c_rtod!))
+function c_rtod!(s, cov)
+  s[end] = s[end] * 180 / pi
 end
 
-# ( factorial )
-push!(commands, Command(":!", :c_factorial))
-function c_factorial(s)
-  cstack[end] = factorial( Int64(cstack[end]) )
+# - factorial
+push!(commands, Command(":!", :c_factorial!))
+function c_factorial!(s, cov)
+  s[end] = factorial( Int64(s[end]) )
 end
 
-# ( absolute value )
-push!(commands, Command(":abs", :c_absolutevalue))
-function c_absolutevalue(s)
-  cstack[end] = abs( cstack[end] )
-end
-
-# ( golden ratio )
-push!(commands, Command(":gold", :c_goldenratio))
-function c_goldenratio(s)
-  push!(cstack, (sqrt(5)-1)/2)
+# - absolute value
+push!(commands, Command(":abs", :c_abs!))
+function c_abs!(s, cov)
+  s[end] = abs( s[end] )
 end
 
 
