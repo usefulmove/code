@@ -12,40 +12,71 @@
 
 =#
 
-debug = false
+#debug = false
 
 # read operations list as argument
 args = ARGS
 
-@enum Command begin
-  CNULL # no op
-  CADD  # add
-  CSUB  # subtract
-  CMUL  # multiply
-  CDIV  # divide
-  CSQT  # squart root
-  CINV  # invert (1/x)
-  CCHS  # change sign
-  CPOW  # power
-  CDUP  # duplicate
-  CREV  # reverse x and y
-  CMOD  # modulus
-  CSIN  # sine
-  CCOS  # cosine
-  CTAN  # tangent
-  CASN  # arcsine
-  CACN  # arccosine
-  CATN  # arctangent
-  CPI   # pi
-  CEUL  # e
-  CLOG  # log 10
-  CNLG  # natural log
-  CDTR  # degrees to radians
-  CRTD  # radians to degrees
-  CFAC  # factorial
-  CABS  # absolute value
-  CGOL  # golden ratio
+function main(oplist)
+  # create computation stack
+  global cstack = Vector{Float64}(undef, 0) 
+
+  # evaluate list of arguments and update stack by
+  # mapping node evaluation to the operations list.
+  # the node evaluation function mutates the stack.
+  map(process_node!, oplist)
+
+  # return result of argument list evaluation
+  println(
+    string(
+      string( cstack ),
+      "\r"
+    )
+  )
 end
+
+struct Command
+  symbol::String
+  command_f # command function
+end
+
+# build command vector
+commands = Vector{Command}(undef, 0) 
+
+push!(commands, Command(":+", :c_add))
+push!(commands, Command(":-", :c_subtract))
+push!(commands, Command(":x", :c_multiply))
+push!(commands, Command(":/", :c_divide))
+
+#@enum Command begin
+#  CNULL # no op
+#  CADD  # add
+#  CSUB  # subtract
+#  CMUL  # multiply
+#  CDIV  # divide
+#  CSQT  # squart root
+#  CINV  # invert (1/x)
+#  CCHS  # change sign
+#  CPOW  # power
+#  CDUP  # duplicate
+#  CREV  # reverse x and y
+#  CMOD  # modulus
+#  CSIN  # sine
+#  CCOS  # cosine
+#  CTAN  # tangent
+#  CASN  # arcsine
+#  CACN  # arccosine
+#  CATN  # arctangent
+#  CPI   # pi
+#  CEUL  # e
+#  CLOG  # log 10
+#  CNLG  # natural log
+#  CDTR  # degrees to radians
+#  CRTD  # radians to degrees
+#  CFAC  # factorial
+#  CABS  # absolute value
+#  CGOL  # golden ratio
+#end
 
 #=
 
@@ -77,160 +108,164 @@ end
 
 # operation execution
 function process_node!(cmd_or_val)
-  command_id = iscommand(cmd_or_val)
-
-  # pop node off list and update stack
-  # based on operation
-  if command_id != CNULL # ( command )
-    # parse string for command and identify command_id
-    # and update stack based on command_id
-    execute_cmd!(command_id)
-  else # ( value )
-    # add to stack
-    push!(cstack, parse(Float64, cmd_or_val))
-  end
+  # execute command function for command or value
+  getfield(Main, Symbol(cmdfunction(cmd_or_val)))(cmd_or_val)
 end
 
 # returns command_id given string input
-function iscommand(sinput) 
-  if sinput == ":+"
-    return CADD
-  elseif sinput == ":-"
-    return CSUB
-  elseif sinput == ":x"
-    return CMUL
-  elseif sinput == ":/"
-    return CDIV
-  elseif sinput == ":sqrt"
-    return CSQT
-  elseif sinput == ":inv"
-    return CINV
-  elseif sinput == ":chs"
-    return CCHS
-  elseif (sinput == ":pow") | (sinput == ":exp")
-    return CPOW
-  elseif sinput == ":dup" 
-    return CDUP
-  elseif sinput == ":rev"
-    return CREV
-  elseif sinput == ":%"
-    return CMOD
-  elseif sinput == ":sin"
-    return CSIN
-  elseif sinput == ":cos"
-    return CCOS
-  elseif sinput == ":tan"
-    return CTAN
-  elseif sinput == ":asin"
-    return CASN
-  elseif sinput == ":acos"
-    return CACN
-  elseif sinput == ":atan"
-    return CATN
-  elseif sinput == ":pi"
-    return CPI
-  elseif sinput == ":e"
-    return CEUL
-  elseif sinput == ":log"
-    return CLOG
-  elseif sinput == ":ln"
-    return CNLG
-  elseif sinput == ":dtor"
-    return CDTR
-  elseif sinput == ":rtod"
-    return CRTD
-  elseif sinput == ":!"
-    return CFAC
-  elseif sinput == ":abs"
-    return CABS
-  elseif sinput == ":gold"
-    return CGOL
-  else
-    return CNULL
+#function iscommand(sinput) 
+#  if sinput == ":+"
+#    return CADD
+#  elseif sinput == ":-"
+#    return CSUB
+#  elseif sinput == ":x"
+#    return CMUL
+#  elseif sinput == ":/"
+#    return CDIV
+#  elseif sinput == ":sqrt"
+#    return CSQT
+#  elseif sinput == ":inv"
+#    return CINV
+#  elseif sinput == ":chs"
+#    return CCHS
+#  elseif (sinput == ":pow") | (sinput == ":exp")
+#    return CPOW
+#  elseif sinput == ":dup" 
+#    return CDUP
+#  elseif sinput == ":rev"
+#    return CREV
+#  elseif sinput == ":%"
+#    return CMOD
+#  elseif sinput == ":sin"
+#    return CSIN
+#  elseif sinput == ":cos"
+#    return CCOS
+#  elseif sinput == ":tan"
+#    return CTAN
+#  elseif sinput == ":asin"
+#    return CASN
+#  elseif sinput == ":acos"
+#    return CACN
+#  elseif sinput == ":atan"
+#    return CATN
+#  elseif sinput == ":pi"
+#    return CPI
+#  elseif sinput == ":e"
+#    return CEUL
+#  elseif sinput == ":log"
+#    return CLOG
+#  elseif sinput == ":ln"
+#    return CNLG
+#  elseif sinput == ":dtor"
+#    return CDTR
+#  elseif sinput == ":rtod"
+#    return CRTD
+#  elseif sinput == ":!"
+#    return CFAC
+#  elseif sinput == ":abs"
+#    return CABS
+#  elseif sinput == ":gold"
+#    return CGOL
+#  else
+#    return CNULL
+#  end
+#end
+
+function cmdfunction(sinput)
+  for c in commands
+    if c.symbol == sinput
+      return c.command_f
+    end
   end
+
+  # if not symbols match return stack function
+  # to add value to stack
+  return :c_addtostack
 end
 
-function execute_cmd!(command_id)
-  #debug_print(string("( execute_cmd!.cstack: ", cstack, " )"))
-  #debug_print(string("( execute_cmd!.command_id: ", command_id, " )"))
-
-  if command_id == CADD
-    cstack[end-1] += pop!(cstack)
-  elseif command_id == CSUB
-    cstack[end-1] -= pop!(cstack)
-  elseif command_id == CMUL
-    cstack[end-1] *= pop!(cstack)
-  elseif command_id == CDIV
-    cstack[end-1] /= pop!(cstack)
-  elseif command_id == CSQT
-    cstack[end] = sqrt( cstack[end] )
-  elseif command_id == CINV
-    cstack[end] = 1 / cstack[end]
-  elseif command_id == CCHS
-    cstack[end] = -1 * cstack[end]
-  elseif command_id == CPOW
-    cstack[end-1] ^= pop!(cstack)
-  elseif command_id == CDUP
-    push!(cstack, cstack[end])
-  elseif command_id == CREV
-    x = cstack[end]
-    cstack[end] = cstack[end-1]
-    cstack[end-1] = x
-  elseif command_id == CMOD
-    cstack[end-1] = cstack[end-1] % pop!(cstack)
-  elseif command_id == CSIN
-    cstack[end] = sin( cstack[end] )
-  elseif command_id == CCOS
-    cstack[end] = cos( cstack[end] )
-  elseif command_id == CTAN
-    cstack[end] = tan( cstack[end] )
-  elseif command_id == CASN
-    cstack[end] = asin( cstack[end] )
-  elseif command_id == CACN
-    cstack[end] = acos( cstack[end] )
-  elseif command_id == CATN
-    cstack[end] = atan( cstack[end] )
-  elseif command_id == CPI
-    push!(cstack, pi)
-  elseif command_id == CEUL
-    push!(cstack, ℯ)
-  elseif command_id == CLOG
-    cstack[end] = log10( cstack[end] )
-  elseif command_id == CNLG
-    cstack[end] = log( cstack[end] )
-  elseif command_id == CDTR
-    cstack[end] = cstack[end] * pi / 180
-  elseif command_id == CRTD
-    cstack[end] = cstack[end] * 180 / pi
-  elseif command_id == CFAC
-    cstack[end] = factorial( Int64(cstack[end]) )
-  elseif command_id == CABS
-    cstack[end] = abs( cstack[end] )
-  elseif command_id == CGOL
-    push!(cstack, (sqrt(5)-1)/2)
-  end
+function c_addtostack(str)
+  push!(cstack, parse(Float64, str))
 end
 
-function debug_print(message)
-  if debug println(message) end
+function c_add(str)
+  cstack[end-1] += pop!(cstack)
 end
 
-function main(oplist)
-  # create computation stack
-  global cstack = Vector{Float64}(undef, 0) 
-
-  # evaluate list of arguments and update stack by
-  # mapping node evaluation to the operations list.
-  # the node evaluation function mutates the stack.
-  map(process_node!, oplist)
-
-  # return result of argument list evaluation
-  println(
-    string(
-      string( cstack ),
-      "\r"
-    )
-  )
+function c_subtract(str)
+  cstack[end-1] -= pop!(cstack)
 end
+
+function c_multiply(str)
+  cstack[end-1] *= pop!(cstack)
+end
+
+function c_divide(str)
+  cstack[end-1] /= pop!(cstack)
+end
+
+#function execute_cmd!(command_id)
+#  #debug_print(string("( execute_cmd!.cstack: ", cstack, " )"))
+#  #debug_print(string("( execute_cmd!.command_id: ", command_id, " )"))
+#
+#  if command_id == CADD
+#    cstack[end-1] += pop!(cstack)
+#  elseif command_id == CSUB
+#    cstack[end-1] -= pop!(cstack)
+#  elseif command_id == CMUL
+#    cstack[end-1] *= pop!(cstack)
+#  elseif command_id == CDIV
+#    cstack[end-1] /= pop!(cstack)
+#  elseif command_id == CSQT
+#    cstack[end] = sqrt( cstack[end] )
+#  elseif command_id == CINV
+#    cstack[end] = 1 / cstack[end]
+#  elseif command_id == CCHS
+#    cstack[end] = -1 * cstack[end]
+#  elseif command_id == CPOW
+#    cstack[end-1] ^= pop!(cstack)
+#  elseif command_id == CDUP
+#    push!(cstack, cstack[end])
+#  elseif command_id == CREV
+#    x = cstack[end]
+#    cstack[end] = cstack[end-1]
+#    cstack[end-1] = x
+#  elseif command_id == CMOD
+#    cstack[end-1] = cstack[end-1] % pop!(cstack)
+#  elseif command_id == CSIN
+#    cstack[end] = sin( cstack[end] )
+#  elseif command_id == CCOS
+#    cstack[end] = cos( cstack[end] )
+#  elseif command_id == CTAN
+#    cstack[end] = tan( cstack[end] )
+#  elseif command_id == CASN
+#    cstack[end] = asin( cstack[end] )
+#  elseif command_id == CACN
+#    cstack[end] = acos( cstack[end] )
+#  elseif command_id == CATN
+#    cstack[end] = atan( cstack[end] )
+#  elseif command_id == CPI
+#    push!(cstack, pi)
+#  elseif command_id == CEUL
+#    push!(cstack, ℯ)
+#  elseif command_id == CLOG
+#    cstack[end] = log10( cstack[end] )
+#  elseif command_id == CNLG
+#    cstack[end] = log( cstack[end] )
+#  elseif command_id == CDTR
+#    cstack[end] = cstack[end] * pi / 180
+#  elseif command_id == CRTD
+#    cstack[end] = cstack[end] * 180 / pi
+#  elseif command_id == CFAC
+#    cstack[end] = factorial( Int64(cstack[end]) )
+#  elseif command_id == CABS
+#    cstack[end] = abs( cstack[end] )
+#  elseif command_id == CGOL
+#    push!(cstack, (sqrt(5)-1)/2)
+#  end
+#end
+#
+#function debug_print(message)
+#  if debug println(message) end
+#end
 
 main(args)
