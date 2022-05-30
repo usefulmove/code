@@ -1,6 +1,6 @@
 #!/usr/bin/julia
 
-comp_version = "0.8.5"
+comp_version = "0.8.6"
 
 # read operations list as argument
 args = ARGS
