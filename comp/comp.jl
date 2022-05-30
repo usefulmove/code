@@ -12,7 +12,8 @@ args = ARGS
     either be symbols (commands) or values. each
     calculation is a list of operations that are
     processed in order of occurrence. this is an
-    implementation of a lisp intepreter.
+    implementation of a lisp intepreter for rev-
+    erse polish notation s-expressions.
 
       operations list structure
         (object : command or value)
@@ -257,6 +258,9 @@ if length(args) == 0
 end
 
 if  args[1] == "--help" || args[1] == "help"
+  println()
+  println("comp ", comp_version)
+  println()
   println("usage: comp <list>")
   println()
   println("  <list> contains a sequence of operations (commands or values)")
