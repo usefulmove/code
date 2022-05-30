@@ -1,6 +1,6 @@
 #!/usr/bin/julia
 
-comp_version = "0.8.3"
+comp_version = "0.8.4"
 
 # read operations list as argument
 args = ARGS
@@ -44,7 +44,7 @@ end
 
 struct Command
   symbol::String
-  command_f # command function
+  command_f::Symbol # command function
 end
 
 # execute command function for command or value
@@ -263,7 +263,7 @@ if  args[1] == "--help" || args[1] == "help"
   println()
   println("  for example, 'comp 5 :sqrt 1 :- 2 :/' calculates the golden ratio")
   println()
-  println("commands:")
+  println("commands")
   for c in commands
     print(string(c.symbol), "  ")
   end
