@@ -1,6 +1,6 @@
 #!/usr/local/bin/julia
 
-comp_version = "0.8.7"
+comp_version = "0.9.0"
 
 # read operations list as argument
 args = ARGS
@@ -99,6 +99,13 @@ end
 push!(commands, Command(":/", :c_div!))
 function c_div!(s::Vector{Float64}, cov::String)
   s[end-1] /= pop!(s)
+  return nothing
+end
+
+# - inverse division
+push!(commands, Command(":\\", :c_inversedivide!))
+function c_inversedivide!(s::Vector{Float64}, cov::String)
+  s[end-1] \= pop!(s)
   return nothing
 end
 
