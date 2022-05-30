@@ -1,4 +1,4 @@
-#!/usr/local/bin/julia
+#!/usr/bin/julia
 
 comp_version = "0.8.5"
 
@@ -12,7 +12,7 @@ args = ARGS
     either be symbols (commands) or values. each
     calculation is a list of operations that are
     processed in order of occurrence. this is an
-    implementation of a Lisp construct.
+    implementation of a lisp intepreter.
 
       operations list structure
         (object : command or value)
@@ -39,7 +39,7 @@ function main(oplist::Vector{String})
   map(x -> process_node!(cstack, x), oplist)
 
   # return result of argument list evaluation
-  println(string(cstack, "\r"))
+  println(string(cstack, "\n"))
 end
 
 struct Command
@@ -49,13 +49,13 @@ end
 
 # execute command function for command or value
 function process_node!(stack::Vector{Float64}, cmd_or_val::String)
-  f = cmdfunction(cmd_or_val)
+  f = getcmdfunction(cmd_or_val)
   eval(f)(stack, cmd_or_val)
   return nothing
 end
 
 # get command function
-function cmdfunction(sinput::String)
+function getcmdfunction(sinput::String)
   for c in commands
     if c.symbol == sinput
       return c.command_f
