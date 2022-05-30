@@ -13,7 +13,7 @@ args = ARGS
     calculation is a list of operations that are
     processed in order of occurrence. this is an
     implementation of a lisp intepreter for rev-
-    erse polish notation s-expressions.
+    erse polish notation s-expressions (sexp).
 
       operations list structure
         (object : command or value)
