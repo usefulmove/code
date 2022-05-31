@@ -8,20 +8,13 @@ if (length(args) == 0) {
   print("( error: non-numeric argument )")
   o <- 0
 } else {
-  o <- as.numeric(args[1])
-}
-
-# truncate argument to integer and make 0 if negative
-if (o < 0) {
-  o <- 0
-} else {
-  o <- as.integer(o)
+  o <- as.integer(args[1])
 }
 
 fib <- function(n) {
-  if (n == 0) {
+  if (n <= 0) {
     0
-  } else if ( (n == 1) || (n == 2) ) {
+  } else if (n < 3) {
     1
   } else {
     fib(n - 1) + fib(n - 2)

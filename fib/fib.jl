@@ -8,17 +8,10 @@ else
   o = parse(Int64, args[1])
 end
 
-# truncate argument to integer and make 0 if negative
-if (o < 0)
-  o = 0
-else
-  o = floor(Int, o)
-end
-
 function fib(n)
-  if n == 0
+  if n <= 0
     0
-  elseif (n == 1) || (n == 2)
+  elseif (n < 3)
     1
   else
     fib(n - 1) + fib(n - 2)
@@ -26,9 +19,4 @@ function fib(n)
 end
 
 
-println(
-  string(
-    string(fib(o)),
-    "\r"
-  )
-)
+println(string(fib(o), "\r"))
