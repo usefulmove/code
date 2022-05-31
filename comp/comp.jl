@@ -1,6 +1,6 @@
-#!/usr/bin/julia
+#!/usr/local/bin/julia
 
-comp_version = "0.9.1"
+const COMP_VERSION = "0.9.2"
 
 # read operations list as argument
 args = ARGS
@@ -266,7 +266,7 @@ end
 
 if  args[1] == "--help" || args[1] == "help"
   println()
-  println("comp ", comp_version)
+  println("comp ", COMP_VERSION)
   println()
   println("usage: comp <list>")
   println()
@@ -281,7 +281,7 @@ if  args[1] == "--help" || args[1] == "help"
   println("\n")
   return
 elseif args[1] == "--version" || args[1] == "version"
-  println("comp ", comp_version)
+  println("comp ", COMP_VERSION)
 elseif args[1] == "mona"
   println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!>''''''<!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
   println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!'''''`             ``'!!!!!!!!!!!!!!!!!!!!!!!!")

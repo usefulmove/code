@@ -5,10 +5,10 @@ args = ARGS
 if (length(args) == 0)
   o = 0
 else
-  o = parse(Int64, args[1])
+  o = parse(UInt64, args[1])
 end
 
-function fib(n)
+function fib(n::UInt64)
   if n <= 0
     0
   elseif (n < 3)
