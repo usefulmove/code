@@ -1,6 +1,6 @@
 #!/usr/local/bin/julia
 
-const COMP_VERSION = "0.9.2"
+const COMP_VERSION = "0.9.3"
 
 # read operations list as argument
 args = ARGS
@@ -58,9 +58,7 @@ end
 # get command function
 function getcmdfunction(sinput::String)
   for c in commands
-    if c.symbol == sinput
-      return c.command_f
-    end
+    c.symbol == sinput ? (return c.command_f) : nothing
   end
   # if not symbol add value to stack
   return :c_addtostack!
@@ -260,9 +258,7 @@ function c_abs!(s::Vector{Float64}, cov::String)
 end
 
 
-if length(args) == 0
-  push!(args, "help")
-end
+length(args) == 0 ? push!(args, "help") : nothing
 
 if  args[1] == "--help" || args[1] == "help"
   println()
