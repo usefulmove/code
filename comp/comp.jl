@@ -1,4 +1,4 @@
-#!/usr/local/bin/julia
+#!julia
 
 const COMP_VERSION = "0.9.3"
 
