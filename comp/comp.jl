@@ -263,6 +263,7 @@ if  args[1] == "--help" || args[1] == "help"
   for c in keys(commands)
     print(c, " ")
   end
+  println()
 elseif args[1] == "--version" || args[1] == "version"
   println("comp ", COMP_VERSION)
 elseif args[1] == "mona"
