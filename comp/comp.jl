@@ -37,7 +37,7 @@ function main(oplist::Vector{String})
   map(x -> process_node!(cstack, x), oplist)
 
   # return result of argument list evaluation
-  println(string(cstack, "\n"))
+  println(string(cstack))
 end
 
 # execute command function for command or value
@@ -254,21 +254,15 @@ args = ARGS
 length(args) == 0 ? push!(args, "help") : nothing
 
 if  args[1] == "--help" || args[1] == "help"
-  println()
-  println("comp ", COMP_VERSION)
-  println()
   println("usage: comp <list>")
+  println("            [version] [help]")
   println()
-  println("  <list> contains a sequence of operations (commands or values)")
-  println()
-  println("  for example, 'comp 5 :sqrt 1 :- 2 :/' calculates the golden ratio")
+  println("The <list> is a sequence of reverse Polish notion (RPN) operations. Each operation is either a command (symbol) or value. For example, 'comp 1 2 :+' adds the numbers 1 and 2, and 'comp 5 :sqrt 1 :- 2 :/' calculates the golden ratio. The available commands are listed below.")
   println()
   println("commands")
   for c in keys(commands)
     print(c, " ")
   end
-  println("\n")
-  return
 elseif args[1] == "--version" || args[1] == "version"
   println("comp ", COMP_VERSION)
 elseif args[1] == "mona"
