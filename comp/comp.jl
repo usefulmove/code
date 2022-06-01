@@ -1,6 +1,6 @@
 #!julia
 
-const COMP_VERSION = "0.10.0"
+const COMP_VERSION = "0.10.1"
 
 #=
 
@@ -59,8 +59,11 @@ function c_addtostack!(s::Vector{Float64}, cov::String)
 end
 
 
+# create command dictionary and build out commands
+commands = Dict{String, Symbol}()
+
 # - add
-commands = Dict(":+" => :c_add!) # create command dictionary
+commands[":+"] = :c_add!!
 function c_add!(s::Vector{Float64}, cov::String)
   s[end-1] += pop!(s)
   return nothing
