@@ -1,9 +1,6 @@
 #!julia
 
-const COMP_VERSION = "0.9.3"
-
-# read operations list as argument
-args = ARGS
+const COMP_VERSION = "0.10.0"
 
 #=
 
@@ -43,11 +40,6 @@ function main(oplist::Vector{String})
   println(string(cstack, "\n"))
 end
 
-struct Command
-  symbol::String
-  command_f::Symbol # command function
-end
-
 # execute command function for command or value
 function process_node!(stack::Vector{Float64}, cmd_or_val::String)
   f = getcmdfunction(cmd_or_val)
@@ -57,11 +49,8 @@ end
 
 # get command function
 function getcmdfunction(sinput::String)
-  for c in commands
-    c.symbol == sinput ? (return c.command_f) : nothing
-  end
   # if not symbol add value to stack
-  return :c_addtostack!
+  sinput[1] == ':' ? (return commands[sinput]) : (return :c_addtostack!)
 end
 
 function c_addtostack!(s::Vector{Float64}, cov::String)
@@ -69,81 +58,79 @@ function c_addtostack!(s::Vector{Float64}, cov::String)
   return nothing
 end
 
-# build command vector
-commands = Vector{Command}(undef, 0)
 
 # - add
-push!(commands, Command(":+", :c_add!))
+commands = Dict(":+" => :c_add!) # create command dictionary
 function c_add!(s::Vector{Float64}, cov::String)
   s[end-1] += pop!(s)
   return nothing
 end
 
 # - subtract
-push!(commands, Command(":-", :c_sub!))
+commands[":-"] = :c_sub!
 function c_sub!(s::Vector{Float64}, cov::String)
   s[end-1] -= pop!(s)
   return nothing
 end
 
 # - multiply
-push!(commands, Command(":x", :c_mult!))
+commands[":x"] = :c_mult!
 function c_mult!(s::Vector{Float64}, cov::String)
   s[end-1] *= pop!(s)
   return nothing
 end
 
 # - divide
-push!(commands, Command(":/", :c_div!))
+commands[":/"] = :c_div!
 function c_div!(s::Vector{Float64}, cov::String)
   s[end-1] /= pop!(s)
   return nothing
 end
 
 # - inverse division
-push!(commands, Command(":\\", :c_inversedivide!))
+commands[":\\"] = :c_inversedivide!
 function c_inversedivide!(s::Vector{Float64}, cov::String)
   s[end-1] \= pop!(s)
   return nothing
 end
 
 # - square root
-push!(commands, Command(":sqrt", :c_sqrt!))
+commands[":sqrt"] = :c_sqrt!
 function c_sqrt!(s::Vector{Float64}, cov::String)
   s[end] = sqrt( s[end] )
   return nothing
 end
 
 # - invert
-push!(commands, Command(":inv", :c_inv!))
+commands[":inv"] = :c_inv!
 function c_inv!(s::Vector{Float64}, cov::String)
   s[end] = 1 / s[end]
   return nothing
 end
 
 # - change sign
-push!(commands, Command(":chs", :c_chs!))
+commands[":chs"] = :c_chs!
 function c_chs!(s::Vector{Float64}, cov::String)
   s[end] = -1 * s[end]
   return nothing
 end
 
 # - exponent - power
-push!(commands, Command(":exp", :c_exp!))
+commands[":exp"] = :c_exp!
 function c_exp!(s::Vector{Float64}, cov::String)
   s[end-1] ^= pop!(s)
   return nothing
 end
 
 # - duplicate
-push!(commands, Command(":dup", :c_dup!))
+commands[":dup"] = :c_dup!
 function c_dup!(s::Vector{Float64}, cov::String)
   push!(s, s[end])
   return nothing
 end
 
 # - reverse x and y
-push!(commands, Command(":rev", :c_reverse!))
+commands[":rev"] = :c_reverse!
 function c_reverse!(s::Vector{Float64}, cov::String)
   x = s[end]
   s[end] = s[end-1]
@@ -152,7 +139,7 @@ function c_reverse!(s::Vector{Float64}, cov::String)
 end
 
 # - modulus
-push!(commands, Command(":%", :c_mod!))
+commands[":%"] = :c_mod!
 function c_mod!(s::Vector{Float64}, cov::String)
   divisor = pop!(s)
   s[end] = s[end] % divisor
@@ -160,104 +147,107 @@ function c_mod!(s::Vector{Float64}, cov::String)
 end
 
 # - sine
-push!(commands, Command(":sin", :c_sin!))
+commands[":sin"] = :c_sin!
 function c_sin!(s::Vector{Float64}, cov::String)
   s[end] = sin( s[end] )
   return nothing
 end
 
 # - cosine
-push!(commands, Command(":cos", :c_cos!))
+commands[":cos"] = :c_cos!
 function c_cos!(s::Vector{Float64}, cov::String)
   s[end] = cos( s[end] )
   return nothing
 end
 
 # - tangent
-push!(commands, Command(":tan", :c_tan!))
+commands[":tan"] = :c_tan!
 function c_tan!(s::Vector{Float64}, cov::String)
   s[end] = tan( s[end] )
   return nothing
 end
 
 # - arcsine
-push!(commands, Command(":asin", :c_asin!))
+commands[":asin"] = :c_asin!
 function c_asin!(s::Vector{Float64}, cov::String)
   s[end] = asin( s[end] )
   return nothing
 end
 
 # - arccosine
-push!(commands, Command(":acos", :c_acos!))
+commands[":acos"] = :c_acos!
 function c_acos!(s::Vector{Float64}, cov::String)
   s[end] = acos( s[end] )
   return nothing
 end
 
 # - arctangent
-push!(commands, Command(":atan", :c_atan!))
+commands[":atan"] = :c_atan!
 function c_atan!(s::Vector{Float64}, cov::String)
   s[end] = atan( s[end] )
   return nothing
 end
 
 # - pi
-push!(commands, Command(":pi", :c_pi!))
+commands[":pi"] = :c_pi!
 function c_pi!(s::Vector{Float64}, cov::String)
   push!(s, pi)
   return nothing
 end
 
 # - Euler's number
-push!(commands, Command(":e", :c_euler!))
+commands[":e"] = :c_euler!
 function c_euler!(s::Vector{Float64}, cov::String)
   push!(s, ℯ)
   return nothing
 end
 
 # - log 10
-push!(commands, Command(":log", :c_log10!))
+commands[":log"] = :c_log10!
 function c_log10!(s::Vector{Float64}, cov::String)
   s[end] = log10( s[end] )
   return nothing
 end
 
 # - natural log
-push!(commands, Command(":ln", :c_ln!))
+commands[":ln"] = :c_ln!
 function c_ln!(s::Vector{Float64}, cov::String)
   s[end] = log( s[end] )
   return nothing
 end
 
 # - degrees to radians
-push!(commands, Command(":dtor", :c_dtor!))
+commands[":dtor"] = :c_dtor!
 function c_dtor!(s::Vector{Float64}, cov::String)
   s[end] = s[end] * pi / 180
   return nothing
 end
 
 # - radians to degrees
-push!(commands, Command(":rtod", :c_rtod!))
+commands[":rtod"] = :c_rtod!
 function c_rtod!(s::Vector{Float64}, cov::String)
   s[end] = s[end] * 180 / pi
   return nothing
 end
 
 # - factorial
-push!(commands, Command(":!", :c_factorial!))
+commands[":!"] = :c_factorial!
 function c_factorial!(s::Vector{Float64}, cov::String)
   s[end] = factorial( Int64(s[end]) )
   return nothing
 end
 
 # - absolute value
-push!(commands, Command(":abs", :c_abs!))
+commands[":abs"] = :c_abs!
 function c_abs!(s::Vector{Float64}, cov::String)
   s[end] = abs( s[end] )
   return nothing
 end
 
 
+# handle arguments
+
+args = ARGS
 length(args) == 0 ? push!(args, "help") : nothing
 
 if  args[1] == "--help" || args[1] == "help"
@@ -271,8 +261,8 @@ if  args[1] == "--help" || args[1] == "help"
   println("  for example, 'comp 5 :sqrt 1 :- 2 :/' calculates the golden ratio")
   println()
   println("commands")
-  for c in commands
-    print(string(c.symbol), "  ")
+  for c in keys(commands)
+    print(c, " ")
   end
   println("\n")
   return
