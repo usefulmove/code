@@ -1,6 +1,6 @@
 #!julia
 
-const COMP_VERSION = "0.11.0"
+const COMP_VERSION = "0.11.1"
 
 #=
 
@@ -62,7 +62,7 @@ function c_add!(s::Vector{Float64})
   return nothing
 end
 
-commands[":+a"] = :c_add_all!
+commands[":+_"] = :c_add_all!
 function c_add_all!(s::Vector{Float64})
   while length(s) > 1
     s[end-1] += pop!(s)
@@ -84,7 +84,7 @@ function c_mult!(s::Vector{Float64})
   return nothing
 end
 
-commands[":xa"] = :c_mult_all!
+commands[":x_"] = :c_mult_all!
 function c_mult_all!(s::Vector{Float64})
   while length(s) > 1
     s[end-1] *= pop!(s)
@@ -96,13 +96,6 @@ end
 commands[":/"] = :c_div!
 function c_div!(s::Vector{Float64})
   s[end-1] /= pop!(s)
-  return nothing
-end
-
-# - inverse division
-commands[":\\"] = :c_inversedivide!
-function c_inversedivide!(s::Vector{Float64})
-  s[end-1] \= pop!(s)
   return nothing
 end
 
