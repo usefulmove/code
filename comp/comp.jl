@@ -1,6 +1,6 @@
 #!julia
 
-const COMP_VERSION = "0.10.2"
+const COMP_VERSION = "0.10.3"
 
 #=
 
@@ -31,11 +31,9 @@ const COMP_VERSION = "0.10.2"
 function main(oplist::Vector{String})
   # create computation stack
   cstack = Vector{Float64}(undef, 0)
-
   # evaluate list of arguments and update stack by
   # mapping node evaluation to the operations list
   map(x -> process_node!(cstack, x), oplist)
-
   # return result of argument list evaluation
   println(string(cstack))
 end
