@@ -38,11 +38,11 @@ function main(oplist::Vector{String})
   println(string(cstack))
 end
 
-# execute command function for command or value
+# execute command function or add value to stack
 function process_node!(stack::Vector{Float64}, cmd_or_val::String)
-  # if symbol process command, otherwise push value to stack
   cmd_or_val in keys(commands) ?
-  eval(commands[cmd_or_val])(stack) : c_addtostack!(stack, cmd_or_val)
+  eval(commands[cmd_or_val])(stack) :
+  c_addtostack!(stack, cmd_or_val)
   return nothing
 end
 
