@@ -1,6 +1,6 @@
 #!julia
 
-const COMP_VERSION = "0.10.3"
+const COMP_VERSION = "0.11.0"
 
 #=
 
@@ -62,6 +62,14 @@ function c_add!(s::Vector{Float64})
   return nothing
 end
 
+commands[":+a"] = :c_add_all!
+function c_add_all!(s::Vector{Float64})
+  while length(s) > 1
+    s[end-1] += pop!(s)
+  end
+  return nothing
+end
+
 # - subtract
 commands[":-"] = :c_sub!
 function c_sub!(s::Vector{Float64})
@@ -73,6 +81,14 @@ end
 commands[":x"] = :c_mult!
 function c_mult!(s::Vector{Float64})
   s[end-1] *= pop!(s)
+  return nothing
+end
+
+commands[":xa"] = :c_mult_all!
+function c_mult_all!(s::Vector{Float64})
+  while length(s) > 1
+    s[end-1] *= pop!(s)
+  end
   return nothing
 end
 
