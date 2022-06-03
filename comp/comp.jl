@@ -53,8 +53,7 @@ function c_addtostack!(s::Vector{Float64}, cov::String)
   return nothing
 end
 
-
-# -- create command dictionary and build out commands --------------------------
+# -- create command dictionary and define commands and behaviors ---------------
 
 commands = Dict{String, Symbol}()
 
@@ -242,7 +241,6 @@ function c_abs!(s::Vector{Float64})
   s[end] = abs( s[end] )
   return nothing
 end
-
 
 # -- handle arguments ----------------------------------------------------------
 
