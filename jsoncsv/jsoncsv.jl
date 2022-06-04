@@ -7,7 +7,7 @@ using DataFrames
 # read in argument vector
 arg = ARGS
 
-println("converting $(arg[1]) to $(arg[2])") # debug
+println("converting $(arg[1]) to $(arg[2])")
 
 # read JSON file into DataFrame
 function readjsondf(file)
@@ -18,5 +18,5 @@ end
 
 df = readjsondf(arg[1])
 
-# write DataFrame to csv
+# write DataFrame to CSV
 CSV.write("zipcodes.csv", df)
