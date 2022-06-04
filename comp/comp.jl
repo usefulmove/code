@@ -1,6 +1,6 @@
 #!julia
 
-const COMP_VERSION = "0.11.1"
+const COMP_VERSION = "0.11.2"
 
 #=
 
@@ -33,16 +33,18 @@ function main(oplist::Vector{String})
   cstack = Vector{Float64}(undef, 0)
   # evaluate list of arguments and update stack by
   # mapping node evaluation to the operations list
-  map(x -> process_node!(cstack, x), oplist)
-  # return result of argument list evaluation
-  println(string(cstack))
+  map(x -> processnode!(cstack, x), oplist)
+  # return resulting stack after argument list evaluation
+  for e in cstack
+    println(string(e))
+  end
 end
 
 # execute command function or add value to stack
-function process_node!(stack::Vector{Float64}, cmd_or_val::String)
-  cmd_or_val in keys(commands) ?
-  eval(commands[cmd_or_val])(stack) :
-  c_addtostack!(stack, cmd_or_val)
+function processnode!(stack::Vector{Float64}, cmdval::String)
+  cmdval in keys(commands) ?
+  eval(commands[cmdval])(stack) :
+  c_addtostack!(stack, cmdval)
   return nothing
 end
 
@@ -56,7 +58,7 @@ end
 commands = Dict{String, Symbol}()
 
 # - add
-commands[":+"] = :c_add!!
+commands[":+"] = :c_add!
 function c_add!(s::Vector{Float64})
   s[end-1] += pop!(s)
   return nothing
@@ -120,7 +122,7 @@ function c_chs!(s::Vector{Float64})
   return nothing
 end
 
-# - exponent - power
+# - exponentiation
 commands[":exp"] = :c_exp!
 function c_exp!(s::Vector{Float64})
   s[end-1] ^= pop!(s)
@@ -134,9 +136,9 @@ function c_dup!(s::Vector{Float64})
   return nothing
 end
 
-# - reverse x and y
-commands[":rev"] = :c_reverse!
-function c_reverse!(s::Vector{Float64})
+# - swap x and y
+commands[":swap"] = :c_swap!
+function c_swap!(s::Vector{Float64})
   x = s[end]
   s[end] = s[end-1]
   s[end-1] = x
@@ -193,14 +195,14 @@ function c_atan!(s::Vector{Float64})
   return nothing
 end
 
-# - pi
+# - π
 commands[":pi"] = :c_pi!
 function c_pi!(s::Vector{Float64})
-  push!(s, pi)
+  push!(s, π)
   return nothing
 end
 
-# - Euler's number
+# - Euler's number (ℯ)
 commands[":e"] = :c_euler!
 function c_euler!(s::Vector{Float64})
   push!(s, ℯ)
@@ -224,14 +226,14 @@ end
 # - degrees to radians
 commands[":dtor"] = :c_dtor!
 function c_dtor!(s::Vector{Float64})
-  s[end] = s[end] * pi / 180
+  s[end] = s[end] * π / 180
   return nothing
 end
 
 # - radians to degrees
 commands[":rtod"] = :c_rtod!
 function c_rtod!(s::Vector{Float64})
-  s[end] = s[end] * 180 / pi
+  s[end] = s[end] * 180 / π
   return nothing
 end
 
@@ -311,8 +313,8 @@ elseif args[1] == "mona"
   println("!!!!!!!!!             ,d\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$          .")
   println("!!!!!!!!!           ,d\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$         !!")
   println("!!!!!!!!!         ,d\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$        ,!'")
-  println("!!!!!!!!>        c\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$.       !'")
-  println("!!!!!!''       ,d\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$       allen mullen ")
+  println("!!!!!!!!>        c\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$.         ")
+  println("!!!!!!''       ,d\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$      allen mullen  ")
 else
   main(args)
 end
