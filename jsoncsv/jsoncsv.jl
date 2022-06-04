@@ -19,4 +19,4 @@ end
 df = readjsondf(arg[1])
 
 # write DataFrame to CSV
-CSV.write("zipcodes.csv", df)
+CSV.write(arg[2], df)
