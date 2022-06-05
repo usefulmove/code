@@ -5,3 +5,4 @@
 :tan :atan :sin :asin 4 :x
 
   100 2 :x_ :c :swap
+1 0 -9 :proot :drop :swap :drop

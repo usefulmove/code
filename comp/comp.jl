@@ -1,6 +1,6 @@
 #!julia
 
-const COMP_VERSION = "0.12.5"
+const COMP_VERSION = "0.13.0"
 
 #=
 
@@ -33,7 +33,7 @@ function julia_main()::Cint
     arg = ARGS # argument vector
 
     length(arg) == 0 ? push!(arg, "help") : nothing
-    
+
     if  arg[1] == "--help" || arg[1] == "help"
       println("usage: comp [version] [help]")
       println("       comp <list>")
@@ -173,6 +173,13 @@ function c_exp!(s::Vector{Float64})
   return nothing
 end
 
+# - drop
+commands[":drop"] = :c_drop!
+function c_drop!(s::Vector{Float64})
+  pop!(s)
+  return nothing
+end
+
 # - duplicate
 commands[":dup"] = :c_dup!
 function c_dup!(s::Vector{Float64})
@@ -302,6 +309,28 @@ function c_thrt!(s::Vector{Float64})
   return nothing
 end
 
+# - principal roots
+commands[":proot"] = :c_proot!
+function c_proot!(s::Vector{Float64})
+  c = pop!(s)
+  b = pop!(s)
+  a = pop!(s)
+
+  if (b^2 - 4a*c) < 0 # complex solution
+    push!(s, -b/2a) # root 1 real
+    push!(s, sqrt(4a*c - b^2)/2a) # root 1 imag
+    push!(s, -b/2a) # root 2 real
+    push!(s, -1*sqrt(4a*c - b^2)/2a) # root 2 imag
+  else
+    push!(s, (-b+sqrt(b^2-4a*c))/2a) # root 1 real
+    push!(s, 0) # root 1 imag
+    push!(s, (-b-sqrt(b^2-4a*c))/2a) # root 2 real
+    push!(s, 0) # root 2 imag
+  end
+
+  return nothing
+end
+
 # - save/retrieve a
 global stor_a = 0.0
 
@@ -393,8 +422,8 @@ smona = """
           !!!!!!!!!             ,d\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$          .
           !!!!!!!!!           ,d\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$         !!
           !!!!!!!!!         ,d\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$        ,!'
-          !!!!!!!!>        c\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$.         
-          !!!!!!''       ,d\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$      allen mullen  
+          !!!!!!!!>        c\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$.
+          !!!!!!''       ,d\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$\$      allen mullen
         """
 
 julia_main()
