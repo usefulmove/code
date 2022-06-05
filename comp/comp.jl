@@ -1,6 +1,6 @@
 #!julia
 
-const COMP_VERSION = "0.12.1"
+const COMP_VERSION = "0.12.2"
 
 #=
 
@@ -35,10 +35,9 @@ function julia_main()::Cint
     length(arg) == 0 ? push!(arg, "help") : nothing
     
     if  arg[1] == "--help" || arg[1] == "help"
-      println("usage: comp <list>")
-      println("            [version] [help]")
+      println("usage: comp [version] [help] <list>")
       println()
-      println("The <list> is a sequence of reverse Polish notion (RPN) operations. Each operation is either a command (symbol) or value. For example, 'comp 1 2 :+' adds the numbers 1 and 2, and 'comp 5 :sqrt 1 :- 2 :/' calculates the golden ratio. The available commands are listed below.")
+      println("where <list> is a sequence of reverse Polish notion (RPN) operations. Each operation is either a command (symbol) or value. For example, 'comp 1 2 :+' adds the numbers 1 and 2, and 'comp 5 :sqrt 1 :- 2 :/' calculates the golden ratio. The available commands are listed below.")
       println()
       println("commands")
       for c in keys(commands)
@@ -280,6 +279,13 @@ end
 commands[":abs"] = :c_abs!
 function c_abs!(s::Vector{Float64})
   s[end] = abs( s[end] )
+  return nothing
+end
+
+# - nth root
+commands[":thrt"] = :c_thrt!
+function c_thrt!(s::Vector{Float64})
+  s[end-1] ^= 1 / pop!(s)
   return nothing
 end
 
