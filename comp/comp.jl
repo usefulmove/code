@@ -1,6 +1,6 @@
 #!julia
 
-const COMP_VERSION = "0.12.2"
+const COMP_VERSION = "0.12.3"
 
 #=
 
@@ -288,6 +288,37 @@ function c_thrt!(s::Vector{Float64})
   s[end-1] ^= 1 / pop!(s)
   return nothing
 end
+
+# - save/retrieve a
+global stor_a = 0.0
+
+commands[":sa"] = :c_save_a!
+function c_save_a!(s::Vector{Float64})
+  global stor_a = pop!(s)
+  return nothing
+end
+
+commands[":a"] = :c_retrieve_a!
+function c_retrieve_a!(s::Vector{Float64})
+  push!(s, stor_a)
+  return nothing
+end
+
+# - save/retrieve b
+global stor_b = 0.0
+
+commands[":sb"] = :c_save_b!
+function c_save_b!(s::Vector{Float64})
+  global stor_b = pop!(s)
+  return nothing
+end
+
+commands[":b"] = :c_retrieve_b!
+function c_retrieve_b!(s::Vector{Float64})
+  push!(s, stor_b)
+  return nothing
+end
+
 
 
 smona = """
