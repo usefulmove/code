@@ -1,6 +1,6 @@
 #!julia
 
-const COMP_VERSION = "0.12.3"
+const COMP_VERSION = "0.12.4"
 
 #=
 
@@ -46,6 +46,17 @@ function julia_main()::Cint
       println()
     elseif arg[1] == "--version" || arg[1] == "version"
       println("comp ", COMP_VERSION)
+    elseif arg[1] == "-f"
+      # build vector with file contents
+      ops = Vector{String}()
+      o = read(arg[2], String)
+      o = split(o, (' ','\n'))
+      for i = 1:length(o)
+        if length(o[i]) > 0
+          push!(ops, o[i])
+        end
+      end
+      main(ops)
     elseif arg[1] == "mona"
       println(smona)
     else
