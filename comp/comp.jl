@@ -1,6 +1,6 @@
 #!julia
 
-const COMP_VERSION = "0.12.4"
+const COMP_VERSION = "0.12.5"
 
 #=
 
@@ -35,9 +35,11 @@ function julia_main()::Cint
     length(arg) == 0 ? push!(arg, "help") : nothing
     
     if  arg[1] == "--help" || arg[1] == "help"
-      println("usage: comp [version] [help] <list>")
+      println("usage: comp [version] [help]")
+      println("       comp <list>")
+      println("       comp -f <file>")
       println()
-      println("where <list> is a sequence of reverse Polish notion (RPN) operations. Each operation is either a command (symbol) or value. For example, 'comp 1 2 :+' adds the numbers 1 and 2, and 'comp 5 :sqrt 1 :- 2 :/' calculates the golden ratio. The available commands are listed below.")
+      println("where <list> is a sequence of reverse Polish notion (RPN) operations or <file> is a file containing a similar sequence of operations. Each operation must be either a command (symbol) or value. For example, 'comp 1 2 :+' adds the numbers 1 and 2, and 'comp 5 :sqrt 1 :- 2 :/' calculates the golden ratio. The available commands are listed below.")
       println()
       println("commands")
       for c in keys(commands)
@@ -327,6 +329,21 @@ end
 commands[":b"] = :c_retrieve_b!
 function c_retrieve_b!(s::Vector{Float64})
   push!(s, stor_b)
+  return nothing
+end
+
+# - save/retrieve c
+global stor_c = 0.0
+
+commands[":sc"] = :c_save_c!
+function c_save_c!(s::Vector{Float64})
+  global stor_c = pop!(s)
+  return nothing
+end
+
+commands[":c"] = :c_retrieve_c!
+function c_retrieve_c!(s::Vector{Float64})
+  push!(s, stor_c)
   return nothing
 end
 
