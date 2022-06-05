@@ -1,3 +1,7 @@
 5 :sqrt
-1 :-
-2 :/
+1 :- 2 :/
+1000 :x :sc
+ :pi :cos :acos 4 :/
+:tan :atan :sin :asin 4 :x
+
+  100 2 :x_ :c :swap
