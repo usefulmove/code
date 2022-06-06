@@ -1,0 +1,8 @@
+*.html linguist-vendored
+*.js linguist-vendored
+*.tex linguist-vendored
+*.txt linguist-vendored
+*.csv linguist-vendored
+*.jl linguist-language=Julia
+*.ipynb linguist-language=Python
+*.Rmd linguist-language=R
