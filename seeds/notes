@@ -1,9 +1,8 @@
 seeds - simple note application
 
 seeds:
-notes sync with remote database
-it may make sense to use the google keep REST API (https://developers.google.com/keep/api/reference/rest/)
-each note will have a unique id
+notes sync with a remote database {it may make sense to use the google keep REST API (https://developers.google.com/keep/api/reference/rest/)}
+each note will have a unique identifier
 
 usage:
 % seeds add Dave "this is a new note" <- adds new note to Dave category
