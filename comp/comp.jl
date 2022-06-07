@@ -145,7 +145,7 @@ end
 # - square root
 commands[":sqrt"] = :c_sqrt!
 function c_sqrt!(s::Vector{Float64})
-  s[end] = sqrt( s[end] )
+  s[end] = sqrt(s[end])
 end
 
 # - invert
@@ -196,37 +196,37 @@ end
 # - sine
 commands[":sin"] = :c_sin!
 function c_sin!(s::Vector{Float64})
-  s[end] = sin( s[end] )
+  s[end] = sin(s[end])
 end
 
 # - cosine
 commands[":cos"] = :c_cos!
 function c_cos!(s::Vector{Float64})
-  s[end] = cos( s[end] )
+  s[end] = cos(s[end])
 end
 
 # - tangent
 commands[":tan"] = :c_tan!
 function c_tan!(s::Vector{Float64})
-  s[end] = tan( s[end] )
+  s[end] = tan(s[end])
 end
 
 # - arcsine
 commands[":asin"] = :c_asin!
 function c_asin!(s::Vector{Float64})
-  s[end] = asin( s[end] )
+  s[end] = asin(s[end])
 end
 
 # - arccosine
 commands[":acos"] = :c_acos!
 function c_acos!(s::Vector{Float64})
-  s[end] = acos( s[end] )
+  s[end] = acos(s[end])
 end
 
 # - arctangent
 commands[":atan"] = :c_atan!
 function c_atan!(s::Vector{Float64})
-  s[end] = atan( s[end] )
+  s[end] = atan(s[end])
 end
 
 # - π
@@ -244,13 +244,13 @@ end
 # - log 10
 commands[":log"] = :c_log10!
 function c_log10!(s::Vector{Float64})
-  s[end] = log10( s[end] )
+  s[end] = log10(s[end])
 end
 
 # - natural log
 commands[":ln"] = :c_ln!
 function c_ln!(s::Vector{Float64})
-  s[end] = log( s[end] )
+  s[end] = log(s[end])
 end
 
 # - degrees to radians
@@ -274,7 +274,7 @@ end
 # - absolute value
 commands[":abs"] = :c_abs!
 function c_abs!(s::Vector{Float64})
-  s[end] = abs( s[end] )
+  s[end] = abs(s[end])
 end
 
 # - nth root
