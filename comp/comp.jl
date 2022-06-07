@@ -1,6 +1,6 @@
 #!julia
 
-const COMP_VERSION = "0.13.2"
+const COMP_VERSION = "0.13.3"
 
 #=
 
@@ -34,12 +34,16 @@ function julia_main()::Cint
 
     length(arg) == 0 ? push!(arg, "help") : nothing
 
-    if  arg[1] == "--help" || arg[1] == "help"
+    if arg[1] == "--help" || arg[1] == "help"
       println("usage: comp [version] [help]")
       println("       comp <list>")
       println("       comp -f <file>")
       println()
-      println("where <list> is a sequence of reverse Polish notion (rpn) operations or <file> is a file containing a similar sequence of operations. Each operation must be either a command (symbol) or value. For example, 'comp 3 4 :+' adds the numbers 3 and 4, and 'comp 5 :sqrt 1 :- 2 :/' calculates the golden ratio. The available commands are listed below.")
+      println("where <list> is a sequence of reverse Polish notion (rpn) operations or \
+      <file> is a file containing a similar sequence of operations. Each operation must \
+      be either a command (symbol) or value. For example, 'comp 3 4 :+' adds the numbers \
+      3 and 4, and 'comp 5 :sqrt 1 :- 2 :/' calculates the golden ratio. The available \
+      commands are listed below.")
       println()
       println("commands")
       for c in keys(commands)
