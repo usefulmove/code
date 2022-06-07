@@ -23,7 +23,8 @@ print(str_glue("\n\n( connecting to Snowflake database )\n\n"))
 snow_db <-
   dbConnect(
     odbc::odbc(),
-    Driver       = "/opt/snowflake/snowflakeodbc/lib/universal/libSnowflake.dylib",
+    Driver       = "/opt/snowflake/snowflakeodbc/lib/universal/libSnowflake.dylib", # macOS
+    #Driver       = "/usr/lib/snowflake/odbc/lib/libSnowflake.so", # linux
     Server       = "lha61820.snowflakecomputing.com",
     UID          = "Tableau",
     PWD          = "Summer88@@",
