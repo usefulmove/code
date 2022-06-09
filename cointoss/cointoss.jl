@@ -22,14 +22,11 @@ for i in 1:TOTAL_TOSSES
   global pattern_a_counter += 1
   global pattern_b_counter += 1
 
-  #println("i = $i  tosses = $tosses  pattern_a_counter = $pattern_a_counter  pattern_b_counter = $pattern_b_counter")
   # check for pattern
   if tosses == pattern_a && pattern_a_counter >= length(pattern_a)
-    #println("match a - pattern_a_counter = $pattern_a_counter")
     push!(pattern_a_found, pattern_a_counter)
     pattern_a_counter = 0 # reset counter
   elseif tosses == pattern_b && pattern_b_counter >= length(pattern_b)
-    #println("match b - pattern_b_counter = $pattern_b_counter")
     push!(pattern_b_found, pattern_b_counter)
     pattern_b_counter = 0 # reset counter
   end
