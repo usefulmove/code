@@ -20,11 +20,16 @@ SQL_query <- readr::read_file(str_glue("{args[1]}"))
 
 print(str_glue("\n\n( connecting to Snowflake database )\n\n"))
 
+if (Sys.info()['sysname'] == "Linux") {
+  snowflake_driver = "/usr/lib/snowflake/odbc/lib/libSnowflake.so" # linux
+} else {
+  snowflake_driver = "/opt/snowflake/snowflakeodbc/lib/universal/libSnowflake.dylib" # macOS
+}
+  
 snow_db <-
   dbConnect(
     odbc::odbc(),
-    Driver       = "/opt/snowflake/snowflakeodbc/lib/universal/libSnowflake.dylib", # macOS
-    #Driver       = "/usr/lib/snowflake/odbc/lib/libSnowflake.so", # linux
+    Driver       = snowflake_driver,
     Server       = "lha61820.snowflakecomputing.com",
     UID          = "Tableau",
     PWD          = "Summer88@@",
