@@ -7,7 +7,7 @@ if (Sys.info()['sysname'] == "Linux") {
 } else {
   snowflake_driver = "/opt/snowflake/snowflakeodbc/lib/universal/libSnowflake.dylib" # macOS
 }
-  
+
 snow_db <-
   dbConnect(
     odbc::odbc(),
@@ -21,7 +21,7 @@ snow_db <-
   )
 
 #clinical_samples <- # past 24 hours
-#  snow_db |> 
+#  snow_db |>
 #  dbGetQuery(
 #    str_glue(
 #      "
@@ -43,7 +43,7 @@ snow_db <-
 #  )
 
 clinical_samples <-
-  snow_db |> 
+  snow_db |>
   dbGetQuery(
     str_glue(
       "
@@ -63,7 +63,7 @@ clinical_samples <-
   )
 
 clinical_plates <-
-  snow_db |> 
+  snow_db |>
   dbGetQuery(
     str_glue(
       "

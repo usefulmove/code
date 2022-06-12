@@ -13,7 +13,7 @@ if (Sys.info()['sysname'] == "Linux") {
 } else {
   snowflake_driver = "/opt/snowflake/snowflakeodbc/lib/universal/libSnowflake.dylib" # macOS
 }
-  
+
 snow_db <-
   dbConnect(
     odbc::odbc(),
@@ -28,8 +28,8 @@ snow_db <-
 
 from_date <- Sys.Date() - 7
 
-status <- 
-  snow_db |> 
+status <-
+  snow_db |>
   dbGetQuery(
     str_glue(
       "
@@ -54,10 +54,10 @@ status <-
 snow_db |> dbDisconnect()
 
 process_time <-
-  status |> 
+  status |>
   filter(
     STATUS %in% c("Received", "In Process", "Retest", "Rack Retest Required")
-  ) |> 
+  ) |>
   summarise(
     sb_proces_time = sum(COUNT) / 1300.0 / 4.0
   )
@@ -73,11 +73,11 @@ add_message <- function(.string_name, .additional_string) {
 return <-
   str_glue("\n\r\n\rSB process time remaining: {format(process_time$sb_proces_time, digits = 3)} hours ( estimate )\n\r")
 
-status_returns <- 
-  status |> 
+status_returns <-
+  status |>
     mutate(
       message = purrr::map2_chr(STATUS, COUNT, ~ str_glue("  {str_to_lower(.x)}: {format(.y, big.mark=\",\")}"))
-    ) |> 
+    ) |>
     pull(message)
 
 for (i in 1:length(status_returns)) add_message("return", str_glue("{status_returns[[i]]}"))

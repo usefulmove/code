@@ -25,7 +25,7 @@ if (Sys.info()['sysname'] == "Linux") {
 } else {
   snowflake_driver = "/opt/snowflake/snowflakeodbc/lib/universal/libSnowflake.dylib" # macOS
 }
-  
+
 snow_db <-
   dbConnect(
     odbc::odbc(),
