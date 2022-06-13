@@ -42,25 +42,25 @@ snow_db <-
 #    )
 #  )
 
-clinical_samples <-
-  snow_db |>
-  dbGetQuery(
-    str_glue(
-      "
-        select
-          *
-        from SALESFORCESNOWFLAKE.LIMS_SAMPLE_C
-        where
-          TESTING_RECORD_C = FALSE
-            and
-          SAMPLE_TYPE_C = 'Clinical Samples'
-            and
-          REPORTED_DATE_TIME_C >= '2022-06-09 17:00:00'
-            and
-          REPORTED_DATE_TIME_C <= '2022-06-09 22:00:00'
-      "
-    )
-  )
+#clinical_samples <-
+#  snow_db |>
+#  dbGetQuery(
+#    str_glue(
+#      "
+#        select
+#          *
+#        from SALESFORCESNOWFLAKE.LIMS_SAMPLE_C
+#        where
+#          TESTING_RECORD_C = FALSE
+#            and
+#          SAMPLE_TYPE_C = 'Clinical Samples'
+#            and
+#          REPORTED_DATE_TIME_C >= '2022-06-09 17:00:00'
+#            and
+#          REPORTED_DATE_TIME_C <= '2022-06-09 22:00:00'
+#      "
+#    )
+#  )
 
 clinical_plates <-
   snow_db |>
@@ -73,9 +73,9 @@ clinical_plates <-
         where
           TESTING_RECORD_C = FALSE
             and
-          CREATED_DATE >= '2022-06-09 17:00:00'
+          CREATED_DATE >= '2020-01-01 00:00:00'
             and
-          CREATED_DATE <= '2022-06-09 22:00:00'
+          CREATED_DATE <= '2022-07-31 00:00:00'
       "
     )
   )
@@ -104,5 +104,6 @@ for (i in 1:nrow(p)) {
      }
    }
 }
+beepr::beep(3)
 sph_max
 max_window_end
