@@ -6,3 +6,4 @@
 *.jl linguist-language=Julia
 *.ipynb linguist-language=Python
 *.Rmd linguist-language=R
+*.SQL linguist-language=SQL
