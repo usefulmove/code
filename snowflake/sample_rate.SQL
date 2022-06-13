@@ -1,6 +1,6 @@
 select
-  count(*) / 3 as samples_per_hour,
-  count(*) / 3 * 24 as equvalent_spd
+  count(*) / 1 as samples_per_hour,
+  count(*) / 1 * 24 as equvalent_spd
 from
   SALESFORCESNOWFLAKE.LIMS_SAMPLE_C as s
 where
@@ -10,6 +10,6 @@ where
     and
   REPORTED_DATE_TIME_C >=
     (select
-      dateadd(hour, -3, max(REPORTED_DATE_TIME_C))
+      dateadd(hour, -1, max(REPORTED_DATE_TIME_C))
     from
       SALESFORCESNOWFLAKE.LIMS_SAMPLE_C)
