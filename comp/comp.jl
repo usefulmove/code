@@ -1,6 +1,6 @@
 #!julia
 
-const COMP_VERSION = "0.13.3"
+const COMP_VERSION = "0.13.4"
 
 #=
 
@@ -278,9 +278,12 @@ function c_abs!(s::Vector{Float64})
 end
 
 # - nth root
-commands[":thrt"] = :c_thrt!
-function c_thrt!(s::Vector{Float64})
-  s[end-1] ^= 1 / pop!(s)
+commands[":gcd"] = :c_gcd!
+function c_gcd!(s::Vector{Float64})
+  a = pop!(s)
+  b = pop!(s)
+
+  push!(s, gcd(Int64(a), Int64(b)))
 end
 
 # - principal roots
@@ -301,6 +304,12 @@ function c_proot!(s::Vector{Float64})
     push!(s, (-b-sqrt(b^2-4a*c))/2a) # root 2 real
     push!(s, 0) # root 2 imag
   end
+end
+
+# - greatest common denominator
+commands[":thrt"] = :c_thrt!
+function c_thrt!(s::Vector{Float64})
+  s[end-1] ^= 1 / pop!(s)
 end
 
 # - save/retrieve a
