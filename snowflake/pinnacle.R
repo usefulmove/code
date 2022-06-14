@@ -89,16 +89,17 @@ max_window_end <- as_datetime("2000-01-01")
 for (i in 1:nrow(p)) {
    if (p$CREATED_DATE[i] > p$CREATED_DATE[1] + hours(1)) {
      previous_sph_max <- sph_max
-     sph_max <- max(
-                          sph_max,
-                          nrow(
-                            p |>
-                              filter(
-                                CREATED_DATE > p$CREATED_DATE[i] - hours(1),
-                                CREATED_DATE <= p$CREATED_DATE[i]
-                              )
-                          ) * 93 * 4
-                        )
+     sph_max <-
+       max(
+         sph_max,
+         nrow(
+           p |>
+             filter(
+               CREATED_DATE > p$CREATED_DATE[i] - hours(1),
+               CREATED_DATE <= p$CREATED_DATE[i]
+             )
+         ) * 93 * 4
+       )
      if (sph_max != previous_sph_max) {
        max_window_end <- p$CREATED_DATE[i]
      }
