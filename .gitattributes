@@ -1,5 +1,4 @@
 *.html linguist-vendored
-*.js linguist-vendored
 *.tex linguist-vendored
 *.txt linguist-vendored
 *.csv linguist-vendored
