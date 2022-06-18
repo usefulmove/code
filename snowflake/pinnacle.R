@@ -73,9 +73,9 @@ clinical_plates <-
         where
           TESTING_RECORD_C = FALSE
             and
-          CREATED_DATE >= '2020-01-01 00:00:00'
+          CREATED_DATE >= '2022-05-30 00:00:00'
             and
-          CREATED_DATE <= '2022-07-31 00:00:00'
+          CREATED_DATE <= '2022-06-05 00:00:00'
       "
     )
   )
@@ -83,7 +83,10 @@ clinical_plates <-
 snow_db |> dbDisconnect()
 
 # calculate maximum clinical sample processing rate based on plate creation
-p <- clinical_plates
+p <-
+  clinical_plates |>
+  arrange(CREATED_DATE)
+
 sph_max <- 0
 max_window_end <- as_datetime("2000-01-01")
 for (i in 1:nrow(p)) {
