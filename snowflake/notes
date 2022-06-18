@@ -2,7 +2,7 @@ snow interface:
 
 % snow -> (same as snow status)
 % snow status -> return current status of unprocessed samples, etc.
-% snow SQL <filename> -> execute custom SQL query
-% snow throughput -> return average throughput over the past 3 hours (!)
+% snow SQL <filename> -> execute custom SQL query (currently snowSQL)
+% snow tput -> return average throughput over the past 3 hours (!)
 % snow help -> snow command usage help
 % snow version -> snow command version
