@@ -11,7 +11,7 @@ end
 function fib(n::UInt64)
   if n <= 0
     0
-  elseif (n < 3)
+  elseif n < 3
     1
   else
     fib(n - 1) + fib(n - 2)
