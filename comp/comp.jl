@@ -1,6 +1,6 @@
 #!julia
 
-const COMP_VERSION = "0.13.4"
+const COMP_VERSION = "0.13.9"
 
 #=
 
@@ -15,11 +15,11 @@ const COMP_VERSION = "0.13.4"
       operations list structure
         (object : command or value)
         "5"
-        ":sqrt"
+        "sqrt"
         "1
-        ":-"
+        "-"
         "2"
-        ":/"
+        "/"
 
     a list evaluation engine takes the list of
     strings and executes the corresponding oper-
@@ -31,6 +31,7 @@ const COMP_VERSION = "0.13.4"
 function julia_main()::Cint
   try
     arg = ARGS # argument vector
+    #println(string(arg)) # debug
 
     length(arg) == 0 ? push!(arg, "help") : nothing
 
@@ -41,12 +42,12 @@ function julia_main()::Cint
       println()
       println("where <list> is a sequence of reverse Polish notion (rpn) operations or \
       <file> is a file containing a similar sequence of operations. Each operation must \
-      be either a command (symbol) or value. For example, 'comp 3 4 :+' adds the numbers \
-      3 and 4, and 'comp 5 :sqrt 1 :- 2 :/' calculates the golden ratio. The available \
+      be either a command (symbol) or value. For example, 'comp 3 4 +' adds the numbers \
+      3 and 4, and 'comp 5 sqrt 1 - 2 /' calculates the golden ratio. The available \
       commands are listed below.")
       println()
       println("commands")
-      for c in keys(commands)
+      for c in sort(collect(keys(commands)))
         print(c, " ")
       end
       println()
@@ -105,12 +106,12 @@ end
 commands = Dict{String, Symbol}()
 
 # - add
-commands[":+"] = :c_add!
+commands["+"] = :c_add!
 function c_add!(s::Vector{Float64})
   s[end-1] += pop!(s)
 end
 
-commands[":+_"] = :c_add_all!
+commands["+_"] = :c_add_all!
 function c_add_all!(s::Vector{Float64})
   while length(s) > 1
     s[end-1] += pop!(s)
@@ -118,18 +119,18 @@ function c_add_all!(s::Vector{Float64})
 end
 
 # - subtract
-commands[":-"] = :c_sub!
+commands["-"] = :c_sub!
 function c_sub!(s::Vector{Float64})
   s[end-1] -= pop!(s)
 end
 
 # - multiply
-commands[":x"] = :c_mult!
+commands["x"] = :c_mult!
 function c_mult!(s::Vector{Float64})
   s[end-1] *= pop!(s)
 end
 
-commands[":x_"] = :c_mult_all!
+commands["x_"] = :c_mult_all!
 function c_mult_all!(s::Vector{Float64})
   while length(s) > 1
     s[end-1] *= pop!(s)
@@ -137,49 +138,50 @@ function c_mult_all!(s::Vector{Float64})
 end
 
 # - divide
-commands[":/"] = :c_div!
+commands["/"] = :c_div!
 function c_div!(s::Vector{Float64})
   s[end-1] /= pop!(s)
 end
 
 # - square root
-commands[":sqrt"] = :c_sqrt!
+commands["sqrt"] = :c_sqrt!
 function c_sqrt!(s::Vector{Float64})
   s[end] = sqrt(s[end])
 end
 
 # - invert
-commands[":inv"] = :c_inv!
+commands["inv"] = :c_inv!
 function c_inv!(s::Vector{Float64})
   s[end] = 1 / s[end]
 end
 
 # - change sign
-commands[":chs"] = :c_chs!
+commands["chs"] = :c_chs!
 function c_chs!(s::Vector{Float64})
   s[end] = -1 * s[end]
 end
 
 # - exponentiation
-commands[":exp"] = :c_exp!
+commands["exp"] = :c_exp!
+commands["^"] = :c_exp!
 function c_exp!(s::Vector{Float64})
   s[end-1] ^= pop!(s)
 end
 
 # - drop
-commands[":drop"] = :c_drop!
+commands["drop"] = :c_drop!
 function c_drop!(s::Vector{Float64})
   pop!(s)
 end
 
 # - duplicate
-commands[":dup"] = :c_dup!
+commands["dup"] = :c_dup!
 function c_dup!(s::Vector{Float64})
   push!(s, s[end])
 end
 
 # - swap x and y
-commands[":swap"] = :c_swap!
+commands["swap"] = :c_swap!
 function c_swap!(s::Vector{Float64})
   x = s[end]
   s[end] = s[end-1]
@@ -187,98 +189,100 @@ function c_swap!(s::Vector{Float64})
 end
 
 # - modulus
-commands[":%"] = :c_mod!
+commands["%"] = :c_mod!
+commands["mod"] = :c_mod!
 function c_mod!(s::Vector{Float64})
   divisor = pop!(s)
   s[end] = s[end] % divisor
 end
 
 # - sine
-commands[":sin"] = :c_sin!
+commands["sin"] = :c_sin!
 function c_sin!(s::Vector{Float64})
   s[end] = sin(s[end])
 end
 
 # - cosine
-commands[":cos"] = :c_cos!
+commands["cos"] = :c_cos!
 function c_cos!(s::Vector{Float64})
   s[end] = cos(s[end])
 end
 
 # - tangent
-commands[":tan"] = :c_tan!
+commands["tan"] = :c_tan!
 function c_tan!(s::Vector{Float64})
   s[end] = tan(s[end])
 end
 
 # - arcsine
-commands[":asin"] = :c_asin!
+commands["asin"] = :c_asin!
 function c_asin!(s::Vector{Float64})
   s[end] = asin(s[end])
 end
 
 # - arccosine
-commands[":acos"] = :c_acos!
+commands["acos"] = :c_acos!
 function c_acos!(s::Vector{Float64})
   s[end] = acos(s[end])
 end
 
 # - arctangent
-commands[":atan"] = :c_atan!
+commands["atan"] = :c_atan!
 function c_atan!(s::Vector{Float64})
   s[end] = atan(s[end])
 end
 
 # - π
-commands[":pi"] = :c_pi!
+commands["pi"] = :c_pi!
 function c_pi!(s::Vector{Float64})
   push!(s, π)
 end
 
 # - Euler's number (ℯ)
-commands[":e"] = :c_euler!
+commands["e"] = :c_euler!
 function c_euler!(s::Vector{Float64})
   push!(s, ℯ)
 end
 
 # - log 10
-commands[":log"] = :c_log10!
+commands["log"] = :c_log10!
+commands["log10"] = :c_log10!
 function c_log10!(s::Vector{Float64})
   s[end] = log10(s[end])
 end
 
 # - natural log
-commands[":ln"] = :c_ln!
+commands["ln"] = :c_ln!
 function c_ln!(s::Vector{Float64})
   s[end] = log(s[end])
 end
 
 # - degrees to radians
-commands[":dtor"] = :c_dtor!
+commands["dtor"] = :c_dtor!
 function c_dtor!(s::Vector{Float64})
   s[end] = s[end] * π / 180
 end
 
 # - radians to degrees
-commands[":rtod"] = :c_rtod!
+commands["rtod"] = :c_rtod!
 function c_rtod!(s::Vector{Float64})
   s[end] = s[end] * 180 / π
 end
 
 # - factorial
-commands[":!"] = :c_factorial!
+commands["!"] = :c_factorial!
 function c_factorial!(s::Vector{Float64})
   s[end] = factorial( Int64(s[end]) )
 end
 
 # - absolute value
-commands[":abs"] = :c_abs!
+commands["abs"] = :c_abs!
 function c_abs!(s::Vector{Float64})
   s[end] = abs(s[end])
 end
 
 # - nth root
-commands[":gcd"] = :c_gcd!
+commands["gcd"] = :c_gcd!
 function c_gcd!(s::Vector{Float64})
   a = pop!(s)
   b = pop!(s)
@@ -287,7 +291,7 @@ function c_gcd!(s::Vector{Float64})
 end
 
 # - principal roots
-commands[":proot"] = :c_proot!
+commands["proot"] = :c_proot!
 function c_proot!(s::Vector{Float64})
   c = pop!(s)
   b = pop!(s)
@@ -307,7 +311,7 @@ function c_proot!(s::Vector{Float64})
 end
 
 # - greatest common denominator
-commands[":thrt"] = :c_thrt!
+commands["throot"] = :c_thrt!
 function c_thrt!(s::Vector{Float64})
   s[end-1] ^= 1 / pop!(s)
 end
@@ -315,12 +319,12 @@ end
 # - save/retrieve a
 global stor_a = 0.0
 
-commands[":sa"] = :c_store_a!
+commands["sa"] = :c_store_a!
 function c_store_a!(s::Vector{Float64})
   global stor_a = pop!(s)
 end
 
-commands[":a"] = :c_push_a!
+commands["a"] = :c_push_a!
 function c_push_a!(s::Vector{Float64})
   push!(s, stor_a)
 end
@@ -328,12 +332,12 @@ end
 # - save/retrieve b
 global stor_b = 0.0
 
-commands[":sb"] = :c_store_b!
+commands["sb"] = :c_store_b!
 function c_store_b!(s::Vector{Float64})
   global stor_b = pop!(s)
 end
 
-commands[":b"] = :c_push_b!
+commands["b"] = :c_push_b!
 function c_push_b!(s::Vector{Float64})
   push!(s, stor_b)
 end
@@ -341,12 +345,12 @@ end
 # - save/retrieve c
 global stor_c = 0.0
 
-commands[":sc"] = :c_store_c!
+commands["sc"] = :c_store_c!
 function c_store_c!(s::Vector{Float64})
   global stor_c = pop!(s)
 end
 
-commands[":c"] = :c_push_c!
+commands["c"] = :c_push_c!
 function c_push_c!(s::Vector{Float64})
   push!(s, stor_c)
 end
