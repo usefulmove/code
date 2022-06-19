@@ -1,6 +1,6 @@
 #!julia
 
-const COMP_VERSION = "0.13.9"
+const COMP_VERSION = "0.13.10"
 
 #=
 
@@ -40,13 +40,13 @@ function julia_main()::Cint
       println("       comp <list>")
       println("       comp -f <file>")
       println()
-      println("where <list> is a sequence of reverse Polish notion (rpn) operations or \
-      <file> is a file containing a similar sequence of operations. Each operation must \
-      be either a command (symbol) or value. For example, 'comp 3 4 +' adds the numbers \
-      3 and 4, and 'comp 5 sqrt 1 - 2 /' calculates the golden ratio. The available \
-      commands are listed below.")
+      println("where <list> is a sequence of reverse Polish notion (rpn) postfix \
+      operations or <file> is a file containing a similar sequence of operations. \
+      Each operation must be either a command (symbol) or value. As examples, \
+      'comp 3 4 +' adds the numbers 3 and 4, and '3 2 ^ 4 2 ^ +' computes the sum \
+      of two squares. The available commands are listed below.")
       println()
-      println("commands")
+      println("commands:")
       for c in sort(collect(keys(commands)))
         print(c, " ")
       end
@@ -104,6 +104,8 @@ end
 # -- create command dictionary and define commands and behaviors ---------------
 
 commands = Dict{String, Symbol}()
+
+# -- math operations -----------------------------------------------------------
 
 # - add
 commands["+"] = :c_add!
@@ -166,26 +168,6 @@ commands["exp"] = :c_exp!
 commands["^"] = :c_exp!
 function c_exp!(s::Vector{Float64})
   s[end-1] ^= pop!(s)
-end
-
-# - drop
-commands["drop"] = :c_drop!
-function c_drop!(s::Vector{Float64})
-  pop!(s)
-end
-
-# - duplicate
-commands["dup"] = :c_dup!
-function c_dup!(s::Vector{Float64})
-  push!(s, s[end])
-end
-
-# - swap x and y
-commands["swap"] = :c_swap!
-function c_swap!(s::Vector{Float64})
-  x = s[end]
-  s[end] = s[end-1]
-  s[end-1] = x
 end
 
 # - modulus
@@ -311,15 +293,62 @@ function c_proot!(s::Vector{Float64})
 end
 
 # - greatest common denominator
-commands["throot"] = :c_thrt!
-function c_thrt!(s::Vector{Float64})
+commands["throot"] = :c_throot!
+function c_throot!(s::Vector{Float64})
   s[end-1] ^= 1 / pop!(s)
 end
+
+# - round (convert to integer)
+commands["round"] = :c_round!
+commands["int"] = :c_round!
+function c_round!(s::Vector{Float64})
+  s[end] = round(s[end])
+end
+
+# -- stack manipulation --------------------------------------------------------
+
+# - drop
+commands["drop"] = :c_drop!
+function c_drop!(s::Vector{Float64})
+  pop!(s)
+end
+
+# - duplicate
+commands["dup"] = :c_dup!
+function c_dup!(s::Vector{Float64})
+  push!(s, s[end])
+end
+
+# - swap x and y
+commands["swap"] = :c_swap!
+function c_swap!(s::Vector{Float64})
+  x = s[end]
+  s[end] = s[end-1]
+  s[end-1] = x
+end
+
+# - clear stack
+commands["cls"] = :c_cls!
+commands["clr"] = :c_cls!
+function c_cls!(s::Vector{Float64})
+  empty!(s)
+end
+
+# - roll stack
+commands["roll"] = :c_roll!
+commands["rot"] = :c_roll!
+function c_roll!(s::Vector{Float64})
+  o = pop!(s)
+  pushfirst!(s, o)
+end
+
+# -- memory usage --------------------------------------------------------------
 
 # - save/retrieve a
 global stor_a = 0.0
 
 commands["sa"] = :c_store_a!
+commands[".a"] = :c_store_a!
 function c_store_a!(s::Vector{Float64})
   global stor_a = pop!(s)
 end
@@ -333,6 +362,7 @@ end
 global stor_b = 0.0
 
 commands["sb"] = :c_store_b!
+commands[".b"] = :c_store_b!
 function c_store_b!(s::Vector{Float64})
   global stor_b = pop!(s)
 end
@@ -346,6 +376,7 @@ end
 global stor_c = 0.0
 
 commands["sc"] = :c_store_c!
+commands[".c"] = :c_store_c!
 function c_store_c!(s::Vector{Float64})
   global stor_c = pop!(s)
 end
