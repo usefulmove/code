@@ -43,8 +43,9 @@ function julia_main()::Cint
       println("where <list> represents a sequence of reverse Polish notion (rpn) \
       postfix operations or <file> is a file containing a similar sequence of \
       operations. Each operation must be either a command (symbol) or value. As \
-      examples, 'comp 3 4 +' adds the numbers 3 and 4, and '3 dup x 4 dup x +' \
-      computes the sum of two squares. The available commands are listed below.")
+      examples, 'comp 3 4 +' adds the values 3 and 4 and '3 dup x 4 dup x +' \
+      computes the sum of the squares of 3 and 4. The available commands are \
+      listed below.")
       println()
       println("commands:")
       for c in sort(collect(keys(commands)))
