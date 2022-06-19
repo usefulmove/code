@@ -336,7 +336,6 @@ end
 
 # - roll stack
 commands["roll"] = :c_roll!
-commands["rot"] = :c_roll!
 function c_roll!(s::Vector{Float64})
   o = pop!(s)
   pushfirst!(s, o)
