@@ -8,4 +8,4 @@ function fib(n) {
   }
 }
 
-alert( fib(38) );
+console.log(fib(38));
