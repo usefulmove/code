@@ -17,7 +17,7 @@ print_vector(v)
 
 # find index of minimum element in vector
 function min_index(vec)
-    m_val = 2^32 
+    m_val = typemax(UInt32)
     m_ind = 0
     for i = 1:length(vec)
         if vec[i] < m_val
@@ -31,6 +31,7 @@ end
 
 # swap vector elements
 function swap(vec, i, j)
+    #println("swapping ", vec[i], " and ", vec[j])
     o = vec[i]
     vec[i] = vec[j]
     vec[j] = o
@@ -51,7 +52,28 @@ function ssort!(vec)
     return vec
 end
 
-v = ssort!(v)
+# quicksort
+function qsort!(vec)
+    if length(vec) > 1
+        # use last element as pivot
+        ins = 1
+        for icomp in 1:(length(vec)-1)
+            if vec[icomp] < vec[end] 
+                swap(vec, icomp, ins)
+                ins += 1
+            end
+        end
+        swap(vec, ins, length(vec))
 
-println("sorted:") 
-print_vector(v)
+        vec[1:ins-1] = qsort!(vec[1:ins-1])
+        vec[ins+1:end] = qsort!(vec[ins+1:end])
+    end
+
+    return vec
+end
+
+println("ssort:") 
+print_vector(ssort!(copy(v)))
+
+println("qsort:") 
+print_vector(qsort!(copy(v)))
