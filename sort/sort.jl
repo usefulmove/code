@@ -3,12 +3,13 @@
 using Random
 
 # create vector of random integers
-v = rand(UInt32, (4)) 
+v = rand(UInt32, (10)) 
 
 function print_vector(vec)
     for e in vec
         println(e)
     end
+    println()
 end
 
 println("orig:") 
@@ -30,7 +31,6 @@ end
 
 # swap vector elements
 function swap(vec, i, j)
-    println("swap: swapping ", vec[i], " and ", vec[j])
     o = vec[i]
     vec[i] = vec[j]
     vec[j] = o
@@ -41,19 +41,17 @@ function ssort!(vec)
     if length(vec) > 1
         ind = min_index(vec)
         if ind > 1
-            println("ssort: swap ", vec[1], " and ", vec[ind])
             swap(vec, 1, ind)
-        else
-            println("no swap")
         end
 
-        ssort!(vec[2:end])
-    else
-        println("no swap (termination condition)")
+        # recursive call to ssort 
+        vec[2:end] = ssort!(vec[2:end])
     end
+
+    return vec
 end
 
-ssort!(v)
+v = ssort!(v)
 
 println("sorted:") 
 print_vector(v)
