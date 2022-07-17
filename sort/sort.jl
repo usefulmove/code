@@ -55,7 +55,9 @@ end
 # quicksort
 function qsort!(vec)
     if length(vec) > 1
-        # use last element as pivot
+        # use middle element as pivot
+        swap(vec, floor(Int, length(vec)/2), length(vec))
+
         ins = 1
         for icomp in 1:(length(vec)-1)
             if vec[icomp] < vec[end] 
