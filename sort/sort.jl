@@ -72,8 +72,31 @@ function qsort!(vec)
     return vec
 end
 
+# insertion short
+function isort!(vec)
+    if length(vec) > 1
+        for i in 2:length(vec)
+            vec = insload(vec, i)
+        end
+    end
+
+    vec
+end
+
+function insload(vec, loc)
+    if (loc > 1) && (vec[loc] < vec[loc-1])
+        swap(vec, loc, loc-1)
+        vec = insload(vec, loc-1)
+    end
+
+    vec
+end
+
 println("ssort:") 
 print_vector(ssort!(copy(v)))
 
 println("qsort:") 
 print_vector(qsort!(copy(v)))
+
+println("isort:") 
+print_vector(isort!(copy(v)))
