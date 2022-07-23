@@ -20,6 +20,8 @@ fn qsort(vec: Vec<u32>) -> Vec<u32>  {
         vec
     } else {
         // use last element as pivot
+        let pindex: usize = cop.len()/2;
+        swap(cop, pindex, cop.len()-1);
         let pivot: u32 = cop[cop.len()-1];
         
         let mut ins: usize = 0;
