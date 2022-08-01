@@ -48,8 +48,10 @@ end_node = "piano"
 all_nodes = Set(keys(relation_graph))
 push!(all_nodes, end_node)
 
-# build process state and cost structures
+# build process state structure
 processed = Set{String}([end_node]) # end node does not need to be processed
+
+# build cost structure
 cost = Dict{String, UInt32}()
 for key in keys(relation_graph)
     cost[key] = typemax(UInt32) # initialize costs
@@ -57,11 +59,19 @@ end
 cost[start_node] = 0
 cost[end_node] = typemax(UInt32)
 
+# build path structure
+path_data = Dict{String, String}()
+
+
 function process_node(node)
     # add cost of getting to this node to the costs of reaching adjacent nodes
     for adjacent_node in keys(relation_graph[node])
         # store edge weight
-        cost[adjacent_node] = relation_graph[node][adjacent_node] + cost[node]
+        if (relation_graph[node][adjacent_node] + cost[node]) < cost[adjacent_node]
+            # updated cost and record path
+            cost[adjacent_node] = relation_graph[node][adjacent_node] + cost[node]
+            path_data[adjacent_node] = node
+        end
     end
 
     # mark processed
@@ -89,8 +99,23 @@ while !isempty(find_lowest_unprocessed())
     process_node(find_lowest_unprocessed())
 end
 
+function simplify_path(data)
+    path = Dict{String, String}()
+
+    current_node = end_node
+    while current_node != start_node
+        path[current_node] = data[current_node]
+        current_node = data[current_node]
+    end
+
+    path
+end
+
+path = simplify_path(path_data)
+
 println("processed = ", processed)
 println("cost = ", cost)
 
 println("all nodes:  ", all_nodes)
 println("unprocessed nodes:  ", get_unprocessed())
+println("path:  ", path)
