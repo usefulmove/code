@@ -23,13 +23,13 @@ relation_graph["drums"] = Dict{String, UInt32}()
 relation_graph["drums"]["piano"] = 10
 
 # print current graph state
-function print_graph()
+function print_relation_graph()
     for key in keys(relation_graph)
         println(key, " = ", relation_graph[key])
     end
 end
 
-print_graph()
+print_relation_graph()
 
 # execute Dijkstra's algorithm on graph
 #   to find shortest weighted path from
@@ -62,7 +62,6 @@ cost[end_node] = typemax(UInt32)
 # build path structure
 path_data = Dict{String, String}()
 
-
 function process_node(node)
     # add cost of getting to this node to the costs of reaching adjacent nodes
     for adjacent_node in keys(relation_graph[node])
@@ -78,16 +77,16 @@ function process_node(node)
     push!(processed, node)
 end
 
-function find_lowest_unprocessed()
-    lowest_unp = ""
+function get_lowest_unprocessed()
+    lowest_unprocessed_node = ""
     lowest_value = typemax(UInt32)
-    for unp in get_unprocessed()
-        if cost[unp] < lowest_value
-            lowest_unp = unp
-            lowest_value = cost[unp]
+    for node in get_unprocessed()
+        if cost[node] < lowest_value
+            lowest_unprocessed_node = node
+            lowest_value = cost[node]
         end
     end
-    lowest_unp
+    lowest_unprocessed_node
 end
 
 function get_unprocessed()
@@ -95,8 +94,8 @@ function get_unprocessed()
 end
 
 # process lowest cost unprocessed node
-while !isempty(find_lowest_unprocessed())
-    process_node(find_lowest_unprocessed())
+while !isempty(get_lowest_unprocessed())
+    process_node(get_lowest_unprocessed())
 end
 
 function simplify_path(data)
@@ -111,11 +110,6 @@ function simplify_path(data)
     path
 end
 
-path = simplify_path(path_data)
+fastest_path = simplify_path(path_data)
 
-println("processed = ", processed)
-println("cost = ", cost)
-
-println("all nodes:  ", all_nodes)
-println("unprocessed nodes:  ", get_unprocessed())
-println("path:  ", path)
+println("\nfastest path:  ", fastest_path)
