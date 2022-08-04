@@ -61,14 +61,21 @@ fn main() {
     for o in relation_graph.keys() {
         all_nodes.insert(o);
     }
-
     println!("all nodes: {:#?}", all_nodes);
 
     //    processed status
     let mut processed: HashSet<&str> = HashSet::new();
     processed.insert(end_node);
-
     println!("processed nodes: {:#?}", processed);
+
+    let mut cost: HashMap<&str, u32> = HashMap::new();
+    for o in relation_graph.keys() {
+        cost.insert(o, u32::MAX);
+    }
+    cost.insert(end_node, u32::MAX);
+    *cost.entry(start_node).or_insert(0) = 0;
+    println!("costs: {:#?}", cost);
+
 }
 
 #[test]
