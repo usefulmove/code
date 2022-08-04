@@ -30,20 +30,16 @@ fn main() {
             "drums" => {
                 obj.insert("piano", 10);
             },
-            _ => {
-            },
+            _ => {},
         }
     }
-    
     println!("{:#?}", relation_graph);
 
 
     /*
+      execute Dijkstra's algorithm on graph to find shortest weighted
+      path from book to drums
 
-      execute Dijkstra's algorithm on graph
-        to find shortest weighted path from
-        book to drums
-      
       we have a weighted graph that represents ("holds") the transaction
       (node - position, connections, distance) information for a connection
       diagram that we will use Dijkstra's algorithm on to find the shortest
@@ -55,7 +51,7 @@ fn main() {
     let start_node: &str = "book";
     let end_node: &str = "piano";
 
-    //    all nodes
+    // all nodes
     let mut all_nodes: HashSet<&str> = HashSet::new();
     all_nodes.insert(end_node);
     for o in relation_graph.keys() {
@@ -63,18 +59,26 @@ fn main() {
     }
     println!("all nodes: {:#?}", all_nodes);
 
-    //    processed status
+    // processed status
     let mut processed: HashSet<&str> = HashSet::new();
     processed.insert(end_node);
     println!("processed nodes: {:#?}", processed);
 
+    // cost
     let mut cost: HashMap<&str, u32> = HashMap::new();
     for o in relation_graph.keys() {
         cost.insert(o, u32::MAX);
     }
     cost.insert(end_node, u32::MAX);
-    *cost.entry(start_node).or_insert(0) = 0;
+    cost.insert(start_node, 0);
     println!("costs: {:#?}", cost);
+
+    // path structure
+    let mut path_data: HashMap<&str, &str> = HashMap::new();
+
+    fn process_node(node: &str) {
+        //TODO
+    }
 
 }
 
