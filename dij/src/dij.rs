@@ -35,6 +35,8 @@ fn main() {
         }
     }
 
+    println!("relation graph: {:#?}", relation_graph);
+
     /*
       execute Dijkstra's algorithm on graph to find shortest weighted
       path from book to drums
