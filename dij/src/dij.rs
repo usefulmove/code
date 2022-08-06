@@ -33,7 +33,7 @@ fn main() {
             _ => {},
         }
     }
-    println!("{:#?}", relation_graph);
+    println!("relation graph: {:#?}", relation_graph);
 
 
     /*
@@ -76,10 +76,31 @@ fn main() {
     // path structure
     let mut path_data: HashMap<&str, &str> = HashMap::new();
 
-    fn process_node(node: &str) {
-        //TODO
-    }
+    process_node("book", &relation_graph, &mut cost);
 
+    //println!(" costs: {:#?}", cost); // debug temp remove
+
+}
+
+fn process_node<'a>(pnode: &str, rel_graph: &'a HashMap<&str, HashMap<&str, u32>>, cost_map: &'a mut HashMap<&'a str, u32>) {
+    /* calculate the cost of reaching adjacent nodes (anode) by adding the cost
+     * of getting to this node (pnode) to the cost of reaching them (edge weight)
+     * and update if better
+     */
+    for anode in rel_graph[pnode].keys() {
+        let adj_cost: u32 = cost_map[pnode.clone()] + rel_graph[pnode][anode];
+        println!("cost of reaching \"{}\" is {}", anode.clone(), adj_cost);
+        if adj_cost < cost_map[anode.clone()] {
+            println!("updating \"{}\" node cost", anode.clone());
+            cost_map.insert(anode.clone(), adj_cost);
+        }
+
+    }
+    //TODO
+}
+
+fn get_lowest_unprocessed<'a>(cost_map: &'a mut HashMap<&str, u32>) -> &'a str {
+    "book"
 }
 
 #[test]

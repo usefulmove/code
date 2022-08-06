@@ -54,7 +54,7 @@ processed = Set{String}([end_node]) # end node does not need to be processed
 # build cost structure
 cost = Dict{String, UInt32}()
 for key in keys(relation_graph)
-    cost[key] = typemax(UInt32) # initialize costs
+    cost[key] = typemax(UInt32) # initialize cost structure
 end
 cost[start_node] = 0
 cost[end_node] = typemax(UInt32)
@@ -62,19 +62,19 @@ cost[end_node] = typemax(UInt32)
 # build path structure
 path_data = Dict{String, String}()
 
-function process_node(node)
-    # add cost of getting to this node to the costs of reaching adjacent nodes
-    for adjacent_node in keys(relation_graph[node])
+function process_node(pnode)
+    # add cost of getting to this node (pnode) to the cost of reaching adjacent nodes
+    for adjacent_node in keys(relation_graph[pnode])
         # store edge weight
-        if (relation_graph[node][adjacent_node] + cost[node]) < cost[adjacent_node]
+        if (relation_graph[pnode][adjacent_node] + cost[pnode]) < cost[adjacent_node]
             # updated cost and record path
-            cost[adjacent_node] = relation_graph[node][adjacent_node] + cost[node]
-            path_data[adjacent_node] = node
+            cost[adjacent_node] = relation_graph[pnode][adjacent_node] + cost[pnode]
+            path_data[adjacent_node] = pnode
         end
     end
 
     # mark processed
-    push!(processed, node)
+    push!(processed, pnode)
 end
 
 function get_lowest_unprocessed()
