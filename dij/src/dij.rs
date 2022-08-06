@@ -107,11 +107,11 @@ fn process_node<'a, 'b, 'c>(
 }
 
 // find lowest unprocessed node on relation graph
-fn get_unprocessed_low<'d, 'e>(
-    rel_graph: &'d HashMap<&str, HashMap<&'d str, u32>>,
-    cost_map: &'e mut HashMap<&'d str, u32>,
-    proc_map: &'e HashSet<&'d str>,
-) -> &'d str {
+fn get_unprocessed_low<'a, 'b>(
+    rel_graph: &'a HashMap<&str, HashMap<&'a str, u32>>,
+    cost_map: &'b mut HashMap<&'a str, u32>,
+    proc_map: &'b HashSet<&'a str>,
+) -> &'a str {
     let nodes: HashSet<&str> = rel_graph.keys().cloned().collect();
 
     let mut lowest_unprocessed_node: &str = "";
