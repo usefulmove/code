@@ -76,13 +76,20 @@ fn main() {
     // path structure
     let mut path_data: HashMap<&str, &str> = HashMap::new();
 
+    //process_node(&mut cost);
     process_node("book", &relation_graph, &mut cost);
+    //process_node("book", &mut cost);
 
-    //println!(" costs: {:#?}", cost); // debug temp remove
+    println!(" costs: {:#?}", cost); // debug temp remove
 
 }
 
-fn process_node<'a>(pnode: &str, rel_graph: &'a HashMap<&str, HashMap<&str, u32>>, cost_map: &'a mut HashMap<&'a str, u32>) {
+//fn process_node(cost_map: &mut HashMap<&str, u32>) {
+//fn process_node<'a>(pnode: &str, cost_map: &'a mut HashMap<&str, u32>) {
+//    cost_map.insert("piano", 10);
+//}
+
+fn process_node<'a, 'b>(pnode: &str, rel_graph: &'a HashMap<&str, HashMap<&'b str, u32>>, cost_map: &'a mut HashMap<&'b str, u32>) {
     /* calculate the cost of reaching adjacent nodes (anode) by adding the cost
      * of getting to this node (pnode) to the cost of reaching them (edge weight)
      * and update if better
