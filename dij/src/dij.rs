@@ -10,6 +10,7 @@ fn main() {
     relation_graph.insert("poster", HashMap::new());
     relation_graph.insert("bass", HashMap::new());
     relation_graph.insert("drums", HashMap::new());
+    relation_graph.insert("piano", HashMap::new());
     for (&node, obj) in relation_graph.iter_mut() {
         match node {
             "book" => {
@@ -33,7 +34,6 @@ fn main() {
             _ => {},
         }
     }
-    println!("relation graph: {:#?}", relation_graph);
 
 
     /*
@@ -51,83 +51,69 @@ fn main() {
     let start_node: &str = "book";
     let end_node: &str = "piano";
 
-    // all nodes
-    let mut all_nodes: HashSet<&str> = HashSet::new();
-    all_nodes.insert(end_node);
-    for o in relation_graph.keys() {
-        all_nodes.insert(o);
-    }
-    println!("all nodes: {:#?}", all_nodes);
-
     // processed status
-    let mut processed_states: HashSet<&str> = HashSet::new();
-    processed_states.insert(end_node);
-    println!("processed states: {:#?}", processed_states);
+    let mut process_map: HashSet<&str> = HashSet::new();
+    process_map.insert(end_node);
 
     // cost
     let mut cost: HashMap<&str, u32> = HashMap::new();
     for o in relation_graph.keys() {
         cost.insert(o, u32::MAX);
     }
-    cost.insert(end_node, u32::MAX);
     cost.insert(start_node, 0);
-    println!("cost map: {:#?}", cost);
 
     // path structure
-    let mut path_data: HashMap<&str, &str> = HashMap::new();
+    let mut path_pred: HashMap<&str, &str> = HashMap::new();
 
-    process_node("book", &relation_graph, &mut cost, &mut processed_states);
+    while ! get_unprocessed_low(&relation_graph, &mut cost, &mut process_map).is_empty() {
+        let next_node = get_unprocessed_low(&relation_graph, &mut cost, &mut process_map);
+        process_node(
+            next_node,
+            &relation_graph,
+            &mut cost,
+            &mut process_map,
+            &mut path_pred,
+        );
+    }
 
-    println!("processed states: {:#?}", processed_states);
-    println!("cost map: {:#?}", cost); // debug temp remove
-
-    process_node("poster", &relation_graph, &mut cost, &mut processed_states);
-
-    println!("processed states: {:#?}", processed_states);
-    println!("cost map: {:#?}", cost); // debug temp remove
-
-    process_node("lp", &relation_graph, &mut cost, &mut processed_states);
-
-    println!("processed states: {:#?}", processed_states);
-    println!("cost map: {:#?}", cost); // debug temp remove
-
-    process_node("bass", &relation_graph, &mut cost, &mut processed_states);
-
-    println!("processed states: {:#?}", processed_states);
-    println!("cost map: {:#?}", cost); // debug temp remove
-
-    process_node("drums", &relation_graph, &mut cost, &mut processed_states);
-
-    println!("processed states: {:#?}", processed_states);
-    println!("cost map: {:#?}", cost); // debug temp remove
-
-
+    println!("cost map: {:#?}", cost);
+    println!("shortest path map: {:#?}", path_pred);
 }
 
-fn process_node<'a, 'b, 'c>(pnode: &'c str, rel_graph: &'a HashMap<&str, HashMap<&'b str, u32>>, cost_map: &'a mut HashMap<&'b str, u32>, proc_state: &mut HashSet<&'c str>) {
-    println!("processing \"{}\"", pnode);
+fn process_node<'a, 'b, 'c>(pnode: &'c str, rel_graph: &'a HashMap<&str, HashMap<&'b str, u32>>, cost_map: &'a mut HashMap<&'b str, u32>, proc_map: &mut HashSet<&'c str>, pred_map: &mut HashMap<&'b str, &'c str>) {
     // calculate the cost of reaching adjacent nodes (anode) by adding the cost
     // of getting to this node (pnode) to the cost of reaching them (edge weight)
     // and update if better
     for anode in rel_graph[pnode].keys() {
         let adj_cost: u32 = cost_map[pnode.clone()] + rel_graph[pnode][anode];
-        //println!("cost of reaching \"{}\" is {}", anode.clone(), adj_cost);
         if adj_cost < cost_map[anode.clone()] {
-            //println!("updating \"{}\" node cost", anode.clone());
+            // better cost - update path data and adjacent node cost
+            pred_map.insert(anode.clone(), pnode.clone());
             cost_map.insert(anode.clone(), adj_cost);
         }
 
     }
 
     // mark processed
-    proc_state.insert(pnode);
+    proc_map.insert(pnode);
 }
 
-fn get_lowest_unprocessed<'a>(cost_map: &'a mut HashMap<&str, u32>) -> &'a str {
-    "book"
+// find lowest unprocessed node on relation graph
+fn get_unprocessed_low<'d, 'e>(rel_graph: &'d HashMap<&str, HashMap<&'d str, u32>>, cost_map: &'e mut HashMap<&'d str, u32>, proc_map: &'e HashSet<&'d str>) -> &'d str {
+    let nodes: HashSet<&str> = rel_graph.keys().cloned().collect();
+
+    let mut lowest_unprocessed_node: &str = "";
+    let mut lowest: u32 = u32::MAX;
+    for unprocessed_node in nodes.difference(proc_map) {
+        if cost_map[unprocessed_node] < lowest {
+            lowest_unprocessed_node = unprocessed_node;
+            lowest = cost_map[unprocessed_node];
+        }
+    }
+
+    lowest_unprocessed_node
 }
 
-#[test]
-fn test_test() {
-    // TODO
-}
+//fn simplify_path(path_data) {
+//    TODO
+//}

@@ -22,6 +22,8 @@ relation_graph["bass"]["piano"] = 20
 relation_graph["drums"] = Dict{String, UInt32}()
 relation_graph["drums"]["piano"] = 10
 
+relation_graph["piano"] = Dict{String, UInt32}()
+
 # print current graph state
 function print_relation_graph()
     for key in keys(relation_graph)
@@ -44,9 +46,6 @@ print_relation_graph()
 # define start and end nodes
 start_node = "book"
 end_node = "piano"
-
-all_nodes = Set(keys(relation_graph))
-push!(all_nodes, end_node)
 
 # build process state structure
 processed = Set{String}([end_node]) # end node does not need to be processed
@@ -78,7 +77,7 @@ function process_node(pnode)
     push!(processed, pnode)
 end
 
-function get_lowest_unprocessed()
+function get_unprocessed_low()
     lowest_unprocessed_node = ""
     lowest_value = typemax(UInt32)
     for node in get_unprocessed()
@@ -91,12 +90,15 @@ function get_lowest_unprocessed()
 end
 
 function get_unprocessed()
-    setdiff(all_nodes, processed)
+    setdiff(
+        Set(keys(relation_graph)),
+        processed,
+   )
 end
 
 # process lowest cost unprocessed node
-while !isempty(get_lowest_unprocessed())
-    process_node(get_lowest_unprocessed())
+while !isempty(get_unprocessed_low())
+    process_node(get_unprocessed_low())
 end
 
 function simplify_path(data)
