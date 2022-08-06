@@ -65,8 +65,8 @@ fn main() {
     // path structure
     let mut path_data: HashMap<&str, &str> = HashMap::new();
 
-    while ! get_unprocessed_low(&relation_graph, &mut cost, &mut process_map).is_empty() {
-        let next_node = get_unprocessed_low(&relation_graph, &mut cost, &mut process_map);
+    while ! get_unprocessed_low(&relation_graph, &mut cost, &process_map).is_empty() {
+        let next_node = get_unprocessed_low(&relation_graph, &mut cost, &process_map);
         process_node(
             next_node,
             &relation_graph,
@@ -76,7 +76,7 @@ fn main() {
         );
     }
 
-    let shortest_path: HashMap<&str, &str> = short_path(&path_data, &start_node, &end_node);
+    let shortest_path: HashMap<&str, &str> = short_path(&path_data, start_node, end_node);
 
     println!("cost map: {:#?}", cost);
     println!("shortest path: {:#?}", shortest_path);
@@ -87,11 +87,11 @@ fn process_node<'a, 'b, 'c>(pnode: &'c str, rel_graph: &'a HashMap<&str, HashMap
     // of getting to this node (pnode) to the cost of reaching them (edge weight)
     // and update if better
     for anode in rel_graph[pnode].keys() {
-        let adj_cost: u32 = cost_map[pnode.clone()] + rel_graph[pnode][anode];
-        if adj_cost < cost_map[anode.clone()] {
+        let adj_cost: u32 = cost_map[pnode] + rel_graph[pnode][anode];
+        if adj_cost < cost_map[anode] {
             // better cost - update path data and adjacent node cost
-            path_map.insert(anode.clone(), pnode.clone());
-            cost_map.insert(anode.clone(), adj_cost);
+            path_map.insert(anode, pnode);
+            cost_map.insert(anode, adj_cost);
         }
 
     }
