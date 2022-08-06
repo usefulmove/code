@@ -63,11 +63,12 @@ cost[end_node] = typemax(UInt32)
 path_data = Dict{String, String}()
 
 function process_node(pnode)
-    # add cost of getting to this node (pnode) to the cost of reaching adjacent nodes
+    # calculate the cost of reaching adjacent nodes (anode) by adding the cost
+    # of getting to this node (pnode) to the cost of reaching them (edge weight)
+    # and update if better
     for adjacent_node in keys(relation_graph[pnode])
-        # store edge weight
         if (relation_graph[pnode][adjacent_node] + cost[pnode]) < cost[adjacent_node]
-            # updated cost and record path
+            # update cost and record path
             cost[adjacent_node] = relation_graph[pnode][adjacent_node] + cost[pnode]
             path_data[adjacent_node] = pnode
         end
