@@ -101,7 +101,7 @@ while !isempty(get_unprocessed_low())
     process_node(get_unprocessed_low())
 end
 
-function simplify_path(data)
+function short_path(data)
     path = Dict{String, String}()
 
     current_node = end_node
@@ -113,6 +113,6 @@ function simplify_path(data)
     path
 end
 
-fastest_path = simplify_path(path_data)
+fastest_path = short_path(path_data)
 
 println("\nfastest path:  ", fastest_path)

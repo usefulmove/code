@@ -63,7 +63,7 @@ fn main() {
     cost.insert(start_node, 0);
 
     // path structure
-    let mut path_pred: HashMap<&str, &str> = HashMap::new();
+    let mut path_data: HashMap<&str, &str> = HashMap::new();
 
     while ! get_unprocessed_low(&relation_graph, &mut cost, &mut process_map).is_empty() {
         let next_node = get_unprocessed_low(&relation_graph, &mut cost, &mut process_map);
@@ -72,15 +72,17 @@ fn main() {
             &relation_graph,
             &mut cost,
             &mut process_map,
-            &mut path_pred,
+            &mut path_data,
         );
     }
 
+    let shortest_path: HashMap<&str, &str> = short_path(&path_data, &start_node, &end_node);
+
     println!("cost map: {:#?}", cost);
-    println!("shortest path map: {:#?}", path_pred);
+    println!("shortest path: {:#?}", shortest_path);
 }
 
-fn process_node<'a, 'b, 'c>(pnode: &'c str, rel_graph: &'a HashMap<&str, HashMap<&'b str, u32>>, cost_map: &'a mut HashMap<&'b str, u32>, proc_map: &mut HashSet<&'c str>, pred_map: &mut HashMap<&'b str, &'c str>) {
+fn process_node<'a, 'b, 'c>(pnode: &'c str, rel_graph: &'a HashMap<&str, HashMap<&'b str, u32>>, cost_map: &'a mut HashMap<&'b str, u32>, proc_map: &mut HashSet<&'c str>, path_map: &mut HashMap<&'b str, &'c str>) {
     // calculate the cost of reaching adjacent nodes (anode) by adding the cost
     // of getting to this node (pnode) to the cost of reaching them (edge weight)
     // and update if better
@@ -88,7 +90,7 @@ fn process_node<'a, 'b, 'c>(pnode: &'c str, rel_graph: &'a HashMap<&str, HashMap
         let adj_cost: u32 = cost_map[pnode.clone()] + rel_graph[pnode][anode];
         if adj_cost < cost_map[anode.clone()] {
             // better cost - update path data and adjacent node cost
-            pred_map.insert(anode.clone(), pnode.clone());
+            path_map.insert(anode.clone(), pnode.clone());
             cost_map.insert(anode.clone(), adj_cost);
         }
 
@@ -114,6 +116,13 @@ fn get_unprocessed_low<'d, 'e>(rel_graph: &'d HashMap<&str, HashMap<&'d str, u32
     lowest_unprocessed_node
 }
 
-//fn simplify_path(path_data) {
-//    TODO
-//}
+fn short_path<'a>(data: &'a HashMap<&str, &str>, start: &'a str, end: &'a str) -> HashMap<&'a str, &'a str> {
+    let mut short_path: HashMap<&str, &str> = HashMap::new();
+    let mut current_node = end;
+    while current_node != start {
+        short_path.insert(current_node, data[current_node]);
+        current_node = data[current_node];
+    }
+        
+    short_path
+}
