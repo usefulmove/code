@@ -56,7 +56,6 @@ name = "toml"
 version = "0.1.0"
 dependencies = [
  "serde",
- "serde_derive",
  "toml 0.5.9",
 ]
 

@@ -7,5 +7,4 @@ edition = "2021"
 
 [dependencies]
 toml = "0.5.9"
-serde_derive = "1.0.142"
 serde = { version = "1.0", features = ["derive"] }

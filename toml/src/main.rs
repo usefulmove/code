@@ -1,6 +1,5 @@
 use serde::Deserialize;
 use toml;
-//use serde_derive::Deserialize;
 
 static config_toml: &str = r#"
 [settings]
