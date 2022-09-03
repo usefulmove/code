@@ -11,14 +11,12 @@ fn main() {
 
     let mut level: usize = 0;
     args.iter().enumerate().for_each(|(i, s)| {
-        println!("debug..(i, s)..({},{})", i, s);
-        println!("debug..(level, i % 9)..({},{})", level, i % 9);
         if s == "_" {
             sud.puzzle[level][i % 9] = 99;
         } else {
-            sud.puzzle[level][i % 9] = i as u8;
+            sud.puzzle[level][i % 9] = s.parse::<u8>().unwrap();
         }
-        if i % 9 == 8 { level += 1; println!("debug..level..{}", level); }
+        if i % 9 == 8 { level += 1; }
     });
 
     println!("{}", sud);
