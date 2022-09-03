@@ -1,4 +1,4 @@
-const TOTAL_TOSSES: u64 = 1e7 as u64;
+const TOTAL_TOSSES: u64 = 1e9 as u64;
 
 fn main() {
   println!("simulating {} coin tosses", TOTAL_TOSSES);
@@ -11,7 +11,7 @@ fn main() {
   let mut pattern_a_found: u64 = 0;
   let mut pattern_b_found: u64 = 0;
 
-  for _i in 1..TOTAL_TOSSES {
+  for _i in 0..TOTAL_TOSSES {
     // toss and increment counters
     tosses.push(rand::random());
 
@@ -27,10 +27,10 @@ fn main() {
     }
 
     if tosses.len() == pattern_a.len() {
-      Some(tosses.remove(0));
+      tosses.remove(0);
     }
   }
 
-  println!("pattern a: {:?} - {:.5}", pattern_a, pattern_a_found as f64 / (pattern_a_found + pattern_b_found) as f64);
-  println!("pattern b: {:?} - {:.5}", pattern_b, pattern_b_found as f64 / (pattern_a_found + pattern_b_found) as f64);
+  println!("pattern a: {:?} - {:.3}", pattern_a, pattern_a_found as f64 / (pattern_a_found + pattern_b_found) as f64);
+  println!("pattern b: {:?} - {:.3}", pattern_b, pattern_b_found as f64 / (pattern_a_found + pattern_b_found) as f64);
 }
