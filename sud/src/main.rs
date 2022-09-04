@@ -20,6 +20,19 @@ fn main() {
     });
 
     println!("{}", sud);
+
+    while !sud.is_solved() {
+        for i in 0..9 {
+            for j in 0..9 {
+                if sud.board[i][j] == 0 {
+                    match sud.solve_loc(i, j) {
+                        Some(value) => sud.board[i][j] = value,
+                        None => (), // do nothing
+                    }
+                }
+            }
+        }
+    }
 }
 
 struct Sudoku {
@@ -32,6 +45,22 @@ impl Sudoku {
             board: [[0; 9]; 9],
         }
     }
+
+    fn is_solved(&self) -> bool {
+        for i in 0..9 {
+            for j in 0..9 {
+                if self.board[i][j] == 0 {
+                    return false;
+                }
+            }
+        }
+        true
+    }
+
+    fn solve_loc(&self, i: usize, j: usize) -> Option<u8> {
+        TODO
+    }
+
 }
 
 impl fmt::Display for Sudoku {
