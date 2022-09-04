@@ -102,8 +102,10 @@ impl Sudoku {
         let complete_set: Set = Set::from([1, 2, 3, 4, 5, 6, 7, 8, 9]);
         let check_set: Set = column_set
             .union(&row_set)
+            .cloned()
             .collect::<Set>()
             .union(&group_set)
+            .cloned()
             .collect::<Set>();
 
         match check_set.len() {
