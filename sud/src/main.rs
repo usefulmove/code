@@ -7,14 +7,14 @@ fn main() {
     let mut args: Vec<String> = env::args().collect();
     args.remove(0);
 
-    println!("debug..args..{:?}", args);
+    //println!("debug..args..{:?}", args);
 
     let mut level: usize = 0;
     args.iter().enumerate().for_each(|(i, s)| {
         if s == "_" {
-            sud.puzzle[level][i % 9] = 99;
+            sud.board[level][i % 9] = 0;
         } else {
-            sud.puzzle[level][i % 9] = s.parse::<u8>().unwrap();
+            sud.board[level][i % 9] = s.parse::<u8>().unwrap();
         }
         if i % 9 == 8 { level += 1; }
     });
@@ -23,13 +23,13 @@ fn main() {
 }
 
 struct Sudoku {
-    puzzle: [[u8; 9]; 9],
+    board: [[u8; 9]; 9],
 }
 
 impl Sudoku {
     fn new() -> Self {
         Self {
-            puzzle: [[0; 9]; 9],
+            board: [[0; 9]; 9],
         }
     }
 }
@@ -39,15 +39,15 @@ impl fmt::Display for Sudoku {
         write!(
             f,
             "  {:?}\n  {:?}\n  {:?}\n  {:?}\n  {:?}\n  {:?}\n  {:?}\n  {:?}\n  {:?}",
-            self.puzzle[0],
-            self.puzzle[1],
-            self.puzzle[2],
-            self.puzzle[3],
-            self.puzzle[4],
-            self.puzzle[5],
-            self.puzzle[6],
-            self.puzzle[7],
-            self.puzzle[8],
+            self.board[0],
+            self.board[1],
+            self.board[2],
+            self.board[3],
+            self.board[4],
+            self.board[5],
+            self.board[6],
+            self.board[7],
+            self.board[8],
         )
     }
 }
