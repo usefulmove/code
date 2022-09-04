@@ -20,7 +20,7 @@ fn main() {
     });
 
     println!(
-        "initial board:\n{}",
+        " initial board:\n\n{}",
         sud
     );
 
@@ -38,7 +38,7 @@ fn main() {
     }
 
     println!(
-        "solution board:\n{}",
+        "\n solution board:\n\n{}",
         sud
     );
 }
@@ -133,19 +133,23 @@ impl Sudoku {
 
 impl fmt::Display for Sudoku {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "  {:?}\n  {:?}\n  {:?}\n  {:?}\n  {:?}\n  {:?}\n  {:?}\n  {:?}\n  {:?}",
-            self.board[0],
-            self.board[1],
-            self.board[2],
-            self.board[3],
-            self.board[4],
-            self.board[5],
-            self.board[6],
-            self.board[7],
-            self.board[8],
-        )
+        let mut level: usize = 0;
+        for n in 0..81 {
+            write!(
+                f,
+                " {}",
+                self.board[level][n % 9],
+            ).unwrap();
+            if n % 9 == 8 {
+                write!(
+                    f,
+                    "\n",
+                ).unwrap();
+                level += 1;
+            }
+
+        }
+        Ok(())
     }
 }
 
