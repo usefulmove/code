@@ -20,27 +20,41 @@ fn main() {
     });
 
     println!(
-        " initial board:\n\n{}",
+        " input board:\n\n{}",
         sud,
     );
 
     while !(sud.is_solved() || sud.is_stale()) {
+        let old_board = sud.board.clone();
+
         for i in 0..9 {
             for j in 0..9 {
                 if sud.board[i][j] == 0 {
                     match sud.solve_location(i, j) {
-                        Some(value) => sud.board[i][j] = value,
+                        Some(value) => {
+                            sud.board[i][j] = value;
+                        }
                         None => (), // do nothing
                     }
                 }
             }
         }
+
+        if sud.is_equal(&old_board) { sud.stale = true; }
     }
 
     println!(
-        "\n solution board:\n\n{}",
-        sud
+        "\n output board:\n\n{}",
+        sud,
     );
+
+    println!(
+        "{}",
+        match sud.is_stale() {
+            true => "err: failed to solve",
+            false => "solution found!",
+        }
+    )
 }
 
 struct Sudoku {
