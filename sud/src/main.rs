@@ -21,10 +21,10 @@ fn main() {
 
     println!(
         " initial board:\n\n{}",
-        sud
+        sud,
     );
 
-    while !sud.is_solved() {
+    while !(sud.is_solved() || sud.is_stale()) {
         for i in 0..9 {
             for j in 0..9 {
                 if sud.board[i][j] == 0 {
@@ -45,6 +45,7 @@ fn main() {
 
 struct Sudoku {
     board: [[u8; 9]; 9],
+    stale: bool,
 }
 
 #[derive(PartialEq, Eq)]
@@ -54,15 +55,28 @@ enum Group {
 
 impl Sudoku {
     fn new() -> Self {
-        Self {
-            board: [[0; 9]; 9],
-        }
+        Self { board: [[0; 9]; 9], stale: false }
     }
 
     fn is_solved(&self) -> bool {
         for i in 0..9 {
             for j in 0..9 {
                 if self.board[i][j] == 0 {
+                    return false;
+                }
+            }
+        }
+        true
+    }
+
+    fn is_stale(&self) -> bool {
+        self.stale
+    }
+
+    fn is_equal(&self, board_b: &[[u8; 9]; 9]) -> bool {
+        for i in 0..9 {
+            for j in 0..9 {
+                if self.board[i][j] != board_b[i][j] {
                     return false;
                 }
             }
