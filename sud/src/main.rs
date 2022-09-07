@@ -120,7 +120,6 @@ impl Sudoku {
         }
     }
 
-
     fn get_group(&self, a: usize, b: usize) -> Group {
         match (a, b) {
             (0..=2, 0..=2) => Group::A,
