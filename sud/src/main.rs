@@ -24,42 +24,17 @@ fn main() {
         sud,
     );
 
-    while !(sud.is_solved() || sud.is_stale()) {
-        let old_board = sud.board.clone();
-
-        for i in 0..9 {
-            for j in 0..9 {
-                if sud.board[i][j] == 0 {
-                    match sud.solve_location(i, j) {
-                        Some(value) => {
-                            sud.board[i][j] = value;
-                        }
-                        None => (), // do nothing
-                    }
-                }
-            }
-        }
-
-        if sud.is_equal(&old_board) { sud.stale = true; }
-    }
+    // solve
+    sud.solve();
 
     println!(
         "\n output board:\n\n{}",
         sud,
     );
-
-    println!(
-        "{}",
-        match sud.is_stale() {
-            true => "err: failed to solve",
-            false => "solution found!",
-        }
-    )
 }
 
 struct Sudoku {
     board: [[u8; 9]; 9],
-    stale: bool,
 }
 
 #[derive(PartialEq, Eq)]
@@ -69,7 +44,7 @@ enum Group {
 
 impl Sudoku {
     fn new() -> Self {
-        Self { board: [[0; 9]; 9], stale: false }
+        Self { board: [[0; 9]; 9] }
     }
 
     fn is_solved(&self) -> bool {
@@ -83,22 +58,7 @@ impl Sudoku {
         true
     }
 
-    fn is_stale(&self) -> bool {
-        self.stale
-    }
-
-    fn is_equal(&self, board_b: &[[u8; 9]; 9]) -> bool {
-        for i in 0..9 {
-            for j in 0..9 {
-                if self.board[i][j] != board_b[i][j] {
-                    return false;
-                }
-            }
-        }
-        true
-    }
-
-    fn solve_location(&self, a: usize, b: usize) -> Option<u8> {
+    fn is_possible(&self, n: u8, a: usize, b: usize) -> bool {
         let mut column_set: Set = Set::new();
         let mut row_set: Set = Set::new();
         let mut group_set: Set = Set::new();
@@ -136,11 +96,30 @@ impl Sudoku {
             .cloned()
             .collect::<Set>();
 
-        match check_set.len() {
-            8 => Some(complete_set.difference(&check_set).collect::<Vec<&u8>>()[0].clone()),
-            _ => None,
+        let possible: Vec<&u8> = complete_set.difference(&check_set).collect::<Vec<&u8>>();
+
+        if possible.contains(&&n) { true } else { false }
+    }
+
+    /* recursive solver */
+    fn solve(&mut self) {
+        for i in 0..9 {
+            for j in 0..9 {
+                if self.board[i][j] == 0 {
+                    for test_val in 1..10 {
+                        if self.is_possible(test_val, i, j) {
+                            self.board[i][j] = test_val;
+                            self.solve();
+                            if self.is_solved() { return; }
+                            self.board[i][j] = 0; // reset current cell to 0
+                        }
+                    }
+                    return;
+                }
+            }
         }
     }
+
 
     fn get_group(&self, a: usize, b: usize) -> Group {
         match (a, b) {
