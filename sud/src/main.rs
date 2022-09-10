@@ -10,27 +10,21 @@ fn main() {
     //println!("debug..args..{:?}", args);
 
     let mut level: usize = 0;
-    args.iter().enumerate().for_each(|(j, s)| {
+    for (j, s) in args.iter().enumerate() {
         if s == "_" {
             sud.board[level][j % 9] = 0;
         } else {
             sud.board[level][j % 9] = s.parse::<u8>().unwrap();
         }
         if j % 9 == 8 { level += 1; }
-    });
+    }
 
-    println!(
-        " input board:\n\n{}",
-        sud,
-    );
+    println!(" input board:\n\n{}", sud);
 
     // solve
     sud.solve();
 
-    println!(
-        "\n output board:\n\n{}",
-        sud,
-    );
+    println!("\n output board:\n\n{}", sud);
 }
 
 struct Sudoku {
@@ -48,14 +42,11 @@ impl Sudoku {
     }
 
     fn is_solved(&self) -> bool {
-        for i in 0..9 {
-            for j in 0..9 {
-                if self.board[i][j] == 0 {
-                    return false;
-                }
-            }
-        }
-        true
+        self.board.iter()
+            .flatten()
+            .fold(true, |solved, node| {
+                solved && (*node != 0)
+            })
     }
 
     fn is_possible(&self, n: u8, a: usize, b: usize) -> bool {
@@ -67,27 +58,23 @@ impl Sudoku {
         for i in 0..9 {
             for j in 0..9 {
                 // ignore empty cells
-                if self.board[i][j] == 0 { continue; }
+                if self.board[i][j] == 0 { continue }
 
-                // check column
-                if j == b {
-                    column_set.insert(self.board[i][j]);
-                }
+                // same column
+                if j == b { column_set.insert(self.board[i][j]); }
 
-                // check row
-                if i == a {
-                    row_set.insert(self.board[i][j]);
-                }
+                // same row
+                if i == a { row_set.insert(self.board[i][j]); }
 
-                // check group
-                if self.get_group(i, j) == self.get_group(a, b) {
+                // same group
+                if self.group(i, j) == self.group(a, b) {
                     group_set.insert(self.board[i][j]);
                 }
             }
         }
 
         // check for solution ( set comparison )
-        let complete_set: Set = Set::from([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        let complete_set: Set = (1..=9).collect();
         let check_set: Set = column_set
             .union(&row_set)
             .cloned()
@@ -96,9 +83,11 @@ impl Sudoku {
             .cloned()
             .collect::<Set>();
 
-        let possible: Vec<&u8> = complete_set.difference(&check_set).collect::<Vec<&u8>>();
+        let possible: Vec<&u8> = complete_set
+            .difference(&check_set)
+            .collect::<Vec<&u8>>();
 
-        if possible.contains(&&n) { true } else { false }
+        possible.contains(&&n)
     }
 
     /* recursive solver */
@@ -106,11 +95,11 @@ impl Sudoku {
         for i in 0..9 {
             for j in 0..9 {
                 if self.board[i][j] == 0 {
-                    for test_val in 1..10 {
+                    for test_val in 1..=9 {
                         if self.is_possible(test_val, i, j) {
                             self.board[i][j] = test_val;
                             self.solve();
-                            if self.is_solved() { return; }
+                            if self.is_solved() { return }
                             self.board[i][j] = 0; // reset current cell to 0
                         }
                     }
@@ -120,7 +109,7 @@ impl Sudoku {
         }
     }
 
-    fn get_group(&self, a: usize, b: usize) -> Group {
+    fn group(&self, a: usize, b: usize) -> Group {
         match (a, b) {
             (0..=2, 0..=2) => Group::A,
             (0..=2, 3..=5) => Group::B,
@@ -147,10 +136,7 @@ impl fmt::Display for Sudoku {
                 self.board[level][n % 9],
             ).unwrap();
             if n % 9 == 8 {
-                write!(
-                    f,
-                    "\n",
-                ).unwrap();
+                write!(f, "\n",).unwrap();
                 level += 1;
             }
 
