@@ -44,9 +44,7 @@ impl Sudoku {
     fn is_solved(&self) -> bool {
         self.board.iter()
             .flatten()
-            .fold(true, |solved, node| {
-                solved && (*node != 0)
-            })
+            .all(|node| *node != 0 )
     }
 
     fn is_possible(&self, n: u8, a: usize, b: usize) -> bool {
@@ -83,11 +81,12 @@ impl Sudoku {
             .cloned()
             .collect::<Set>();
 
-        let possible: Vec<&u8> = complete_set
+        let possible: Set = complete_set
             .difference(&check_set)
-            .collect::<Vec<&u8>>();
+            .cloned()
+            .collect();
 
-        possible.contains(&&n)
+        possible.contains(&n)
     }
 
     /* recursive solver */
@@ -130,16 +129,11 @@ impl fmt::Display for Sudoku {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let mut level: usize = 0;
         for n in 0..81 {
-            write!(
-                f,
-                " {}",
-                self.board[level][n % 9],
-            ).unwrap();
+            write!(f, " {}", self.board[level][n % 9]).unwrap();
             if n % 9 == 8 {
-                write!(f, "\n",).unwrap();
+                writeln!(f).unwrap();
                 level += 1;
             }
-
         }
         Ok(())
     }
