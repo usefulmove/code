@@ -89,7 +89,7 @@ impl Sudoku {
         possible.contains(&n)
     }
 
-    /* recursive solver */
+    /* backtracking recursive solver */
     fn solve(&mut self) {
         for i in 0..9 {
             for j in 0..9 {
