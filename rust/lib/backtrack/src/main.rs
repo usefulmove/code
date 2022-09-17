@@ -2,14 +2,14 @@ struct Solution;
 
 impl Solution {
     pub fn restore_matrix(row_sum: &Vec<i32>, col_sum: &Vec<i32>) -> Vec<Vec<i32>> {
-        for i in 0..28 {
-            // TODO
-        }
-        vec![vec![0; 2]; 2]
+        let mut matrix = vec![vec![-1; col_sum.len()]; row_sum.len()];
+
+        //solve(); TODO
+
+        matrix
     }
 
-    pub fn is_solved(matrix: &Vec<Vec<i32>>, row_sum: &Vec<i32>, col_sum: &Vec<i32>) -> bool {
-        println!("debug..matrix[0].len()={}", matrix[0].len());
+    fn is_solved(matrix: &Vec<Vec<i32>>, row_sum: &Vec<i32>, col_sum: &Vec<i32>) -> bool {
         /* row check */
         for (i, row) in matrix.iter().cloned().enumerate() {
             let sum: i32 = row.iter().sum();
@@ -23,6 +23,10 @@ impl Solution {
         }
 
         true
+    }
+
+    fn solve(TODO) {
+
     }
 }
 
