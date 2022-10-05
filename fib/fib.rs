@@ -6,7 +6,7 @@ fn main() {
         "{}",
         fib(
             args[1]
-                .parse::<u64>()
+                .parse()
                 .unwrap()
         )
     );
@@ -14,8 +14,7 @@ fn main() {
 
 fn fib(n: u64) -> u64 {
     match n {
-        0     => 0,
-        1 | 2 => 1,
+        0 | 1 => n,
         _     => fib(n-1) + fib(n-2),
     }
 }
