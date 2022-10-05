@@ -10,5 +10,3 @@ def fib(n):
 
 if len(sys.argv) > 1:
   print(str(fib(int(sys.argv[1]))))
-else:
-  print("( error: nope )")

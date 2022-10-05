@@ -1,7 +1,5 @@
 #! lua
 
-arg = tonumber(arg[1])
-
 function fib(n)
     if n < 2 then
         return n
@@ -10,4 +8,4 @@ function fib(n)
     end
 end
 
-print(fib(arg))
+print(fib(tonumber(arg[1])))
