@@ -1,8 +1,6 @@
 function fib(n: number): number {
-  if (n <= 0) {
-    return 0
-  } else if (n < 3) {
-    return 1
+  if (n < 2) {
+    return n
   } else {
     return ( fib(n-1) + fib(n-2) )
   }
