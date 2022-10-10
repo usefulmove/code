@@ -8,4 +8,18 @@ function fib(n)
     end
 end
 
+function fib2(n, a, b)
+    a = a or 0
+    b = b or 1
+
+    if n == 0 then
+        return a
+    elseif n == 1 then
+        return b
+    else
+        return fib2(n-1, b, a+b)
+    end
+end
+
+
 print(fib(tonumber(arg[1])))
