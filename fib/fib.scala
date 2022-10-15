@@ -1,6 +1,5 @@
-object Fib:
-  def main(args: Array[String]) =
-    printf("%d\n", fib2(args(0).toInt))
+@main def main(args: String*) =
+  printf("%d\n", fib(args(0).toInt))
 
   def fib(n: Int): Int =
     n match
