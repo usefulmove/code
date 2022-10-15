@@ -22,4 +22,4 @@ function fib2(n, a, b)
 end
 
 
-print(fib(tonumber(arg[1])))
+print(fib2(tonumber(arg[1])))

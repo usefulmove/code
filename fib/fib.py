@@ -2,19 +2,21 @@
 
 import sys
 
+# recursive solution
 def fib(n):
-  if n < 2:
-    return n
-  else:
-    return fib(n-1) + fib(n-2)
+  match n:
+    case 0 | 1:
+      return n
+    case _:
+      return fib(n-1) + fib(n-2)
 
+# tail recursive solution
 def fib2(n, a = 0, b = 1):
-  if n == 0:
-    return a
-  if n == 1:
-    return b
-  return fib2(n - 1, b, a + b)
+  match n:
+    case 0: return a
+    case 1: return b
+    case _: return fib2(n - 1, b, a + b)
 
 
 if len(sys.argv) > 1:
-  print(str(fib(int(sys.argv[1]))))
+  print(str(fib2(int(sys.argv[1]))))
