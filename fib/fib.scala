@@ -10,6 +10,6 @@
   /* tail recursive solution */
   def fib2(n: Int, a: Int = 0, b: Int = 1): Int =
     n match
-      case 0 => return a
-      case 1 => return b
+      case 0 => a
+      case 1 => b
       case _ => fib2(n-1, b, a+b)
