@@ -15,7 +15,7 @@
 | count | iter.count<br>len | ≢ (tally) | size<br>count | len |
 | max | iter.max | ⌈/ | max | max |
 | min | iter.min | ⌊/ | min | min |
-| sort | slice::sort | {⍵[⍋⍵]} | sorted | List.sort |
+| sort | slice::sort* | {⍵[⍋⍵]} | sorted | List.sort |
 | reverse | iter.rev | ⌽ (rotate) | reverse | [::-1] |
 | any | iter.any | ??? | exists | any |
 | all | iter.all | ??? | forall | all |
@@ -27,6 +27,8 @@
 | rotate | slice.rotate_right<br>slice.rotate_left | ??? | ??? | l[n:] + l[:n]<br>l[-n:] + l[:-n]<br>numpy.roll |
 | unique?? |  | ∪ (down shoe) |  |  |
 | remove duplicates | dedup | ??? | distinct | ??? |
+
+( *modifies a mutable data structure )
 
 
 <br><br>
