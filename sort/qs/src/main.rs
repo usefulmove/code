@@ -33,11 +33,12 @@ fn qsort(vec: Vec<u32>) -> Vec<u32>  {
             }
             swap(cop, ins, cop.len()-1);
 
-            let left: Vec<u32>;
-            match ins {
-                0 => left = Vec::new(),
-                _ => left = Vec::from_iter(cop[0..=ins-1].iter().cloned()),
-            }
+            let left: Vec<u32> = {
+                match ins {
+                    0 => Vec::new(),
+                    _ => Vec::from_iter(cop[0..=ins-1].iter().cloned()),
+                }
+            };
             let right: Vec<u32> = Vec::from_iter(cop[ins+1..].iter().cloned());
 
             let mut sorted = qsort(left);
