@@ -1,3 +1,5 @@
+import scala.annotation.tailrec
+
 object Fib:
   def main(args: Array[String]) =
     println(s"  ${fib2(args(0).toInt)}")
@@ -9,6 +11,7 @@ object Fib:
       case _ => fib(n-1) + fib(n-2)
   
   /* tail recursive solution */
+  @tailrec
   def fib2(n: Int, a: Int = 0, b: Int = 1): Int =
     n match
       case 0 => a
