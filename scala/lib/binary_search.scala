@@ -14,20 +14,19 @@ object BinarySearch {
       def binSearch(arr: Array[Int], target: Int): Either[Int, Int] = {
         
           @tailrec
-          def helper(left: Int, right: Int): Either[Int, Int] = {
+          def recurse(left: Int, right: Int): Either[Int, Int] = {
               val mid = ((left + right) >> 1) 
               return mid match {
                   case mid if (arr(mid) == target) => Right(mid)
-                  case mid if (left <= right) => {
-                      target > arr(mid) match
-                        case true => helper(mid + 1, right)
-                        case _ => helper(left, mid - 1)
+                  case mid if (left > right) => Left(mid)
+                  case _ => target > arr(mid) match {
+                      case true => recurse(mid + 1, right)
+                      case _ => recurse(left, mid - 1)
                   }
-                  case _ => Left(mid)
               }
           }
 
-          helper(0, arr.length - 1)
+          recurse(0, arr.length - 1)
       }
 
 }
