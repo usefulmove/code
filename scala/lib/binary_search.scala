@@ -1,3 +1,5 @@
+import scala.annotation.tailrec
+
 object BinarySearch {
       @main
       def main(target: String, args: String*) = {
@@ -11,6 +13,7 @@ object BinarySearch {
 
       def binSearch(arr: Array[Int], target: Int): Either[Int, Int] = {
         
+          @tailrec
           def helper(left: Int, right: Int): Either[Int, Int] = {
               val mid = ((left + right) >> 1) 
               return mid match {
