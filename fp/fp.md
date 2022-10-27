@@ -22,7 +22,7 @@
 | zip<br>inner product | iter.zip | . (product) | zip | zip |
 | outer product | itertools::iproduct | ∘. | ??? | itertools.product |
 | chain | iter.chain | ⍪ (catenate) | ??? | itertools.chain |
-| flatten | iter.flatten | , (ravel) | flatten | [item for sublist in NESTED for item in sublist] |
+| flatten | iter.flatten | , (ravel)<br>∊ (enlist) | flatten | [item for sublist in NESTED for item in sublist] |
 | scan | iter.scan | \\ (scan)<br>⍀ (scan first) | scanLeft | itertools.accumulate |
 | rotate | slice.rotate_right<br>slice.rotate_left | ??? | ??? | l[n:] + l[:n]<br>l[-n:] + l[:-n]<br>numpy.roll |
 | unique?? |  | ∪ (down shoe) |  |  |
