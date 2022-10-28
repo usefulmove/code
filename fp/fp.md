@@ -9,7 +9,7 @@
 |:--:|:--:|:--:|:--:|:--:|
 | map | iter.map | ¨ | map | map |
 | filter | iter.filter<br>iter.take<br>iter.skip<br>iter.nth | / (replicate) | filter | filter<br>itertools.takewhile |
-| filter & map<br>flat map | iter.filter_map<br>iter.flat_map | ??? | flatMap | ??? |
+| filter & map<br>flat map | iter.filter_map<br>iter.flat_map | ??? | collect<br>flatMap | ??? |
 | fold | iter.fold<br>iter.reduce | / (reduce)<br>⌿ (reduce first) | foldLeft<br>reduce | functools.reduce |
 | sum | iter.sum| +/ | sum | sum |
 | count | iter.count<br>len | ≢ (tally) | size<br>count | len |
