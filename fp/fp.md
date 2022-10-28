@@ -40,3 +40,9 @@ iter (by reference)
 into_iter (owned)
 
 Iter.inspect can be used to inspect values flowing through an iterator.
+
+<br><br>
+## Scala Tail Recursion
+`import scala.annotation.tailrec`
+
+`@tailrec` before recursive function definition
