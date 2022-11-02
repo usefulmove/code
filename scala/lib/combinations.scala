@@ -4,18 +4,20 @@ def main(args: String*): Unit =
 
   /* generate all possibile combinations of elements */
 
-  val combinations = (1 until scala.math.pow(2, nums.length).toInt) // create n-bit bitfield with all possible bitmasks
+  val combinations = (1 until scala.math.pow(2, nums.length).toInt)
+  // create n-bit bit field with all possible bitmasks
   .map(_.toBinaryString)
   .map(mask => {
     mask
     .reverse
-    .zip(nums)
-    .foldLeft(List[Int]())((acc, a) => {
-      a._1 match
+    .zip {nums} // (multiplier, value)
+    .foldLeft(List[Int]())((acc, p) => {
+      val (c, a)= p
+      c match
         case '0' => acc
-        case _ => a._2 :: acc
+        case _ => a :: acc
      })
    })
 
   combinations
-  .foreach(println)
+  .foreach {println}
