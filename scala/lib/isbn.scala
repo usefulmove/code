@@ -1,14 +1,16 @@
 @main
 def main(args: String*): Unit =
-  //println(args(0))
-  println(checksum(args(0)))
+  val arg = args.length match
+    case 0 => "9781984801821"
+    case _ => args(0)
 
-def checksum(s: String): Int =
-  s
-  .map(_.toInt - '0'.toInt)
+  println(checksum(arg))
+
+def checksum(pattern: String): Int =
+  pattern
   .zip(
-    (1 to s.length)
-    .map(a => if a % 2 == 0 then 3 else 1)
+    (1 to pattern.length)
+    .map(n => if (n & 1) == 0 then 3 else 1)
    )
-  .map((a, b) => a * b)
+  .map(_.toString.toInt * _)
   .sum % 10
