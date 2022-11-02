@@ -2,9 +2,6 @@
 def main(args: String*): Unit =
   val nums = List[Int](3, 2, 1, 5, 4)
 
-  //nums
-  //.foreach(println)
-
   /* generate all possibile combinations of elements */
 
   val combinations = (1 until scala.math.pow(2, nums.length).toInt) // create n-bit bitfield with all possible bitmasks
