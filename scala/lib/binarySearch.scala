@@ -8,7 +8,6 @@ object BinarySearch:
               case _ => -1
           println(out)
 
-
       def binSearch(arr: Array[Int], target: Int): Either[Int, Int] =
           @tailrec
           def recurse(left: Int, right: Int): Either[Int, Int] =
