@@ -4,13 +4,13 @@ def main(args: String*): Unit =
     case 0 => "9781984801821"
     case _ => args(0)
 
-  println(checksum(arg))
+  println {checksum(arg)}
 
 def checksum(pattern: String): Int =
   pattern
-  .zip(
+  .zip {
     (1 to pattern.length)
-    .map(n => if (n & 1) == 0 then 3 else 1)
-   )
-  .map(_.toString.toInt * _)
+    .map {n => if (n & 1) == 0 then 3 else 1}
+   }
+  .map {_.toString.toInt * _}
   .sum % 10

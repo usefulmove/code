@@ -12,7 +12,7 @@ def main(args: String*): Unit =
     .reverse
     .zip {nums} // (multiplier, value)
     .foldLeft(List[Int]()) {(acc, p) =>
-      val (c, a)= p
+      val (c, a) = p
       c match
         case '0' => acc
         case _ => a :: acc }
