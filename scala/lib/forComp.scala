@@ -1,4 +1,4 @@
-object Comprehension:
+object Comp:
   @main
   def main(args: String*) =
     val squares =
