@@ -32,6 +32,21 @@
 
 
 <br><br>
+## Concepts ([ref](https://www.baeldung.com/scala/functional-programming))
+- Immutability
+- Recursion ( Tail Recursion )
+- Functions as first-class objects
+- Pure Functions
+- Function Composition ( Category Theory )
+- Higher-Order Functions
+- Anonymous Functions
+- Closures
+- Partial Functions
+- Monads
+- Currying
+
+
+<br><br>
 ## Iterators in Rust
 
 [Iterator in std::iter](https://doc.rust-lang.org/std/iter/trait.Iterator.html)
@@ -40,6 +55,7 @@ iter (by reference)
 into_iter (owned)
 
 Iter.inspect can be used to inspect values flowing through an iterator.
+
 
 <br><br>
 ## Scala Tail Recursion
