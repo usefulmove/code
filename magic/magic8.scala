@@ -26,4 +26,4 @@ object magic8:
         )
         val ans = answers(scala.util.Random nextInt answers.size)
 
-        println {s"  $ans"}
+        println {s"  \"$ans\""}
