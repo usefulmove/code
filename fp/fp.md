@@ -17,6 +17,8 @@
 | min | iter.min | ⌊/ | min | min | min |
 | sort | slice::sort* | {⍵[⍋⍵]} | sorted | List.sort | ??? |
 | reverse | iter.rev | ⌽ (rotate) | reverse | [::-1] | ??? |
+| drop | skip | ??? | drop | ??? | ??? |
+| take | take | ??? | take | ??? | ??? |
 | any | iter.any | ??? | exists | any | ??? |
 | all | iter.all | ??? | forall | all | ??? |
 | zip<br>inner product | iter.zip | . (product) | zip | zip | ??? |
