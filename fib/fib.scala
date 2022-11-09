@@ -5,14 +5,14 @@ object Fib:
     println(s"  ${fib2(args(0).toInt)}")
 
   /* recursive solution */
-  def fib(n: Int): Int =
+  def fib(n: Long): Long =
     n match
       case 0 | 1 => n
       case _ => fib(n-1) + fib(n-2)
 
   /* tail recursive solution */
   @tailrec
-  def fib2(n: Int, a: Int = 0, b: Int = 1): Int =
+  def fib2(n: Long, a: Long = 0, b: Long = 1): Long =
     n match
       case 0 => a
       case 1 => b
