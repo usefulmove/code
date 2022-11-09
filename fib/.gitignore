@@ -1,7 +1,6 @@
 fib
 node_modules/
 package*
-Fib$.class
-Fib.class
-Fib.tasty
+*.class
+*.tasty
 fib.ts.js
