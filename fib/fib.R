@@ -19,4 +19,14 @@ fib <- function(n) {
   }
 }
 
-print(stringr::str_glue("{fib(out)}"))
+fib2 <- function(n, a = 0, b = 1) {
+  if (n == 0) {
+    a
+  } else if  (n == 1) {
+    b
+  } else {
+    fib2(n-1, b, a+b)
+  }
+}
+
+print(stringr::str_glue("{fib2(out)}"))
