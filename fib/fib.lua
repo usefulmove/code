@@ -26,5 +26,4 @@ function fib2(n)
 end
 
 
-
 print(fib2(tonumber(arg[1])))
