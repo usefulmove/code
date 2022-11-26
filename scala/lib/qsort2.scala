@@ -2,6 +2,8 @@ object QSort:
     @main def main(args: String*): Unit =
         //val list = List(3,1,2,5,4)
         //val list = List(3.1,1,2.2,5.0,4)
+        //val list = List("this", "is", "a", "test")
+        //val list = List('c', 'a', 'b', 'e', 'd')
         val list = args map {_.toDouble}
         qsort(list) foreach {println}
 
