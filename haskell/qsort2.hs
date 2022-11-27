@@ -1,6 +1,6 @@
 qsort :: [Int] -> [Int]
 qsort [] = []
-qsort [a] = [a]
-qsort (a:as) = qsort small ++ [a] ++ qsort large
-    where small = [x | x <- as, x <= a]
-          large = [x | x <- as, x > a]
+qsort [o] = [o]
+qsort (o:os) = qsort small ++ [o] ++ qsort large
+    where small = [x | x <- os, x <= o]
+          large = [x | x <- os, x > o]
