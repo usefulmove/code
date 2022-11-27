@@ -4,9 +4,8 @@ object QSort:
         qsort(list) foreach {println}
 
     def qsort[T](seq: Seq[T])(implicit order: Ordering[T]): Seq[T] =
-        seq.length match
-            case 0 | 1 => seq
-            case _ =>
-                val piv :: rest = seq : @unchecked
+        seq match
+            case Seq() | Seq(_) => seq
+            case piv +: rest =>
                 val (small, large) = rest partition {order.lt(_, piv)}
                 qsort(small) ++ Seq(piv) ++ qsort(large)
