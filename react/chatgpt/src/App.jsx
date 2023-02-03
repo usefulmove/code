@@ -80,6 +80,7 @@ function App() {
 
           <h1>{book.title}</h1>
           <h2>by {book.author}</h2>
+          <br></br>
 
           <label htmlFor='input'>Comment: </label>
           <input id='input' type='text'/><br></br>
