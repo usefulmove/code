@@ -71,3 +71,9 @@ button:focus-visible {
     background-color: #0080ff;
   }
 }
+
+td {
+  width: 1280px;
+  text-align: center;
+  vertical-align: middle;
+}
