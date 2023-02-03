@@ -94,9 +94,9 @@ function App() {
         <h2>by {book.author}</h2>
         <br></br>
 
-        <div max-width='80px'>
+        <sumdiv>
           {book.summary}
-        </div>
+        </sumdiv>
         <br></br><br></br>
 
         <button id='reviews' type='button'>

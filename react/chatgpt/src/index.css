@@ -77,3 +77,11 @@ td {
   text-align: center;
   vertical-align: middle;
 }
+
+sumdiv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 60%;
+}
