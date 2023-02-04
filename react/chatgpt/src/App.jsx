@@ -1,142 +1,158 @@
-import * as React from 'react'
-import { useState } from 'react'
-import './App.css'
+import * as React from "react";
+import { useState } from "react";
+import "./App.css";
 
-const toniMorrisonBook={
-  author: 'Nia Blackwood',
-  title: 'Lyra\'s Journey (1992)',
-  summary: 'In the city of Eden, the lives of two families, one black and one white, intersect and intertwine in unexpected ways. Through the eyes of a young girl named Lyra, Blackwood explores the complexities of race, class, and power, illuminating the deep-seated prejudices that divide the community. As the story unfolds, Lyra learns the truth about her own family\'s past and begins to question the foundations of the world she thought she knew. With lyrical prose and unflinching honesty, Blackwood examines the legacy of slavery and the ongoing fight for justice and equality.',
+const toniMorrisonBook = {
+  author: "Nia Blackwood",
+  title: "Lyra's Journey (1992)",
+  summary:
+    "In the city of Eden, the lives of two families, one black and one white, intersect and intertwine in unexpected ways. Through the eyes of a young girl named Lyra, Blackwood explores the complexities of race, class, and power, illuminating the deep-seated prejudices that divide the community. As the story unfolds, Lyra learns the truth about her own family's past and begins to question the foundations of the world she thought she knew. With lyrical prose and unflinching honesty, Blackwood examines the legacy of slavery and the ongoing fight for justice and equality.",
   reviews: 6,
-}
+};
 
-const toniCadeBook={
-  author: 'LaToya Jenkins',
-  title: 'Raylynn\'s Voice (1975)',
-  summary: 'In a gritty inner city neighborhood, a young girl named Raylynn navigates the challenges of poverty and discrimination. With the help of her wise grandmother and a tight-knit community of strong, outspoken women, Raylynn learns to harness her own voice and use it to fight for justice. Despite the obstacles she faces, Raylynn remains hopeful and determined, inspiring those around her to stand up for what is right. Through her journey, Jenkins highlights the power of community and self-discovery in the face of adversity.',
+const toniCadeBook = {
+  author: "LaToya Jenkins",
+  title: "Raylynn's Voice (1975)",
+  summary:
+    "In a gritty inner city neighborhood, a young girl named Raylynn navigates the challenges of poverty and discrimination. With the help of her wise grandmother and a tight-knit community of strong, outspoken women, Raylynn learns to harness her own voice and use it to fight for justice. Despite the obstacles she faces, Raylynn remains hopeful and determined, inspiring those around her to stand up for what is right. Through her journey, Jenkins highlights the power of community and self-discovery in the face of adversity.",
   reviews: 1,
-}
+};
 
-const fyodorDostoevskyBook={
-  author: 'Dimitri Petrov',
-  title: 'Ivan\'s Reckoning (1884)',
-  summary: 'In a corrupt and decaying city, a young man named Ivan confronts the meaning of morality and justice in a world where the lines between good and evil are blurred. Through a series of philosophical debates and intense personal struggles, Ivan grapples with the limits of reason and the weight of his own conscience. As the story unfolds, he begins to question the foundations of society and the very nature of human existence. With haunting imagery and probing insight, Petrov explores the depths of the human psyche, illuminating the forces that drive us to act and the consequences that follow.',
+const fyodorDostoevskyBook = {
+  author: "Dimitri Petrov",
+  title: "Ivan's Reckoning (1884)",
+  summary:
+    "In a corrupt and decaying city, a young man named Ivan confronts the meaning of morality and justice in a world where the lines between good and evil are blurred. Through a series of philosophical debates and intense personal struggles, Ivan grapples with the limits of reason and the weight of his own conscience. As the story unfolds, he begins to question the foundations of society and the very nature of human existence. With haunting imagery and probing insight, Petrov explores the depths of the human psyche, illuminating the forces that drive us to act and the consequences that follow.",
   reviews: 8,
-}
+};
 
-const book={
+const book = {
   author: toniCadeBook.author,
   title: toniCadeBook.title,
   summary: toniCadeBook.summary,
   reviews: toniCadeBook.reviews,
-}
+};
 
 function App() {
-  const [referenceAuthor, setReferenceAuthor]=useState('Toni Cade Bambara');
-  const [comments, setComments]=useState([]);
+  const [referenceAuthor, setReferenceAuthor] = useState("Toni Cade Bambara");
+  const [comments, setComments] = useState([]);
 
   const handleKeyDown = (event) => {
     setComments((comments) => {
-      if (event.key === 'Enter' && input.value != '') {
+      if (event.key === "Enter" && input.value != "") {
         let output = [...comments, input.value];
-        input.value='';
+        input.value = "";
         return output;
       } else {
         return comments;
       }
-    })
-  }
+    });
+  };
 
-  const resetAll=() => {
-    input.value='';
+  const resetAll = () => {
+    input.value = "";
     toniCade();
     setComments([]);
-  }
+  };
 
   function toniMorrison() {
-    setReferenceAuthor('Toni Morrison');
-    book.author=toniMorrisonBook.author;
-    book.title=toniMorrisonBook.title;
-    book.summary=toniMorrisonBook.summary;
-    book.reviews=toniMorrisonBook.reviews;
+    setReferenceAuthor("Toni Morrison");
+    book.author = toniMorrisonBook.author;
+    book.title = toniMorrisonBook.title;
+    book.summary = toniMorrisonBook.summary;
+    book.reviews = toniMorrisonBook.reviews;
   }
 
   function toniCade() {
-    setReferenceAuthor('Toni Cade Bambara');
-    book.author=toniCadeBook.author;
-    book.title=toniCadeBook.title;
-    book.summary=toniCadeBook.summary;
-    book.reviews=toniCadeBook.reviews;
+    setReferenceAuthor("Toni Cade Bambara");
+    book.author = toniCadeBook.author;
+    book.title = toniCadeBook.title;
+    book.summary = toniCadeBook.summary;
+    book.reviews = toniCadeBook.reviews;
   }
 
   function fyodorDostoevsky() {
-    setReferenceAuthor('Fyodor Dostoevsky');
-    book.author=fyodorDostoevskyBook.author;
-    book.title=fyodorDostoevskyBook.title;
-    book.summary=fyodorDostoevskyBook.summary;
-    book.reviews=fyodorDostoevskyBook.reviews;
+    setReferenceAuthor("Fyodor Dostoevsky");
+    book.author = fyodorDostoevskyBook.author;
+    book.title = fyodorDostoevskyBook.title;
+    book.summary = fyodorDostoevskyBook.summary;
+    book.reviews = fyodorDostoevskyBook.reviews;
   }
 
   return (
     <div>
-      <button onClick={toniMorrison}>Toni Morrison</button> <button onClick={toniCade}>Toni Cade Bambara</button> <button onClick={fyodorDostoevsky}>Fyodor Dostoevsky</button>
-      <br></br>
-      {referenceAuthor !== '' && (
+      <button onClick={toniMorrison}>Toni Morrison</button>{" "}
+      <button onClick={toniCade}>Toni Cade Bambara</button>{" "}
+      <button onClick={fyodorDostoevsky}>Fyodor Dostoevsky</button>
+      <br />
+      {referenceAuthor !== "" && (
         <>
-          <br></br>
-          <em>Generated by ChatGPT in the style of <refauthor>{referenceAuthor}</refauthor></em>
-          <br></br>
+          <br />
+          <em>
+            Generated by ChatGPT in the style of{" "}
+            <refauthor>{referenceAuthor}</refauthor>
+          </em>
+          <br />
         </>
       )}
-
       <center>
+        <h1>
+          <charcoal>{book.title}</charcoal>
+        </h1>
+        <h2>
+          by <charcoal>{book.author}</charcoal>
+        </h2>
+        <br />
 
-        <h1><charcoal>{book.title}</charcoal></h1>
-        <h2>by <charcoal>{book.author}</charcoal></h2>
-        <br></br>
+        <summary>{book.summary}</summary>
+        <br />
+        <br />
 
-        <summary>
-          {book.summary}
-        </summary>
-        <br></br><br></br>
-
-        <button id='reviews' type='button'>
+        <button id="reviews" type="button">
           Reviews ({book.reviews})
-        </button><br></br><br></br>
+        </button>
+        <br />
+        <br />
 
         {comments.length > 0 && (
           <div>
             <table>
               <tr>
-                <td><h2>Comments</h2></td>
+                <td>
+                  <h2>Comments</h2>
+                </td>
               </tr>
-              {comments.map(
-                (comment) => (
-                  <tr>
-                    <td><em>{comment}</em></td>
-                  </tr>
-                )
-              )}
+              {comments.map((comment) => (
+                <tr>
+                  <td>
+                    <em>{comment}</em>
+                  </td>
+                </tr>
+              ))}
             </table>
-            <br></br>
-            <br></br>
+            <br />
+            <br />
           </div>
         )}
 
-        <label htmlFor='input'>Comment: </label>
-        <input id='input' type='text' size='35' placeholder='add comments here' onKeyDown={handleKeyDown}/><br></br>
-
+        <label htmlFor="input">Comment: </label>
+        <input
+          id="input"
+          type="text"
+          size="35"
+          placeholder="add comments here"
+          onKeyDown={handleKeyDown}
+        />
+        <br />
       </center>
-
       <div>
-        <br></br>
-        <br></br>
-        <br></br>
-        <button onClick={() => resetAll()}>
-          Reset
-        </button>
+        <br />
+        <br />
+        <br />
+        <button onClick={() => resetAll()}>Reset</button>
       </div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
