@@ -78,10 +78,18 @@ td {
   vertical-align: middle;
 }
 
-sumdiv {
+summary {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 60%;
+}
+
+charcoal {
+  color: #666666;
+}
+
+refauthor {
+  color: #fff670;
 }
