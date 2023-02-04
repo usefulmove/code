@@ -123,7 +123,7 @@ function App() {
         )}
 
         <label htmlFor='input'>Comment: </label>
-        <input id='input' type='text' size='50' placeholder='add comments here' onKeyDown={handleKeyDown}/><br></br>
+        <input id='input' type='text' size='35' placeholder='add comments here' onKeyDown={handleKeyDown}/><br></br>
 
       </center>
 
