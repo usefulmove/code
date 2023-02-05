@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "./App.css";
-import { Container, Divider, Grid } from "@mui/material";
+import { Container, Grid, Typography } from "@mui/material";
 
 function App() {
   const [brakingDistance, setBrakingDistance] = useState(32.6);
@@ -17,55 +17,59 @@ function App() {
 
   return (
     <Container>
-      <h1>Braking Distance Calculator</h1>
+      <Typography variant="h4">Braking Distance Calculator</Typography>
       <br />
-      <Grid container spacing={2} alignItems="center">
-        <Grid item className="App" xs={6}>
-          <label htmlFor="weight">Weight: </label>
+      <Grid container spacing={2} alignItems="center" direction="column">
+        <Grid item className="App" xs={12}>
           <input
             id="weight"
             type="text"
             placeholder="airplane weight [lbs]"
-            size="24"
-            text-align="right"
+            size="36"
+            style={{ textAlign: "center" }}
           ></input>
-          <br />
-          <label htmlFor="pressure">Pressure: </label>
+        </Grid>
+        <Grid item className="App" xs={12}>
           <input
             id="pressure"
             type="text"
             placeholder="barometric pressure [inHg]"
-            size="24"
+            size="36"
+            style={{ textAlign: "center" }}
           ></input>
-          <br />
-          <label htmlFor="temperature">Temperature: </label>
+        </Grid>
+        <Grid item className="App" xs={12}>
           <input
             id="temp"
             type="text"
             placeholder="ambient temperature [°C]"
-            size="24"
+            size="36"
+            style={{ textAlign: "center" }}
           ></input>
-          <br />
-          <label htmlFor="altitude">Altitude: </label>
+        </Grid>
+        <Grid item className="App" xs={12}>
           <input
             id="altitude"
             type="text"
             placeholder="field elevation [ft]"
-            size="24"
+            size="36"
+            style={{ textAlign: "center" }}
           ></input>
         </Grid>
         <Grid item className="App">
-          <button onClick={updateBrakingDistance}>Calculate</button>
+          <span />
+        </Grid>
+        <Grid item className="App">
+          <button onClick={updateBrakingDistance}>Calculate BD</button>
         </Grid>
       </Grid>
       <br />
-      <Divider />
       <div>
-        <h3>
-          braking distance ={" "}
-          <span className="output">{brakingDistance} ft</span> ({" "}
-          {brakingDistanceMeters} m)
-        </h3>
+        <Typography variant="h5">
+          Braking distance ={" "}
+          <span className="output">{brakingDistance} feet</span> ({" "}
+          {brakingDistanceMeters} meters )
+        </Typography>
       </div>
     </Container>
   );
