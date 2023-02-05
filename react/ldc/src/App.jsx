@@ -56,6 +56,15 @@ function App() {
             style={{ textAlign: "center" }}
           ></input>
         </Grid>
+        <Grid item className="App" xs={12}>
+          <input
+            id="flaps"
+            type="text"
+            placeholder="flap deployment angle [°]"
+            size="36"
+            style={{ textAlign: "center" }}
+          ></input>
+        </Grid>
         <Grid item className="App">
           <span />
         </Grid>
