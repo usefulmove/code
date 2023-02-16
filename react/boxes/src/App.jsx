@@ -7,17 +7,23 @@ import { Grid } from "@mui/material";
 function App() {
   return (
     <div className="App">
-      <Grid container>
-        <Grid item xs={8} justifyContent="flex-start">
+      <Grid container justifyContent="space-between" alignItems="stretch">
+        <Grid item xs={6}>
           <Column />
         </Grid>
-        <Grid item xs={4} alignItems="center">
-          <div>
+        <Grid
+          container
+          direction="column"
+          justifyContent="space-between"
+          alignItems="flex-end"
+          xs
+        >
+          <Grid item>
             <Box name="I" />
-          </div>
-          <div>
+          </Grid>
+          <Grid item>
             <Box name="II" />
-          </div>
+          </Grid>
         </Grid>
       </Grid>
     </div>
