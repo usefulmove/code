@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useState } from "react";
 import "./App.css";
+import { Button, ButtonGroup } from "@mui/material";
 
 const toniMorrisonBook = {
   author: "Nia Blackwood",
@@ -81,9 +82,11 @@ function App() {
 
   return (
     <div>
-      <button onClick={toniMorrison}>Toni Morrison</button>{" "}
-      <button onClick={toniCade}>Toni Cade Bambara</button>{" "}
-      <button onClick={fyodorDostoevsky}>Fyodor Dostoevsky</button>
+      <ButtonGroup variant="text">
+        <Button onClick={toniMorrison}>Toni Morrison</Button>
+        <Button onClick={toniCade}>Toni Cade Bambara</Button>
+        <Button onClick={fyodorDostoevsky}>Fyodor DostOevsky</Button>
+      </ButtonGroup>
       <br />
       {referenceAuthor !== "" && (
         <>
@@ -108,9 +111,9 @@ function App() {
         <br />
         <br />
 
-        <button id="reviews" type="button">
+        <Button id="reviews" variant="contained">
           Reviews ({book.reviews})
-        </button>
+        </Button>
         <br />
         <br />
 
@@ -149,7 +152,7 @@ function App() {
         <br />
         <br />
         <br />
-        <button onClick={() => resetAll()}>Reset</button>
+        <Button onClick={() => resetAll()}>Reset</Button>
       </div>
     </div>
   );
