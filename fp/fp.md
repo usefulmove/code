@@ -10,13 +10,13 @@
 | map | iter.map | ¨ | map | map | map |
 | filter | iter.filter<br>iter.take<br>iter.skip<br>iter.nth | / (replicate) | filter | filter<br>itertools.takewhile | filter |
 | filter & map<br>flat map | iter.filter_map<br>iter.flat_map | ??? | collect<br>flatMap | ??? | ??? |
-| fold | iter.fold<br>iter.reduce | / (reduce)<br>⌿ (reduce first) | foldLeft<br>reduce | functools.reduce | ??? |
+| fold | iter.fold<br>iter.reduce | / (reduce)<br>⌿ (reduce first) | foldLeft<br>reduce | functools.reduce | reduce |
 | sum | iter.sum| +/ | sum | sum | ??? |
-| count | iter.count<br>len | ≢ (tally) | size<br>count | len | ??? |
+| count | iter.count<br>len | ≢ (tally) | size<br>count | len | length |
 | max | iter.max | ⌈/ | max | max | ??? |
 | min | iter.min | ⌊/ | min | min | ??? |
-| sort | slice::sort* | {⍵[⍋⍵]} | sorted | List.sort | ??? |
-| reverse | iter.rev | ⌽ (rotate) | reverse | [::-1] | ??? |
+| sort | slice::sort* | {⍵[⍋⍵]} | sorted | List.sort | sort((a,b) => a-b)* |
+| reverse | iter.rev | ⌽ (rotate) | reverse | [::-1] | reverse* |
 | drop | skip | ??? | drop | ??? | ??? |
 | take | take | ??? | take | ??? | ??? |
 | any | iter.any | ??? | exists | any | ??? |
