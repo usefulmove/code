@@ -5,7 +5,7 @@
 
 <br>
 
-| Function | Rust | APL | Scala | Python | R ( Tidyerse ) |
+| Function | Rust | APL | Scala | Python | JavaScript |
 |:--:|:--:|:--:|:--:|:--:|:--:|
 | map | iter.map | ¨ | map | map | map |
 | filter | iter.filter<br>iter.take<br>iter.skip<br>iter.nth | / (replicate) | filter | filter<br>itertools.takewhile | filter |
@@ -13,8 +13,8 @@
 | fold | iter.fold<br>iter.reduce | / (reduce)<br>⌿ (reduce first) | foldLeft<br>reduce | functools.reduce | ??? |
 | sum | iter.sum| +/ | sum | sum | ??? |
 | count | iter.count<br>len | ≢ (tally) | size<br>count | len | ??? |
-| max | iter.max | ⌈/ | max | max | max |
-| min | iter.min | ⌊/ | min | min | min |
+| max | iter.max | ⌈/ | max | max | ??? |
+| min | iter.min | ⌊/ | min | min | ??? |
 | sort | slice::sort* | {⍵[⍋⍵]} | sorted | List.sort | ??? |
 | reverse | iter.rev | ⌽ (rotate) | reverse | [::-1] | ??? |
 | drop | skip | ??? | drop | ??? | ??? |
