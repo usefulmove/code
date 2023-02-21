@@ -5,7 +5,7 @@
 
 <br>
 
-| Function | Rust | APL | Scala | Python | JavaScript |
+|  | Rust | APL | Scala | Python | JavaScript |
 |:--:|:--:|:--:|:--:|:--:|:--:|
 | map | iter.map | ¨ | map | map | map |
 | filter | iter.filter<br>iter.take<br>iter.skip<br>iter.nth | / (replicate) | filter | filter<br>itertools.takewhile | filter |
