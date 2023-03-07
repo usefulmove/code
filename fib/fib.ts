@@ -6,6 +6,6 @@ const fib2 = (n: number, a: number = 0, b: number = 1): number => {
     case 1: return b;
     default: return fib2(n-1, b, a+b);
   }
-}
+};
 
 console.log(fib2(38));
