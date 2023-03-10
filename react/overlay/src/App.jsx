@@ -1,16 +1,42 @@
 import "./App.css";
+import { styled, css } from "@mui/material/styles";
 import { useState } from "react";
-import { ToggleButton } from "@mui/material";
+import { Box, Icon, ToggleButton } from "@mui/material";
 import { CropFree, HighlightOff } from "@mui/icons-material";
+
+const Overlay = styled(Box)(({ theme }) => ({
+  position: "absolute",
+  top: 0,
+  left: 0,
+  width: "100%",
+  height: "100%",
+  backgroundColor: "rgba(0, 0, 0, 0.3)",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+}));
+
+const IconWrapper = styled(Icon)(() => ({
+  color: "#ffffff",
+  fontSize: "200px",
+}));
 
 function App() {
   const [alignGuide, setAlignGuide] = useState(false);
 
   return (
     <>
-      <div>
-        <img src="src/assets/eye.jpg" width="1000" />
+      <div style={{ position: "relative", display: "inline-block" }}>
+        <img
+          src="src/assets/eye.jpg"
+          width="1000"
+          style={{ display: "block" }}
+        />
+        <Overlay>
+          <IconWrapper component={CropFree} />
+        </Overlay>
       </div>
+      <br />
       <ToggleButton
         value="alignmentGuide"
         selected={alignGuide}
