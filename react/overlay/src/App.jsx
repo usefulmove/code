@@ -2,7 +2,7 @@ import "./App.css";
 import { styled, css } from "@mui/material/styles";
 import { useState } from "react";
 import { Box, Icon, ToggleButton } from "@mui/material";
-import { CropFree, HighlightOff } from "@mui/icons-material";
+import { CropFree, CropFreeSharp, HighlightOff } from "@mui/icons-material";
 
 const Overlay = styled(Box)(({ theme }) => ({
   position: "absolute",
@@ -10,15 +10,15 @@ const Overlay = styled(Box)(({ theme }) => ({
   left: 0,
   width: "100%",
   height: "100%",
-  backgroundColor: "rgba(0, 0, 0, 0.3)",
+  backgroundColor: "rgba(0, 0, 0, 0.25)",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
 }));
 
 const IconWrapper = styled(Icon)(() => ({
-  color: "#ffffff",
-  fontSize: "200px",
+  color: "#C0B2EE",
+  fontSize: "400px",
 }));
 
 function App() {
@@ -32,9 +32,11 @@ function App() {
           width="1000"
           style={{ display: "block" }}
         />
-        <Overlay>
-          <IconWrapper component={CropFree} />
-        </Overlay>
+        {alignGuide ? (
+          <Overlay>
+            <IconWrapper component={CropFreeSharp} />
+          </Overlay>
+        ) : null}
       </div>
       <br />
       <ToggleButton
