@@ -9,7 +9,7 @@ function App() {
   return (
     <>
       <div>
-        <img src="src/assets/cam.png" width="100%" />
+        <img src="src/assets/eye.jpg" width="1000" />
       </div>
       <ToggleButton
         value="alignmentGuide"
