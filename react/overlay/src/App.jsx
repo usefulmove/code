@@ -2,7 +2,12 @@ import "./App.css";
 import { styled, css } from "@mui/material/styles";
 import { useState } from "react";
 import { Box, Icon, ToggleButton } from "@mui/material";
-import { CropFree, CropFreeSharp, HighlightOff } from "@mui/icons-material";
+import {
+  CropFree,
+  CropFreeSharp,
+  HighlightOff,
+  VisibilityOutlined,
+} from "@mui/icons-material";
 
 const Overlay = styled(Box)(({ theme }) => ({
   position: "absolute",
