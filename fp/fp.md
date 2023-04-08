@@ -23,7 +23,7 @@
 | all | forall | iter.all | every() | R.all | all |
 | zip<br>inner product | zip | iter.zip | ??? | R.zip | zip |
 | outer product | ??? | itertools::iproduct | ??? | | itertools.product |
-| chain | ++ | iter.chain | ??? | R.concat | itertools.chain |
+| chain | ++ | iter.chain | concat | R.concat | itertools.chain |
 | flatten | flatten | iter.flatten | flat() | R.flatten | [item for sublist in NESTED for item in sublist] |
 | scan | scanLeft | iter.scan | | R.scan | itertools.accumulate |
 | rotate | `(o takeRight 1) ::: (o dropRight 1)`<br>`o.tail :+ o.head` | slice.rotate_right<br>slice.rotate_left | ??? | R.move(-1)(0) <br> R.move(0)(-1) | `o[n:] + o[:n]`<br>`o[-n:] + o[:-n]`<br>`numpy.roll` |
