@@ -26,7 +26,7 @@
 | chain | ++ | iter.chain | ??? | ??? | itertools.chain | ⍪ (catenate) |
 | flatten | flatten | iter.flatten | flat() | R.flatten | [item for sublist in NESTED for item in sublist] | , (ravel)<br>∊ (enlist) (?) |
 | scan | scanLeft | iter.scan | | R.scan | itertools.accumulate | \\ (scan)<br>⍀ (scan first) |
-| rotate | `(o takeRight 1) ::: (o dropRight 1)`<br>`o.tail :+ o.head` | slice.rotate_right<br>slice.rotate_left | ??? | | `o[n:] + o[:n]`<br>`o[-n:] + o[:-n]`<br>`numpy.roll` | ??? |
+| rotate | `(o takeRight 1) ::: (o dropRight 1)`<br>`o.tail :+ o.head` | slice.rotate_right<br>slice.rotate_left | ??? | R.move(-1)(0) <br> R.move(0)(-1) | `o[n:] + o[:n]`<br>`o[-n:] + o[:-n]`<br>`numpy.roll` | |
 | unique | distinct | dedup | | R.uniq | ??? | ∪ (down shoe) |
 
 ( *modifies a mutable data structure )
