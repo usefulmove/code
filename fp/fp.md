@@ -5,29 +5,29 @@
 
 <br>
 
-|  | Rust | APL | Scala | Python | JavaScript | RamdaJS |
+|  | Scala | Rust | JavaScript | RamdaJS | Python | APL |
 |:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-| map | iter.map | ¨ | map | map | map | R.map |
-| filter | iter.filter<br>iter.take<br>iter.skip<br>iter.nth | / (replicate) | filter | filter<br>itertools.takewhile | filter | R.filter |
-| flatmap | iter.flat_map | ??? | collect<br>flatMap | | | R.chain |
-| fold | iter.fold<br>iter.reduce | / (reduce)<br>⌿ (reduce first) | foldLeft<br>reduce | functools.reduce | reduce | R.reduce |
-| sum | iter.sum| +/ | sum | sum | reduce | R.sum |
-| count | iter.count<br>len | ≢ (tally) | size<br>count | len | length | R.count |
-| max | iter.max | ⌈/ | max | max | reduce | R.max |
-| min | iter.min | ⌊/ | min | min | reduce | R.min |
-| sort | slice::sort* | {⍵[⍋⍵]} | sorted | List.sort | sort((a,b) => a-b)* | R.sort |
-| reverse | iter.rev | ⌽ (rotate) | reverse | [::-1] | reverse* | R.reverse |
-| drop | skip | ??? | drop | ??? | slice | R.drop |
-| take | take | ??? | take | ??? | slice | R.take |
-| any | iter.any | ??? | exists | any | some() | R.any |
-| all | iter.all | ??? | forall | all | every() | R.all |
-| zip<br>inner product | iter.zip | . (product) | zip | zip | ??? | R.zip |
-| outer product | itertools::iproduct | ∘. | ??? | itertools.product | ??? | |
-| chain | iter.chain | ⍪ (catenate) | ++ | itertools.chain | ??? | ??? |
-| flatten | iter.flatten | , (ravel)<br>∊ (enlist) (?) | flatten | [item for sublist in NESTED for item in sublist] | flat() | R.flatten |
-| scan | iter.scan | \\ (scan)<br>⍀ (scan first) | scanLeft | itertools.accumulate | | R.scan |
-| rotate | slice.rotate_right<br>slice.rotate_left | ??? | `(o takeRight 1) ::: (o dropRight 1)`<br>`o.tail :+ o.head` | `o[n:] + o[:n]`<br>`o[-n:] + o[:-n]`<br>`numpy.roll` | ??? | |
-| unique | dedup | ∪ (down shoe) | distinct | ??? |  | R.uniq |
+| map | map | iter.map | map | R.map | map | ¨ |
+| filter | filter | iter.filter<br>iter.take<br>iter.skip<br>iter.nth | filter | R.filter | filter<br>itertools.takewhile | / (replicate) |
+| flatmap | collect<br>flatMap | iter.flat_map | | R.chain | | ??? |
+| fold | foldLeft<br>reduce | iter.fold<br>iter.reduce | reduce | R.reduce | functools.reduce | / (reduce)<br>⌿ (reduce first) |
+| sum | sum | iter.sum | reduce | R.sum | sum | +/ |
+| count | size<br>count | iter.count<br>len | length | R.count | len | ≢ (tally) |
+| max | max | iter.max | reduce | R.max | max | ⌈/ |
+| min | min | iter.min | reduce | R.min | min | ⌊/ |
+| sort | sorted | slice::sort* | sort((a,b) => a-b)* | R.sort | List.sort | {⍵[⍋⍵]} |
+| reverse | reverse | iter.rev | reverse* | R.reverse | [::-1] | ⌽ (rotate) |
+| drop | drop | skip | slice | R.drop | ??? | ??? |
+| take | take | take | slice | R.take | ??? | ??? |
+| any | exists | iter.any | some() | R.any | any | ??? |
+| all | forall | iter.all | every() | R.all | all | ??? |
+| zip<br>inner product | zip | iter.zip | ??? | R.zip | zip | . (product) |
+| outer product | ??? | itertools::iproduct | ??? | | itertools.product | ∘. |
+| chain | ++ | iter.chain | ??? | ??? | itertools.chain | ⍪ (catenate) |
+| flatten | flatten | iter.flatten | flat() | R.flatten | [item for sublist in NESTED for item in sublist] | , (ravel)<br>∊ (enlist) (?) |
+| scan | scanLeft | iter.scan | | R.scan | itertools.accumulate | \\ (scan)<br>⍀ (scan first) |
+| rotate | `(o takeRight 1) ::: (o dropRight 1)`<br>`o.tail :+ o.head` | slice.rotate_right<br>slice.rotate_left | ??? | | `o[n:] + o[:n]`<br>`o[-n:] + o[:-n]`<br>`numpy.roll` | ??? |
+| unique | distinct | dedup | | R.uniq | ??? | ∪ (down shoe) |
 
 ( *modifies a mutable data structure )
 
