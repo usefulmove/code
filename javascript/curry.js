@@ -1,8 +1,5 @@
 const curry = (fn) => {
-  return curried = (...args) => {
-    if (fn.length !== args.length) {
-      return curried.bind(null, ...args);
-    }
-    return fn(...args);
-  };
+  const curried = (...args) =>
+    fn.length !== args.length ? curried.bind(null, ...args) : fn(...args);
+  return curried;
 };
