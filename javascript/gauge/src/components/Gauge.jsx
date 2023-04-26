@@ -21,26 +21,41 @@ function Gauge() {
 
   return (
     <>
-      <div sx={{ position: "relative" }}>
-        <svg width="350" height="350">
-          <image href={profile} width="100%" height="100%" />
-        </svg>
+      <div position="relative">
         <svg
           width="350"
           height="350"
-          style={{ position: "absolute", top: 110, left: 350 }}
+          style={{
+            position: "relative",
+            left: 150,
+          }}
+        >
+          <image href={profile} width="100%" height="100%" />
+        </svg>
+        <svg
+          width="100"
+          height="200"
+          style={{
+            position: "relative",
+            top: -115,
+            left: -200,
+          }}
         >
           <image href={reference} />
         </svg>
         <svg
-          width="350"
-          height="350"
-          style={{ position: "absolute", top: 110, left: 350 }}
+          width="100"
+          height="200"
+          style={{
+            position: "relative",
+            top: -115,
+            left: -300,
+          }}
         >
           <image href={pitch} transform={rotationTransform} />
         </svg>
         <Typography variant="h6" sx={{ color: "#a88fec" }}>
-          Calculated Pitch Offset: {Math.round(angle)}°
+          Calculated Pitch: {Math.round(angle)}°
         </Typography>
       </div>
       <br />
