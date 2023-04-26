@@ -2,12 +2,7 @@ import "./App.css";
 import { styled, css } from "@mui/material/styles";
 import { useState } from "react";
 import { Box, Icon, ToggleButton } from "@mui/material";
-import {
-  CropFree,
-  CropFreeSharp,
-  HighlightOff,
-  VisibilityOutlined,
-} from "@mui/icons-material";
+import { CropFree, CropFreeSharp, HighlightOff } from "@mui/icons-material";
 
 const Overlay = styled(Box)(({ theme }) => ({
   position: "absolute",
@@ -15,14 +10,14 @@ const Overlay = styled(Box)(({ theme }) => ({
   left: 0,
   width: "100%",
   height: "100%",
-  backgroundColor: "rgba(0, 0, 0, 0.25)",
+  backgroundColor: "rgba(0, 0, 0, 0.2)",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
 }));
 
 const IconWrapper = styled(Icon)(() => ({
-  color: "#C0B2EE",
+  color: "#FFFFFFAF",
   fontSize: "400px",
 }));
 
