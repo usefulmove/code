@@ -7,7 +7,6 @@ import { Typography } from "@mui/material";
 function Gauge() {
   const [angle, setAngle] = useState(0);
 
-  //const [rotationPointX, rotationPointY] = [50, 40];
   const [rotationPointX, rotationPointY] = [120, 94];
 
   const getRotationTransform = (angle, rotationPointX, rotationPointY) => {
@@ -29,14 +28,14 @@ function Gauge() {
         <svg
           width="350"
           height="350"
-          style={{ position: "absolute", top: 280, left: 270 }}
+          style={{ position: "absolute", top: 110, left: 350 }}
         >
           <image href={reference} />
         </svg>
         <svg
           width="350"
           height="350"
-          style={{ position: "absolute", top: 280, left: 270 }}
+          style={{ position: "absolute", top: 110, left: 350 }}
         >
           <image href={pitch} transform={rotationTransform} />
         </svg>
