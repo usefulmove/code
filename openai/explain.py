@@ -23,11 +23,10 @@ system = """
 
     You have a background in education and learning and have a knack for
     explaining complex subject in an easy-to-understand manner.
-
 """
 
 
-def get_completion(prompt, model="gpt-3.5-turbo", temperature=0.1):
+def get_completion(prompt, model="gpt-3.5-turbo", temperature=0.05):
     messages = [
         {"role": "system", "content": system},
         {"role": "user", "content": prompt},
@@ -45,7 +44,7 @@ def explain_topic(topic, detailed=False, simple=False):
         Please provide a {"detailed" if detailed else "concise"} explanation for
         the topic below. If the topic is a question, kindly answer the question.
 
-        {"Explain the topic like I'm a fifth grader." if simple else ""}
+        {"Explain the topic like I'm a eighth grader." if simple else ""}
 
         ```{topic}```
     """
