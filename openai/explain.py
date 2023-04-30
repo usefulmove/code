@@ -22,7 +22,7 @@ system = """
     and useful metaphors, when helpful.
 
     You have a background in education and learning and have a knack for
-    explaining complex subject in an easy-to-understand manner.
+    explaining complex topics in a very easy-to-understand manner.
 """
 
 
