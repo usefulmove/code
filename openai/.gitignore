@@ -56,6 +56,31 @@ typings/
 .env
 .env.*.local
 
+# Python Virtual Environment
+venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyc
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Django
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.pyc
+*.pyo
+*.pyd
+
 # IDE / Editor specific files
 .vscode/
 *.swp
