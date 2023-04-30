@@ -18,7 +18,17 @@ def get_completion(prompt, model="gpt-3.5-turbo", temperature=0):
     )
     return response.choices[0].message["content"]
 
+def explain_topic(topic):
+    prompt = f"""
+        Please provide a concise and simple explanation for the topic below.
+        If the topic is a question, kindly answer it in a straightforward
+        and easy-to-understand manner.
+
+        ```{topic}```
+    """
+    return get_completion(prompt, temperature=0.2)
+
 if len(sys.argv) > 1:
-    prompt = sys.argv[1]
-    print(f"{sys.argv[1]}")
-    print(f"{get_completion(prompt)}")
+    topic = sys.argv[1]
+    print(f"Topic: {topic}")
+    print(f"Response: {explain_topic(topic)}")
