@@ -26,6 +26,14 @@ system = """
     respond in a conversational and somewhat informal manner.
 """
 
+levels = {
+    'second', 'a second grader'
+    'fifth', 'a fifth grader'
+    'eighth', 'a eighth grader'
+    'tenth', 'a tenth grader'
+    'expert', 'an expert in the field'
+}
+
 
 def get_completion(prompt, model="gpt-3.5-turbo", temperature=0.05):
     messages = [
@@ -45,7 +53,7 @@ def explain_topic(topic, detailed=False, simple=False):
         Please provide a {"detailed" if detailed else "concise"} explanation for
         the topic below. If the topic is a question, kindly answer the question.
 
-        {"Explain the topic like I'm a tenth grader." if simple else ""}
+        {"Explain the topic like I'm a fifth grader." if simple else ""}
 
         ```{topic}```
     """
@@ -60,6 +68,11 @@ def main():
     parser.add_argument('topic', help='topic to be explained')
     parser.add_argument('-v', '--verbose', action='store_true', help='provide a detailed explanation')
     parser.add_argument('-s', '--simple', action='store_true', help='provide a simple explanation')
+    parser.add_argument('-2', '--second', action='store_true', help='provide an explanation suitable for a 2nd grader')
+    parser.add_argument('-5', '--fifth', action='store_true', help='provide an explanation suitable for a 5th grader')
+    parser.add_argument('-8', '--eighth', action='store_true', help='provide an explanation suitable for a 8th grader')
+    parser.add_argument('-10', '--tenth', action='store_true', help='provide an explanation suitable for a 10th grader')
+    parser.add_argument('-e', '--expert', action='store_true', help='provide an explanation suitable for an expert in the field')
     args = parser.parse_args()
 
     print(f"Topic: {args.topic}")
