@@ -45,7 +45,7 @@ def explain_topic(topic, detailed=False, simple=False):
         Please provide a {"detailed" if detailed else "concise"} explanation for
         the topic below. If the topic is a question, kindly answer the question.
 
-        {"Explain the topic like I'm a eighth grader." if simple else ""}
+        {"Explain the topic like I'm a tenth grader." if simple else ""}
 
         ```{topic}```
     """
