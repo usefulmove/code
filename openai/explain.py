@@ -5,7 +5,7 @@ import os
 import sys
 
 from dotenv import load_dotenv, find_dotenv
-_ = load_dotenv(find_dotenv()) # read local .env file
+_ = load_dotenv(find_dotenv()) # load local .env file into environment
 
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
@@ -20,9 +20,9 @@ def get_completion(prompt, model="gpt-3.5-turbo", temperature=0):
 
 def explain_topic(topic):
     prompt = f"""
-        Please provide a concise and simple explanation for the topic below.
-        If the topic is a question, kindly answer it in a straightforward
-        and easy-to-understand manner.
+        Please provide a concise explanation for the topic below.  If the topic
+        is a question, kindly answer it in a concise, straightforward, and
+        easy-to-understand manner.
 
         ```{topic}```
     """
