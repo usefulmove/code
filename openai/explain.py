@@ -65,7 +65,7 @@ def main():
     print(f"Topic: {args.topic}")
 
     if args.verbose:
-        print(f"Response (detailed{', simple' if args.simple else ''}): {explain_topic(args.topic, detailed=True, simple=args.simple)}")
+        print(f"Response (verbose{', simple' if args.simple else ''}): {explain_topic(args.topic, detailed=True, simple=args.simple)}")
     else:
         print(f"Response (concise{', simple' if args.simple else ''}): {explain_topic(args.topic, detailed=False, simple=args.simple)}")
 
