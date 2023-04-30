@@ -45,7 +45,7 @@ def explain_topic(topic, detailed=False, simple=False):
         Please provide a {"detailed" if detailed else "concise"} explanation for
         the topic below. If the topic is a question, kindly answer the question.
 
-        {"Explain the topic like I'm a second grader." if simple else ""}
+        {"Explain the topic like I'm a fifth grader." if simple else ""}
 
         ```{topic}```
     """
@@ -65,9 +65,9 @@ def main():
     print(f"Topic: {args.topic}")
 
     if args.verbose:
-        print(f"Response (detailed): {explain_topic(args.topic, detailed=True, simple=args.simple)}")
+        print(f"Response (detailed{', simple' if args.simple else ''}): {explain_topic(args.topic, detailed=True, simple=args.simple)}")
     else:
-        print(f"Response (concise): {explain_topic(args.topic, detailed=False, simple=args.simple)}")
+        print(f"Response (concise{', simple' if args.simple else ''}): {explain_topic(args.topic, detailed=False, simple=args.simple)}")
 
 
 if __name__ == "__main__":
