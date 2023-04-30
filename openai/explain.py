@@ -9,7 +9,7 @@ _ = load_dotenv(find_dotenv()) # load local .env file into environment
 
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
-def get_completion(prompt, model="gpt-3.5-turbo", temperature=0): 
+def get_completion(prompt, model="gpt-3.5-turbo", temperature=0.2): 
     messages = [{"role": "user", "content": prompt}]
     response = openai.ChatCompletion.create(
         model=model,
@@ -26,7 +26,7 @@ def explain_topic(topic):
 
         ```{topic}```
     """
-    return get_completion(prompt, temperature=0.2)
+    return get_completion(prompt)
 
 if len(sys.argv) > 1:
     topic = sys.argv[1]
