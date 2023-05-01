@@ -26,34 +26,35 @@ system = """
     respond in a conversational and somewhat informal manner.
 """
 
-levels = {
-    'second', 'a second grader'
-    'fifth', 'a fifth grader'
-    'eighth', 'a eighth grader'
-    'tenth', 'a tenth grader'
-    'expert', 'an expert in the field'
+LEVELS = {
+    'default': '',
+    'second': 'a second grader',
+    'fifth': 'a fifth grader',
+    'eighth': 'a eighth grader',
+    'tenth': 'a tenth grader',
+    'expert': 'an expert in the field',
 }
 
 
-def get_completion(prompt, model="gpt-3.5-turbo", temperature=0.05):
+def get_completion(prompt, model='gpt-3.5-turbo', temperature=0.05):
     messages = [
-        {"role": "system", "content": system},
-        {"role": "user", "content": prompt},
+        {'role': 'system', 'content': system},
+        {'role': 'user', 'content': prompt},
     ]
     response = openai.ChatCompletion.create(
         model=model,
         messages=messages,
         temperature=temperature,
     )
-    return response.choices[0].message["content"]
+    return response.choices[0].message['content']
 
 
-def explain_topic(topic, detailed=False, simple=False):
+def explain_topic(topic, verbose=False, level=LEVELS['default']):
     prompt = f"""
-        Please provide a {"detailed" if detailed else "concise"} explanation for
+        Please provide a {'detailed' if verbose else 'concise'} explanation for
         the topic below. If the topic is a question, kindly answer the question.
 
-        {"Explain the topic like I'm a fifth grader." if simple else ""}
+        {("Explain the topic like I'm " + level + ".") if level != LEVELS['default'] else ""}
 
         ```{topic}```
     """
@@ -75,13 +76,35 @@ def main():
     parser.add_argument('-e', '--expert', action='store_true', help='provide an explanation suitable for an expert in the field')
     args = parser.parse_args()
 
-    print(f"Topic: {args.topic}")
+    print(f'Topic: {args.topic}')
+
+    if args.simple:
+        level = LEVELS['eighth']
+        levelText = '8th'
+    elif args.second:
+        level = LEVELS['second']
+        levelText = '2nd'
+    elif args.fifth:
+        level = LEVELS['fifth']
+        levelText = '5th'
+    elif args.eighth:
+        level = LEVELS['eighth']
+        levelText = '8th'
+    elif args.tenth:
+        level = LEVELS['tenth']
+        levelText = '10th'
+    elif args.expert:
+        level = LEVELS['expert']
+        levelText = 'expert'
+    else:   
+        level = LEVELS['default']
+        levelText = ''
 
     if args.verbose:
-        print(f"Response (verbose{', simple' if args.simple else ''}): {explain_topic(args.topic, detailed=True, simple=args.simple)}")
+        print(f"Response (verbose{(', ' + levelText) if levelText != '' else ''}): {explain_topic(args.topic, verbose=True, level=level)}")
     else:
-        print(f"Response (concise{', simple' if args.simple else ''}): {explain_topic(args.topic, detailed=False, simple=args.simple)}")
+        print(f"Response (concise{(', ' + levelText) if levelText != '' else ''}): {explain_topic(args.topic, verbose=False, level=level)}")
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
