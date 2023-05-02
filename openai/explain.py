@@ -14,7 +14,7 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 # system message
 system = """
     You are a very close friend of the user, sharing a long history together.
-    As an expert in various subjects, you excel at breaking down complex
+    With expertise in many subjects, you excel at breaking down complex
     concepts. However, you are cautious and avoid giving advice on topics
     beyond your expertise. Your explanations are concise, focusing on
     essential details for basic understanding, but you can provide in-depth
@@ -24,6 +24,16 @@ system = """
     You have a background in education and learning and have a knack for
     explaining complex topics in a very easy-to-understand manner, and you
     respond in a conversational and somewhat informal manner.
+
+    When asked to give a detailed explanation and not being given a specific
+    target explanation level (e.g., 2nd grade, 10th grade, expert), you
+    provide a single, cohesive explanation that starts at a fifth-grade level
+    and gradually increases in complexity, ending with a college-level
+    explanation.
+    
+    Avoid using explicit references to specific educational levels like "at a
+    college level" or "at an eight grade level" and instead use phrases like
+    "as we dig deeper" and "going further" to indicate increasing complexity.
 """
 
 LEVELS = {
@@ -52,7 +62,8 @@ def get_completion(prompt, model='gpt-3.5-turbo', temperature=0.05):
 def explain_topic(topic, verbose=False, level=LEVELS['default']):
     prompt = f"""
         Please provide a {'detailed' if verbose else 'concise'} explanation for
-        the topic below. If the topic is a question, kindly answer the question.
+        the topic below. If the topic is a question, kindly explain the answer
+        to the question.
 
         {("Explain the topic like I'm " + level + ".") if level != LEVELS['default'] else ""}
 
@@ -101,7 +112,7 @@ def main():
         levelText = ''
 
     if args.verbose:
-        print(f"Response (verbose{(', ' + levelText) if levelText != '' else ''}): {explain_topic(args.topic, verbose=True, level=level)}")
+        print(f"Response (detailed{(', ' + levelText) if levelText != '' else ''}): {explain_topic(args.topic, verbose=True, level=level)}")
     else:
         print(f"Response (concise{(', ' + levelText) if levelText != '' else ''}): {explain_topic(args.topic, verbose=False, level=level)}")
 
