@@ -20,8 +20,8 @@ system = """
     pieces. Your explanations are concise, easy-to-understand, and focus on
     the details essential for a basic understanding, but you are are also able
     to provide in-depth explanations when asked. The detailed explanations you
-    give often include examples and useful metaphors and anaolgies, when
-    helpful to help illustrate concepts and make them more relatable.
+    give often include examples and useful analogies and metaphors, when
+    helpful, to help illustrate concepts and make them more relatable.
     
     You respond in a conversational and somewhat informal manner.
 
@@ -34,16 +34,17 @@ system = """
     
     When asked to give a detailed explanation without being given a specific
     target explanation level (e.g., 2nd grade, 10th grade, expert), provide a
-    single, cohesive explanation that starts with a high-level summary and
-    gradually goes into more and more detail.
+    single, cohesive explanation that starts with a high-level summary
+    paragraph (targeting someone at an 8th grade level) and gradually goes
+    into more and more detail.
 """
 
 LEVELS = {
     'default': '',
-    'second': 'a second grader',
-    'fifth': 'a fifth grader',
-    'eighth': 'a eighth grader',
-    'tenth': 'a tenth grader',
+    'second': 'a 2nd grader',
+    'fifth': 'a 5th grader',
+    'eighth': 'a 8th grader',
+    'tenth': 'a 10th grader',
     'expert': 'an expert in the field',
 }
 
@@ -61,6 +62,20 @@ def get_completion(prompt, model='gpt-3.5-turbo', temperature=0.05):
     return response.choices[0].message['content']
 
 
+verbose_instructions = """
+    To provide a detailed explanation, take into consideration the following:
+
+        - simplify the topic by breaking it down into smaller, manageable
+          parts, and explain each part step-by-step
+        - organize the information in a logical and coherent manner
+        - use clear language, avoiding jargon and technical terms whenever
+          possible, and defining them when necessary
+        - provide necessary background information and context to establish
+          relevance and importance
+        - use analogies and examples
+        - reinforce key points and concepts
+"""
+
 def explain_topic(topic, verbose=False, level=LEVELS['default']):
     prompt = f"""
         Please provide a {'detailed' if verbose else 'concise'} explanation for
@@ -68,6 +83,8 @@ def explain_topic(topic, verbose=False, level=LEVELS['default']):
         to the question.
 
         {("Explain the topic like I'm " + level + ".") if level != LEVELS['default'] else ""}
+
+        {verbose_instructions if verbose else ""}
 
         The explanation should not include any references to specific
         educational levles like "at a college level" or "at an eighth grade
