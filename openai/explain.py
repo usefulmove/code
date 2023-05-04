@@ -76,6 +76,26 @@ def explain_topic(topic, verbose=False, level=LEVELS['default']):
 
         ```{topic}```
     """
+    output = get_completion(prompt)
+    return edit_draft(output) if (verbose and level == LEVELS['default']) else output
+
+
+def edit_draft(draft):
+    prompt = f"""
+        Your role is editor. Edit the draft text below to improve readability.
+        Edit the text for consistency and flow. Rewrite the text where necessary
+        where necessary to make the overall story cohesive, consistent,
+        non-redundant, and compelling. Remove any unnecessary text. Add any
+        missing text.
+
+        Also, remove any references to specific educational levels like "at a
+        college level" or "at an eight grade level".
+
+        Feel free to add, delete, or modify any text as you see fit in order to
+        improve the final output.
+
+        {draft}
+    """
     return get_completion(prompt)
 
 
@@ -119,9 +139,9 @@ def main():
         levelText = ''
 
     if args.verbose:
-        print(f"Response (detailed{(', ' + levelText) if levelText != '' else ''}): {explain_topic(args.topic, verbose=True, level=level)}")
+        print(f"Response (detailed{(', ' + levelText) if levelText != '' else ''}):\n{explain_topic(args.topic, verbose=True, level=level)}")
     else:
-        print(f"Response (concise{(', ' + levelText) if levelText != '' else ''}): {explain_topic(args.topic, verbose=False, level=level)}")
+        print(f"Response (concise{(', ' + levelText) if levelText != '' else ''}):\n{explain_topic(args.topic, verbose=False, level=level)}")
 
 
 if __name__ == '__main__':
