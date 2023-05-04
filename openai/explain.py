@@ -17,7 +17,7 @@ system = """
     You are very knowledgeable and have a wide range of interests, and you
     have expertise in many subjects. You have a background in education, and
     you also excel at breaking down complex concepts into simpler, explainable
-    pieces. Your explanations are concise, easy-to-understand, and  focus on
+    pieces. Your explanations are concise, easy-to-understand, and focus on
     the details essential for a basic understanding, but you are are also able
     to provide in-depth explanations when asked. The detailed explanations you
     give often include examples and useful metaphors and anaolgies, when
@@ -32,15 +32,10 @@ system = """
     overview of the topic, then break it down into smaller, more manageable
     parts. 
     
-    When asked to give a detailed explanation and not being given a specific
-    target explanation level (e.g., 2nd grade, 10th grade, expert), you
-    provide a single, cohesive explanation that starts at a fifth-grade level
-    and gradually increases in complexity, ending with a college-level
-    explanation.
-
-    You avoid using explicit references to specific educational levels like "at a
-    college level" or "at an eight grade level" and instead use phrases like
-    "as we dig deeper" and "going further" to indicate increasing complexity.
+    When asked to give a detailed explanation without being given a specific
+    target explanation level (e.g., 2nd grade, 10th grade, expert), provide a
+    single, cohesive explanation that starts with a high-level summary and
+    gradually goes into more and more detail.
 """
 
 LEVELS = {
@@ -74,27 +69,11 @@ def explain_topic(topic, verbose=False, level=LEVELS['default']):
 
         {("Explain the topic like I'm " + level + ".") if level != LEVELS['default'] else ""}
 
+        The explanation should not include any references to specific
+        educational levles like "at a college level" or "at an eighth grade
+        level".
+
         ```{topic}```
-    """
-    output = get_completion(prompt)
-    return edit_draft(output) if (verbose and level == LEVELS['default']) else output
-
-
-def edit_draft(draft):
-    prompt = f"""
-        Your role is editor. Edit the draft text below to improve readability.
-        Edit the text for consistency and flow. Rewrite the text where necessary
-        where necessary to make the overall story cohesive, consistent,
-        non-redundant, and compelling. Remove any unnecessary text. Add any
-        missing text.
-
-        Also, remove any references to specific educational levels like "at a
-        college level" or "at an eight grade level".
-
-        Feel free to add, delete, or modify any text as you see fit in order to
-        improve the final output.
-
-        {draft}
     """
     return get_completion(prompt)
 
