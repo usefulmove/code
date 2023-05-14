@@ -48,7 +48,7 @@ for inputs, labels in train_loader:
     inputs = inputs.view(inputs.shape[0], -1)
     outputs = model(inputs)
     
-    # you might need to reshape or transform your labels to match the output shape
+    # transform labels to match the output shape
     labels = nn.functional.one_hot(labels, num_classes=10).float()
     
     # calculate loss
