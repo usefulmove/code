@@ -10,21 +10,21 @@ Original file is located at
 import torch
 from torch import nn
 
-class MLP(nn.Module):
-    def __init__(self, input_size=784, hidden_size=100, output_size=10):
-        super(MLP, self).__init__()
-        self.layers = nn.Sequential(
-            nn.Linear(input_size, hidden_size),
-            nn.ReLU(),
-            nn.Linear(hidden_size, hidden_size),
-            nn.ReLU(),
-            nn.Linear(hidden_size, output_size),
-            nn.Softmax(dim=1)
-        )
-        
-    def forward(self, x):
-        return self.layers(x)
+class Perceptron(nn.Module):
+  def __init__(self, input_size=784, hidden_size=100, output_size=10):
+    super(Perceptron, self).__init__()
+    self.layers = nn.Sequential(
+      nn.Linear(input_size, hidden_size),
+      nn.ReLU(),
+      nn.Linear(hidden_size, hidden_size),
+      nn.ReLU(),
+      nn.Linear(hidden_size, output_size),
+      nn.Softmax(dim=1)
+    )
+      
+  def forward(self, x):
+    return self.layers(x)
 
 # Instantiate the model
-model = MLP()
+model = Perceptron()
 print(model)
