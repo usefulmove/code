@@ -24,12 +24,14 @@ class MLPerceptron(nn.Module):
         output_size = 10
         self.layer1 = nn.Linear(input_size, hidden_size)
         self.layer2 = nn.Linear(hidden_size, hidden_size)
-        self.layer3 = nn.Linear(hidden_size, output_size)
+        self.layer3 = nn.Linear(hidden_size, hidden_size)
+        self.layer4 = nn.Linear(hidden_size, output_size)
 
     def forward(self, x):
         x = torch.relu(self.layer1(x))
         x = torch.relu(self.layer2(x))
-        x = self.layer3(x)
+        x = torch.relu(self.layer3(x))
+        x = self.layer4(x)
         return x
 
 # define a transform to normalize the data
@@ -55,7 +57,7 @@ optimizer = optim.SGD(model.parameters(), lr=0.8)
 print(model)
 
 # number of epochs
-n_epochs = 100
+n_epochs = 50
 
 # training and validation
 for epoch in range(n_epochs):
