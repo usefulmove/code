@@ -19,9 +19,12 @@ from torch.utils.data import DataLoader, random_split
 class MLPerceptron(nn.Module):
     def __init__(self):
         super(MLPerceptron, self).__init__()
-        self.layer1 = nn.Linear(784, 100)
-        self.layer2 = nn.Linear(100, 100)
-        self.layer3 = nn.Linear(100, 10)
+        input_size = 28 * 28
+        hidden_size = 128
+        output_size = 10
+        self.layer1 = nn.Linear(input_size, hidden_size)
+        self.layer2 = nn.Linear(hidden_size, hidden_size)
+        self.layer3 = nn.Linear(hidden_size, output_size)
 
     def forward(self, x):
         x = torch.relu(self.layer1(x))
@@ -52,7 +55,7 @@ optimizer = optim.SGD(model.parameters(), lr=0.8)
 print(model)
 
 # number of epochs
-n_epochs = 50
+n_epochs = 100
 
 # training and validation
 for epoch in range(n_epochs):
