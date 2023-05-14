@@ -8,23 +8,54 @@ Original file is located at
 """
 
 import torch
-from torch import nn
+from torch import nn, optim
+from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
 
-class Perceptron(nn.Module):
-  def __init__(self, input_size=784, hidden_size=100, output_size=10):
-    super(Perceptron, self).__init__()
-    self.layers = nn.Sequential(
-      nn.Linear(input_size, hidden_size),
-      nn.ReLU(),
-      nn.Linear(hidden_size, hidden_size),
-      nn.ReLU(),
-      nn.Linear(hidden_size, output_size),
-      nn.Softmax(dim=1)
-    )
-      
-  def forward(self, x):
-    return self.layers(x)
+# define the model (fully connected)
+class MLPerceptron(nn.Module):
+    def __init__(self):
+        super(MLPerceptron, self).__init__()
+        self.layer1 = nn.Linear(784, 100)
+        self.layer2 = nn.Linear(100, 100)
+        self.layer3 = nn.Linear(100, 10)
 
-# Instantiate the model
-model = Perceptron()
+    def forward(self, x):
+        x = torch.relu(self.layer1(x))
+        x = torch.relu(self.layer2(x))
+        x = self.layer3(x)
+        return x
+
+# define a transform to normalize the data
+transform = transforms.Compose([transforms.ToTensor(),
+                                transforms.Normalize((0.5,), (0.5,))])
+
+# download and load the training data
+trainset = datasets.MNIST('~/.pytorch/MNIST_data/', download=True, train=True, transform=transform)
+train_loader = DataLoader(trainset, batch_size=64, shuffle=True)
+
+# instantiate the model, loss criterion, and optimizer
+model = MLPerceptron()
+loss_criterion = nn.MSELoss() # mean squared error loss function
+optimizer = optim.SGD(model.parameters(), lr=0.01) # stochastic gradient descent
+
+# a single training step
+for inputs, labels in train_loader:
+    # zero the parameter gradients
+    optimizer.zero_grad()
+
+    # reshape the inputs and forward pass
+    inputs = inputs.view(inputs.shape[0], -1)
+    outputs = model(inputs)
+    
+    # you might need to reshape or transform your labels to match the output shape
+    labels = nn.functional.one_hot(labels, num_classes=10).float()
+    
+    # calculate loss
+    loss = loss_criterion(outputs, labels)
+    
+    # backward pass and optimization
+    loss.backward()
+    optimizer.step()
+
 print(model)
