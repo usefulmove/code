@@ -111,3 +111,28 @@ with torch.no_grad():
 accuracy = correct / total * 100
 
 print('model accuracy: {:.2f}%'.format(accuracy))
+
+import matplotlib.pyplot as plt
+from torchvision.transforms.functional import to_pil_image
+
+ind = 46
+input, label = valid_dataset[ind]
+
+# ensure the tensor is of correct shape
+input_tensor = input.view(1, -1)  # reshape to [1, 784] if it's not already
+
+# run the model
+output_tensor = model(input_tensor)
+
+_, max_index = torch.max(output_tensor, dim=1)
+print(f'model prediction: {max_index.item()}   label: {label}')
+
+# unnormalize the image
+unnorm_tensor = input * 0.5 + 0.5
+
+# convert to PIL Image
+img = to_pil_image(unnorm_tensor)
+
+# display the image
+plt.imshow(img, cmap='gray')
+plt.show()
