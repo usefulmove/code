@@ -41,30 +41,30 @@ transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5
 dataset = datasets.MNIST('~/.pytorch/MNIST_data/', download=True, train=True, transform=transform)
 
 # split the dataset into training and validation sets
-train_size = int(0.8 * len(dataset))  # 80% for training
-valid_size = len(dataset) - train_size  # 20% for validation
-train_dataset, valid_dataset = random_split(dataset, [train_size, valid_size])
+training_size = int(0.8 * len(dataset))  # 80% for training
+validation_size = len(dataset) - training_size  # 20% for validation
+training_data, validation_data = random_split(dataset, [training_size, validation_size])
 
 # create training and validation data loaders
-train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
-valid_loader = DataLoader(valid_dataset, batch_size=64, shuffle=True)
+training_loader = DataLoader(training_data, batch_size=64, shuffle=True)
+validation_loader = DataLoader(validation_data, batch_size=64, shuffle=True)
 
 # instantiate the model, loss criterion, and optimizer
-model = MLPerceptron()
-loss_criterion = nn.MSELoss()
-optimizer = optim.SGD(model.parameters(), lr=0.8)
+model = MLPerceptron() # multi-layer perceptron model
+loss_criterion = nn.MSELoss() # mean squared error loss function
+optimizer = optim.SGD(model.parameters(), lr=0.8) # stochaistic gradient descent
 
 print(model)
 
 # number of epochs
-n_epochs = 50
+n_epochs = 30
 
 # training and validation
 for epoch in range(n_epochs):
     # training
     model.train()
-    train_loss = 0.0
-    for inputs, labels in train_loader:
+    training_loss = 0.0
+    for inputs, labels in training_loader:
         # zero the parameter gradients
         optimizer.zero_grad()
 
@@ -77,16 +77,28 @@ for epoch in range(n_epochs):
 
         # calculate loss
         loss = loss_criterion(outputs, labels)
-        train_loss += loss.item()
+        training_loss += loss.item()
 
         # backward pass and optimization
         loss.backward()
         optimizer.step()
 
     # calculate average loss over an epoch
-    train_loss = train_loss / len(train_loader)
+    training_loss = training_loss / len(training_loader)
 
-    print('epoch: {} \ttraining loss: {:.6f}'.format(epoch+1, train_loss))
+    # validation loss
+    model.eval()
+    validation_loss = 0.0
+    with torch.no_grad():
+        for inputs, labels in validation_loader:
+            inputs = inputs.view(inputs.shape[0], -1)
+            outputs = model(inputs)
+            labels = nn.functional.one_hot(labels, num_classes=10).float()
+            loss = loss_criterion(outputs, labels)
+            validation_loss += loss.item()
+    validation_loss = validation_loss / len(validation_loader)        
+
+    print('epoch: {} \ttraining loss: {:.6f} \tvalidation loss: {:.6f}'.format(epoch+1, training_loss, validation_loss))
 
 """model validation"""
 
@@ -94,9 +106,12 @@ for epoch in range(n_epochs):
 model.eval()
 correct = 0
 total = 0
+error_inputs = []
+error_labels = []
+error_predictions = []
 
 with torch.no_grad():
-    for inputs, labels in valid_loader:
+    for inputs, labels in validation_loader:
         inputs = inputs.view(inputs.shape[0], -1)
         outputs = model(inputs)
         
@@ -107,6 +122,13 @@ with torch.no_grad():
         total += labels.size(0)
         correct += (predicted == labels).sum().item()
 
+        # store inputs, labels, and predictions where predictions are incorrect
+        for i, label in enumerate(labels):
+            if label != predicted[i]:
+                error_labels.append(label.item())
+                error_inputs.append(inputs[i])
+                error_predictions.append(predicted[i].item())
+
 # calculate the percentage of correct predictions
 accuracy = correct / total * 100
 
@@ -115,23 +137,23 @@ print('model accuracy: {:.2f}%'.format(accuracy))
 import matplotlib.pyplot as plt
 from torchvision.transforms.functional import to_pil_image
 
-ind = 46
-input, label = valid_dataset[ind]
+ind = 0
+input = error_inputs[ind]
+label = error_labels[ind]
+prediction = error_predictions[ind]
+
+print(input.size())
 
 # ensure the tensor is of correct shape
 input_tensor = input.view(1, -1)  # reshape to [1, 784] if it's not already
-
-# run the model
-output_tensor = model(input_tensor)
-
-_, max_index = torch.max(output_tensor, dim=1)
-print(f'model prediction: {max_index.item()}   label: {label}')
 
 # unnormalize the image
 unnorm_tensor = input * 0.5 + 0.5
 
 # convert to PIL Image
-img = to_pil_image(unnorm_tensor)
+img = to_pil_image(unnorm_tensor.reshape([28, 28]))
+
+print(f'model prediction: {prediction}   label: {label}')
 
 # display the image
 plt.imshow(img, cmap='gray')
