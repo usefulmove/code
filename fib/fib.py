@@ -1,8 +1,10 @@
 #!/usr/bin/python3
 
+from functools import cache
 import sys
 
 # recursive solution
+@cache
 def fib(n):
   match n:
     case 0 | 1:
@@ -11,6 +13,7 @@ def fib(n):
       return fib(n-1) + fib(n-2)
 
 # tail recursive solution
+@cache
 def fib2(n, a = 0, b = 1):
   match n:
     case 0: return a

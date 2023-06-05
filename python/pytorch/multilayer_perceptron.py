@@ -179,3 +179,14 @@ print(f'model prediction: {prediction} \tlabel: {label}')
 # display the image
 plt.imshow(image, cmap='gray')
 plt.show()
+
+"""## save the model weights and biases"""
+
+# save the model
+from google.colab import drive
+drive.mount('/content/gdrive')
+
+torch.save({
+    'model_state_dict': model.state_dict(),
+    'optimizer_state_dict': optimizer.state_dict(),
+}, "/content/gdrive/My Drive/model.pth")
