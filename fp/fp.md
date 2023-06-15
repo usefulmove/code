@@ -8,7 +8,7 @@
 |  | Scala | Rust | JavaScript | RamdaJS | Python |
 |:--:|:--:|:--:|:--:|:--:|:--:|
 | curry | TODO | TODO | | R.curry | toolz.curry |
-| composition | TODO | TODO | | R.compose<br>R.pipe | toolz.compose
+| compose | TODO | TODO | | R.compose<br>R.pipe | toolz.compose
 | map | map | iter.map | map | R.map | map |
 | filter | filter | iter.filter | filter | R.filter | filter |
 | flatmap | collect<br>flatMap | iter.flat_map | flatMap | R.chain | |
