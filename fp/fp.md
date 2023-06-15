@@ -10,7 +10,7 @@
 | map | map | iter.map | map | R.map | map |
 | filter | filter | iter.filter | filter | R.filter | filter |
 | flatmap | collect<br>flatMap | iter.flat_map | flatMap | R.chain | |
-| fold | foldLeft<br>reduce | iter.fold<br>iter.reduce | reduce | R.reduce | functools.reduce |
+| fold | foldLeft<br>reduce | iter.fold<br>iter.reduce | reduce | R.reduce | reduce |
 | sum | sum | iter.sum | reduce | R.sum | sum |
 | count | size<br>count | iter.count<br>len | length | R.count | len |
 | max | max | iter.max | reduce | R.max | max |
