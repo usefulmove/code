@@ -5,7 +5,7 @@ import sys
 
 # recursive solution
 @cache
-def fib(n):
+def fib(n: int) -> int:
   match n:
     case 0 | 1:
       return n
@@ -14,7 +14,7 @@ def fib(n):
 
 # tail recursive solution
 @cache
-def fib2(n, a = 0, b = 1):
+def fib2(n: int, a: int = 0, b: int = 1) -> int:
   match n:
     case 0: return a
     case 1: return b
