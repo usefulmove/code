@@ -7,18 +7,20 @@
 
 |  | Scala | Rust | JavaScript | RamdaJS | Python |
 |:--:|:--:|:--:|:--:|:--:|:--:|
-| curry | TODO | TODO | | R.curry | toolz.curry |
-| compose | TODO | TODO | | R.compose<br>R.pipe | toolz.compose<br>toolz.compose_left as pipe
 | map | map | iter.map | map | R.map | map |
 | filter | filter | iter.filter | filter | R.filter | filter |
+| fold | foldLeft<br>reduce | iter.fold<br>iter.reduce | reduce | R.reduce | functools.reduce |
 | flatmap | collect<br>flatMap | iter.flat_map | flatMap | R.chain | |
-| fold | foldLeft<br>reduce | iter.fold<br>iter.reduce | reduce | R.reduce | reduce |
+| flatten | flatten | iter.flatten | flat() | R.flatten | [item for sublist in NESTED for item in sublist] |
+| curry | TODO | TODO | | R.curry | toolz.curry |
+| scan | scanLeft | iter.scan | | R.scan | itertools.accumulate |
 | sum | sum | iter.sum | reduce | R.sum | sum |
 | count | size<br>count | iter.count<br>len | length | R.count | len |
 | max | max | iter.max | reduce | R.max | max |
 | min | min | iter.min | reduce | R.min | min |
 | sort | sorted | slice::sort* | sort((a,b) => a-b)* | R.sort | List.sort |
 | reverse | reverse | iter.rev | reverse* | R.reverse | [::-1] |
+| compose | TODO | TODO | | R.compose<br>R.pipe | toolz.compose<br>toolz.compose_left as pipe
 | drop | drop | skip | slice | R.drop | ??? |
 | take | take | take | slice | R.take | ??? |
 | any | exists | iter.any | some() | R.any | any |
@@ -26,10 +28,8 @@
 | zip<br>inner product | zip | iter.zip | ??? | R.zip | zip |
 | outer product | ??? | itertools::iproduct | ??? | | itertools.product |
 | chain | ++ | iter.chain | concat | R.concat | itertools.chain |
-| flatten | flatten | iter.flatten | flat() | R.flatten | [item for sublist in NESTED for item in sublist] |
-| scan | scanLeft | iter.scan | | R.scan | itertools.accumulate |
 | rotate | `(o takeRight 1) ::: (o dropRight 1)`<br>`o.tail :+ o.head` | slice.rotate_right<br>slice.rotate_left | ??? | R.move(-1)(0) <br> R.move(0)(-1) | `o[n:] + o[:n]`<br>`o[-n:] + o[:-n]`<br>`numpy.roll` |
-| unique | distinct | dedup | | R.uniq | ??? |
+| unique | distinct | dedup | | R.uniq | list(set(lst)) |
 
 ( *modifies a mutable data structure )
 
