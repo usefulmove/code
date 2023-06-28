@@ -7,11 +7,11 @@
 
 |  | Scala | Rust | JavaScript | RamdaJS | Python |
 |:--:|:--:|:--:|:--:|:--:|:--:|
-| map | map | iter.map | map | R.map | map |
-| filter | filter | iter.filter | filter | R.filter | filter |
+| map | map | iter.map | map | R.map | map<br>f(a) for a in seq |
+| filter | filter | iter.filter | filter | R.filter | filter<br>a for a in seq if predicate(a) |
 | fold | foldLeft<br>reduce | iter.fold<br>iter.reduce | reduce | R.reduce | functools.reduce |
 | flatmap | collect<br>flatMap | iter.flat_map | flatMap | R.chain | |
-| flatten | flatten | iter.flatten | flat() | R.flatten | [item for sublist in NESTED for item in sublist] |
+| flatten | flatten | iter.flatten | flat() | R.flatten | [a for sublist in nested for a in sublist] |
 | curry | TODO | TODO | | R.curry | toolz.curry |
 | scan | scanLeft | iter.scan | | R.scan | itertools.accumulate |
 | sum | sum | iter.sum | reduce | R.sum | sum |
