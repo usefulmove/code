@@ -1,0 +1,29 @@
+#!/bin/python3
+
+import random
+import re
+from statistics import mean
+
+
+def main():
+    COINTOSSES = 2_000_000
+    print(f'calculating average search lengths for {COINTOSSES:,} coin tosses...')
+
+    pattern = r'011'
+    avg = calcAverageSearch(pattern, COINTOSSES)
+    print(f'average search length for {pattern} pattern: {avg:.3f}')
+
+    pattern = r'010'
+    avg = calcAverageSearch(pattern, COINTOSSES)
+    print(f'average search length for {pattern} pattern: {avg:.3f}')
+
+
+def calcAverageSearch(pattern, COINTOSSES):
+    tosses = ''.join(str(random.randint(0, 1)) for _ in range(COINTOSSES))
+    sequence_matches = re.split(pattern, tosses)[:-1]  # remove last element (not a match)
+    average_search = mean(len(seq) for seq in sequence_matches) + len(pattern)
+    return average_search
+
+
+if __name__ == '__main__':
+    main()
