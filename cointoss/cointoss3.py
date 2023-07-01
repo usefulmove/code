@@ -9,7 +9,7 @@ def main():
     COINTOSSES = 8_000_000
     print(f'calculating average search lengths for {COINTOSSES:,} coin tosses')
 
-    pattern_length = 4  # must be less than 10
+    pattern_length = 5  # must be less than 10
 
     #pattern = r'011'
     #avg = calcAverageSearch(pattern, COINTOSSES)
