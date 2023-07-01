@@ -1,0 +1,31 @@
+calculating average search lengths for 8,000,000 coin tosses
+average search length for '00' pattern is 6.001 coin tosses
+average search length for '01' pattern is 4.001 coin tosses
+average search length for '10' pattern is 4.002 coin tosses
+average search length for '11' pattern is 6.003 coin tosses
+calculating average search lengths for 8,000,000 coin tosses
+average search length for '000' pattern is 13.996 coin tosses
+average search length for '001' pattern is 7.995 coin tosses
+average search length for '010' pattern is 9.989 coin tosses
+average search length for '011' pattern is 7.992 coin tosses
+average search length for '100' pattern is 8.008 coin tosses
+average search length for '101' pattern is 9.993 coin tosses
+average search length for '110' pattern is 7.992 coin tosses
+average search length for '111' pattern is 14.008 coin tosses
+calculating average search lengths for 8,000,000 coin tosses
+average search length for '0000' pattern is 29.948 coin tosses
+average search length for '0001' pattern is 15.987 coin tosses
+average search length for '0010' pattern is 17.985 coin tosses
+average search length for '0011' pattern is 16.006 coin tosses
+average search length for '0100' pattern is 17.992 coin tosses
+average search length for '0101' pattern is 19.982 coin tosses
+average search length for '0110' pattern is 17.959 coin tosses
+average search length for '0111' pattern is 16.013 coin tosses
+average search length for '1000' pattern is 15.993 coin tosses
+average search length for '1001' pattern is 18.003 coin tosses
+average search length for '1010' pattern is 19.993 coin tosses
+average search length for '1011' pattern is 18.009 coin tosses
+average search length for '1100' pattern is 15.985 coin tosses
+average search length for '1101' pattern is 18.014 coin tosses
+average search length for '1110' pattern is 16.008 coin tosses
+average search length for '1111' pattern is 29.993 coin tosses
