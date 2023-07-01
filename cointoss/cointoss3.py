@@ -6,7 +6,7 @@ from statistics import mean
 
 
 def main():
-    COINTOSSES = 2_000_000
+    COINTOSSES = 8_000_000
     print(f'calculating average search lengths for {COINTOSSES:,} coin tosses...')
 
     pattern = r'011'
