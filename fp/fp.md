@@ -19,10 +19,10 @@
 | max | max | iter.max | reduce | R.max | max |
 | min | min | iter.min | reduce | R.min | min |
 | sort | sorted | slice::sort* | sort((a,b) => a-b)* | R.sort | sorted |
-| reverse | reverse | iter.rev | reverse* | R.reverse | [::-1]<br>reversed |
+| reverse | reverse | iter.rev | reverse* | R.reverse | `[::-1]`<br>reversed |
 | compose | TODO | TODO | | R.compose<br>R.pipe | toolz.compose<br>toolz.compose_left as pipe |
-| drop | drop | skip | slice | R.drop | [:-1] |
-| take | take | take | slice | R.take | [:1] |
+| drop | drop | skip | slice | R.drop | `[:-1]` |
+| take | take | take | slice | R.take | `[:1]` |
 | any | exists | iter.any | some() | R.any | any |
 | all | forall | iter.all | every() | R.all | all |
 | zip<br>inner product | zip | iter.zip | ??? | R.zip | zip |
