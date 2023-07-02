@@ -64,4 +64,11 @@ Iter.inspect can be used to inspect values flowing through an iterator.
 ## Scala Tail Recursion
 `import scala.annotation.tailrec`
 
-`@tailrec` before recursive function definition
+`@tailrec` decorator before recursive function definition
+
+
+<br><br>
+## Python Caching
+`from functools import cache`
+
+`@cache` decorator before function definition
