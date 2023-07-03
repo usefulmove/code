@@ -4,13 +4,6 @@ from toolz import curry
 from typing import Tuple
 
 
-# built-in commands
-commands: dict = {
-    '+': add_f,
-    '-': subtract_f,
-}
-
-
 # unary command (float) decorator
 def cmdUnaryFloat(f: Callable[[], ]) -> Callable[[deque], deque]: 
     def decoratedf(indeq: deque):
@@ -21,8 +14,8 @@ def cmdUnaryFloat(f: Callable[[], ]) -> Callable[[deque], deque]:
     return decoratedf
 
 @cmdUnaryFloat
-def add_f(a: float) -> float:
-    return f(a)
+def sqrt_f(a: float) -> float:
+    return a**0.5
 
 
 # binary command (float) decorator
@@ -37,6 +30,28 @@ def cmdBinaryFloat(f: Callable[[], ]) -> Callable[[deque], deque]:
 @cmdBinaryFloat
 def add_f(a: float, b: float) -> float:
     return a + b
+
+@cmdBinaryFloat
+def subtract_f(a: float, b: float) -> float:
+    return a - b
+
+@cmdBinaryFloat
+def multiply_f(a: float, b: float) -> float:
+    return a * b
+
+@cmdBinaryFloat
+def divide_f(a: float, b: float) -> float:
+    return a / b
+
+
+# built-in commands
+commands: dict = {
+    '+': add_f,
+    '-': subtract_f,
+    '*': multiply_f,
+    '/': divide_f,
+    'sqrt': sqrt_f,
+}
 
 
 @curry
