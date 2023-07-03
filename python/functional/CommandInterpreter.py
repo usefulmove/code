@@ -11,7 +11,9 @@ def cmdUnaryFloat(f: Callable[[float], float]) -> Callable[[pdeque], pdeque]:
         *rest, sa = indeq
         a = float(sa)
         return pdeque(rest).append(str(f(a)))
+
     return decoratedf
+
 
 @cmdUnaryFloat
 def sqrt_f(a: float) -> float:
@@ -24,19 +26,24 @@ def cmdBinaryFloat(f: Callable[[float], float]) -> Callable[[pdeque], pdeque]:
         *rest, sa, sb = indeq
         a, b = map(float, (sa, sb))
         return pdeque(rest).append(str(f(a, b)))
+
     return decoratedf
+
 
 @cmdBinaryFloat
 def add_f(a: float, b: float) -> float:
     return a + b
 
+
 @cmdBinaryFloat
 def subtract_f(a: float, b: float) -> float:
     return a - b
 
+
 @cmdBinaryFloat
 def multiply_f(a: float, b: float) -> float:
     return a * b
+
 
 @cmdBinaryFloat
 def divide_f(a: float, b: float) -> float:
@@ -45,11 +52,11 @@ def divide_f(a: float, b: float) -> float:
 
 # built-in commands
 commands: Dict[str, Callable] = {
-    '+': add_f,
-    '-': subtract_f,
-    '*': multiply_f,
-    '/': divide_f,
-    'sqrt': sqrt_f,
+    "+": add_f,
+    "-": subtract_f,
+    "*": multiply_f,
+    "/": divide_f,
+    "sqrt": sqrt_f,
 }
 
 
