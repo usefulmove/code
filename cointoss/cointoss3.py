@@ -11,23 +11,29 @@ def main():
 
     pattern_length = 5  # must be less than 10
 
-    #pattern = r'011'
-    #avg = calcAverageSearch(pattern, COINTOSSES)
-    #print(f'average search length for {pattern} pattern: {avg:.3f}')
+    # pattern = r'011'
+    # avg = calcAverageSearch(pattern, COINTOSSES)
+    # print(f'average search length for {pattern} pattern: {avg:.3f}')
 
-    #pattern = r'101'
-    #avg = calcAverageSearch(pattern, COINTOSSES)
-    #print(f'average search length for {pattern} pattern: {avg:.3f}')
+    # pattern = r'101'
+    # avg = calcAverageSearch(pattern, COINTOSSES)
+    # print(f'average search length for {pattern} pattern: {avg:.3f}')
 
-    patterns = ( f'{a:09b}'[-pattern_length:] for a in range(2**pattern_length) )
-    res = { pattern:calcAverageSearch(pattern, COINTOSSES) for pattern in patterns }
-    for ptrn, avg in res.items():
-        print(f'average search length for \'{ptrn}\' pattern is {avg:.3f} coin tosses')
+    patterns = (
+        f'{a:09b}'[-pattern_length:] for a in range(2**pattern_length)
+    )
+    res = {
+        pattern: calcAverageSearch(pattern, COINTOSSES) for pattern in patterns
+    }
+    for ptn, avg in res.items():
+        print(
+            f'average search length for \'{ptn}\' pattern is {avg:.3f} tosses'
+        )
 
 
 def calcAverageSearch(pattern, cointosses=10_000):
     tosses = ''.join(str(random.randint(0, 1)) for _ in range(cointosses))
-    sequence_matches = re.split(pattern, tosses)[:-1]  # remove last element (not a match)
+    sequence_matches = re.split(pattern, tosses)[:-1]  # remove last element
     average_search = mean(len(seq) for seq in sequence_matches) + len(pattern)
     return average_search
 
