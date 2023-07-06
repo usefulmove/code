@@ -1,6 +1,0 @@
-"0","complaints %>% "
-"0","    ggplot(aes(ofcrSex)) +"
-"0","        geom_bar(fill=""#cbbedd"", color=""black"", alpha = 0.8) +"
-"0","        scale_y_continuous(labels=scales::comma) +"
-"0","        labs(x="""", y="""", title=""Officer Gender"")"
-"0",""
