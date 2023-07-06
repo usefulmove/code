@@ -3,13 +3,14 @@
 import random
 import re
 from statistics import mean
+from typing import Dict, Generator
 
 
-def main():
-    COINTOSSES = 8_000_000
+def main() -> None:
+    COINTOSSES: int = 8_000_000
     print(f'calculating average search lengths for {COINTOSSES:,} coin tosses')
 
-    pattern_length = 5  # must be less than 10
+    pattern_length: int = 5  # must be less than 10
 
     # pattern = r'011'
     # avg = calcAverageSearch(pattern, COINTOSSES)
@@ -19,10 +20,10 @@ def main():
     # avg = calcAverageSearch(pattern, COINTOSSES)
     # print(f'average search length for {pattern} pattern: {avg:.3f}')
 
-    patterns = (
+    patterns: Generator = (
         f'{a:09b}'[-pattern_length:] for a in range(2**pattern_length)
     )
-    res = {
+    res: Dict[str, float] = {
         pattern: calcAverageSearch(pattern, COINTOSSES) for pattern in patterns
     }
     for ptn, avg in res.items():
@@ -31,7 +32,7 @@ def main():
         )
 
 
-def calcAverageSearch(pattern, cointosses=10_000):
+def calcAverageSearch(pattern: str, cointosses: int = 10_000):
     tosses = ''.join(str(random.randint(0, 1)) for _ in range(cointosses))
     sequence_matches = re.split(pattern, tosses)[:-1]  # remove last element
     average_search = mean(len(seq) for seq in sequence_matches) + len(pattern)
