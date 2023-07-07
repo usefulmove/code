@@ -32,7 +32,7 @@ def main() -> None:
         )
 
 
-def calcAverageSearch(pattern: str, cointosses: int = 10_000):
+def calcAverageSearch(pattern: str, cointosses: int = 10_000) -> float:
     tosses = ''.join(str(random.randint(0, 1)) for _ in range(cointosses))
     sequence_matches = re.split(pattern, tosses)[:-1]  # remove last element
     average_search = mean(len(seq) for seq in sequence_matches) + len(pattern)
