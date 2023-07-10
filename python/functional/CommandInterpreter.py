@@ -23,6 +23,7 @@ def sqrt_f(a: float) -> float:
 
 # binary command (float) decorator
 def commandBinaryFloat(f: Callable[[float, float], float]) -> Callable[[pdeque], pdeque]:
+
     def decoratedf(indeq: pdeque):
         *rest, sa, sb = indeq
         a, b = map(float, (sa, sb))
@@ -79,18 +80,16 @@ def evaluateOps(ops: Tuple[str], indeq: pdeque) -> pdeque:
 
 
 def main() -> None:
-    # input deque
-    indeq: pdeque = pdeque()
+    input_deque: pdeque = pdeque()  # input deque
 
     # S-expression
-    ops: Tuple[str] = tuple(["5", "sqrt", "1", "-", "2", "/"])
+    s_expression = "5 sqrt 1 - 2 /"
 
-    # output deque
-    outdeq: pdeque = evaluateOps(ops)(indeq)
+    # transform input deque by evaluating operations contained in S-expression
+    ops = tuple(s_expression.split())
+    output_deque: pdeque = evaluateOps(ops, input_deque)  # output deque
 
-    # output
-    print("running")
-    print(outdeq)
+    print(output_deque)
 
 
 if __name__ == "__main__":
