@@ -51,7 +51,7 @@ def dup_f(indeq: pdeque) -> pdeque:
     return indeq.append(indeq[-1])
 
 
-# add built-in commands
+# add commands
 commands: Dict[str, Callable] = {
     "+": add_f,
     "-": sub_f,
