@@ -1,6 +1,7 @@
 from pyrsistent import pdeque
 from functools import reduce
 import math
+from operator import add, sub, mul, truediv
 from toolz import curry
 from typing import Callable, Tuple, Dict
 
@@ -16,11 +17,6 @@ def commandUnaryFloat(f: Callable[[float], float]) -> Callable[[pdeque], pdeque]
     return decoratedf
 
 
-@commandUnaryFloat
-def sqrt_f(a: float) -> float:
-    return math.sqrt(a)
-
-
 # binary command (float) decorator
 def commandBinaryFloat(f: Callable[[float, float], float]) -> Callable[[pdeque], pdeque]:
 
@@ -32,33 +28,38 @@ def commandBinaryFloat(f: Callable[[float, float], float]) -> Callable[[pdeque],
     return decoratedf
 
 
-@commandBinaryFloat
-def add_f(a: float, b: float) -> float:
-    return a + b
+""" UNARY COMMAND DEFINITIONS """
 
 
-@commandBinaryFloat
-def subtract_f(a: float, b: float) -> float:
-    return a - b
+sqrt_f = commandUnaryFloat(math.sqrt)
+inv_f = commandUnaryFloat(lambda a: a**-1)
 
 
-@commandBinaryFloat
-def multiply_f(a: float, b: float) -> float:
-    return a * b
+""" BINARY COMMAND DEFINITIONS """
 
 
-@commandBinaryFloat
-def divide_f(a: float, b: float) -> float:
-    return a / b
+add_f = commandBinaryFloat(add)
+sub_f = commandBinaryFloat(sub)
+mul_f = commandBinaryFloat(mul)
+div_f = commandBinaryFloat(truediv)
 
 
-# built-in commands
+""" STACK COMMAND DEFINITIONS """
+
+
+def dup_f(indeq: pdeque) -> pdeque:
+    return indeq.append(indeq[-1])
+
+
+# add built-in commands
 commands: Dict[str, Callable] = {
     "+": add_f,
-    "-": subtract_f,
-    "*": multiply_f,
-    "/": divide_f,
+    "-": sub_f,
+    "*": mul_f,
+    "/": div_f,
     "sqrt": sqrt_f,
+    "inv": inv_f,
+    "dup": dup_f,
 }
 
 
@@ -82,8 +83,8 @@ def evaluateOps(ops: Tuple[str], indeq: pdeque) -> pdeque:
 def main() -> None:
     input_deque: pdeque = pdeque()  # input deque
 
-    # S-expression
-    s_expression = "5 sqrt 1 - 2 /"
+    # S-expression to be evaluated
+    s_expression = "5 sqrt 1 - 2 / dup inv"
 
     # transform input deque by evaluating operations contained in S-expression
     ops = tuple(s_expression.split())
