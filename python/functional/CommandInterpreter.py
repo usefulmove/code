@@ -72,7 +72,7 @@ def evaluateOps(ops: Tuple[str], indeq: pdeque) -> pdeque:
         """
         cmdf: Callable[[pdeque], pdeque] = commands.get(op, None)
 
-        return indeq.append(op) if cmdf is None else cmdf(indeq)
+        return indeq.append(op) if not cmdf else cmdf(indeq)
 
     # transformation of input deque performed by processing each op
     # in the ops tuple (converted from original S-expression) on the
