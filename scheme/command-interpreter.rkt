@@ -40,5 +40,10 @@
 (define (evaluate-ops ops stack)
     (foldl process-op stack ops))
 
-; validation
-(evaluate-ops (string-split "5 sqrt 1 - 2 / dup inv") '())
+
+; basic operation
+(define (main)
+    (define s-expression "5 sqrt 1 - 2 / dup inv")
+    (evaluate-ops (string-split s-expression) '()))
+
+(main)
