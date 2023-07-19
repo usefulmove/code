@@ -15,8 +15,7 @@
                                     (string->number (car stack))))
                  (cdr (cdr stack)))))
 
-; command definitions
-; command functions have the form:
+; command definitions - command functions have the form:
 ;   cmd :: [string] -> [string]
 (define cmds (hash
   "+"    (build-binary-command +)
@@ -37,13 +36,13 @@
 
 ; evaluate ops against stack
 ; evalute-ops :: [string] -> [string] -> [string]
-(define (evaluate-ops ops stack)
-    (foldl process-op stack ops))
+(define (evaluate-ops ops stack) (foldl process-op stack ops))
 
 
-; basic operation
+; evaluate command line S-expression
 (define (main)
-    (define s-expression "5 sqrt 1 - 2 / dup inv")
-    (evaluate-ops (string-split s-expression) '()))
+    (define args (current-command-line-arguments))
+    (define s-expression (vector->list args))
+    (for-each displayln (reverse (evaluate-ops s-expression '()))))
 
 (main)
