@@ -38,15 +38,15 @@
 ; evalute-ops :: [string] -> [string] -> [string]
 (define (evaluate-ops ops stack) (foldl process-op stack ops))
 
+; evaluate S-expression
 ; comp :: string -> null (prints to stdout)
-(define (comp sexp)
-    (for-each displayln (reverse (evaluate-ops (string-split sexp) '()))))
+(define (comp s-exp)
+    (for-each displayln (reverse (evaluate-ops (string-split s-exp) '()))))
 
 
 ; evaluate command line S-expression
 (define (main)
     (define args (current-command-line-arguments))
-    (define s-expression (vector->list args))
-    (for-each displayln (reverse (evaluate-ops s-expression '()))))
+    (for-each displayln (reverse (evaluate-ops (vector->list args) '()))))
 
 (main)
