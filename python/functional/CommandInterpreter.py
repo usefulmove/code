@@ -3,11 +3,11 @@ from functools import reduce
 import math
 from operator import add, sub, mul, truediv
 from toolz import curry
-from typing import Callable, Tuple, Dict
+from typing import Callable as Fn, Tuple, Dict
 
 
 # unary command (float) decorator
-def commandUnaryFloat(f: Callable[[float], float]) -> Callable[[pdeque], pdeque]:
+def commandUnaryFloat(f: Fn[[float], float]) -> Fn[[pdeque], pdeque]:
 
     def decoratedf(indeq: pdeque):
         *rest, sa = indeq
@@ -18,7 +18,7 @@ def commandUnaryFloat(f: Callable[[float], float]) -> Callable[[pdeque], pdeque]
 
 
 # binary command (float) decorator
-def commandBinaryFloat(f: Callable[[float, float], float]) -> Callable[[pdeque], pdeque]:
+def commandBinaryFloat(f: Fn[[float, float], float]) -> Fn[[pdeque], pdeque]:
 
     def decoratedf(indeq: pdeque):
         *rest, sa, sb = indeq
@@ -52,7 +52,7 @@ def dup_f(indeq: pdeque) -> pdeque:
 
 
 # add commands
-commands: Dict[str, Callable] = {
+commands: Dict[str, Fn] = {
     "+": add_f,
     "-": sub_f,
     "*": mul_f,
@@ -70,7 +70,7 @@ def evaluateOps(ops: Tuple[str], indeq: pdeque) -> pdeque:
         search command dictionary for command function to execute
         on input deque - otherwise, add (value) to deque
         """
-        cmdf: Callable[[pdeque], pdeque] = commands.get(op, None)
+        cmdf: Fn[[pdeque], pdeque] = commands.get(op, None)
 
         return indeq.append(op) if not cmdf else cmdf(indeq)
 
