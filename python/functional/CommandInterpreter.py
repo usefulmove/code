@@ -90,7 +90,8 @@ def main() -> None:
     ops = tuple(s_expression.split())
     output_deque: pdeque = evaluateOps(ops, input_deque)  # output deque
 
-    print(output_deque)
+    for level in output_deque:
+        print(level)
 
 
 if __name__ == "__main__":
