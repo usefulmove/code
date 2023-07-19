@@ -1,15 +1,15 @@
 #lang racket
 
 ; unary command decorator
-; build-unary-command :: (number -> number) -> ([string] -> [string])
-(define (build-unary-command f)
+; create-unary-command :: (number -> number) -> ([string] -> [string])
+(define (create-unary-command f)
     (lambda (stack)
            (cons (number->string (f (string->number (car stack))))
                  (cdr stack))))
 
 ; binary command decorator
-; build-binary-command :: (number -> number) -> ([string] -> [string])
-(define (build-binary-command f)
+; create-binary-command :: (number -> number) -> ([string] -> [string])
+(define (create-binary-command f)
     (lambda (stack)
            (cons (number->string (f (string->number (car (cdr stack)))
                                     (string->number (car stack))))
@@ -18,13 +18,13 @@
 ; command definitions - command functions have the form:
 ;   cmd :: [string] -> [string]
 (define cmds (hash
-  "+"    (build-binary-command +)
-  "-"    (build-binary-command -)
-  "*"    (build-binary-command *)
-  "/"    (build-binary-command /)
+  "+"    (create-binary-command +)
+  "-"    (create-binary-command -)
+  "*"    (create-binary-command *)
+  "/"    (create-binary-command /)
   "dup"  (lambda (stack) (cons (car stack) stack))
-  "inv"  (build-unary-command (lambda (a) (/ 1 a)))
-  "sqrt" (build-unary-command sqrt)
+  "inv"  (create-unary-command (lambda (a) (/ 1 a)))
+  "sqrt" (create-unary-command sqrt)
 ))
 
 ; access function associated with op and execute against stack
