@@ -1,6 +1,6 @@
 #lang racket
 
-; is ths an atom?
+; is this an atom?
 (define (atom? o)
     (and
         (not (pair? o))
@@ -50,6 +50,7 @@
     (for-each displayln seq))
 (display-list seq)
 
+
 ; filter map reduce
 (define (square a) (* a a))
 (apply + (map square (filter odd? seq)))
@@ -64,14 +65,18 @@
 (fmr seq)
 
 
-(define (square-root a)  ; TODO
-    (define espilon 0.000001)
-    (define guess 1.0)
+(define (square-root n)
+    (define epsilon 0.000000001)
+    (define (improve-guess guess)
+        (cond
+            [(> epsilon (abs (- n (* guess guess)))) guess]
+            [else (improve-guess (/ (+ guess (/ n guess)) 2))]))
     (cond
-        [(< a 0) (error "square-root of negative number")]
-        [(< (abs (- (* guess guess) a)) espilon) guess]
-        [else (set! guess (/ (+ guess (/ a guess)) 2))]
-    )
+        [(< n 0) (error "square-root of negative number")]
+        [else (improve-guess 1.0)]))
+
+(square-root 618)
+(sqrt 618)
 
 
 (define seq '(3 1 2 5 4))
