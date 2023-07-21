@@ -1,6 +1,8 @@
 #lang racket
 
 ;; misc
+
+; init :: [T] -> [T]
 (define (init lst)
     (if (null? lst)
         '()
@@ -9,6 +11,7 @@
 (init '(3 1 2 5 4))  ; '(3 1 2 5)
 
 
+; display-list :: [T] -> null  ( run for side effects )
 (define (display-list lst)
     (for-each displayln lst))
 
@@ -18,6 +21,7 @@
 ; 2
 
 
+; swap :: [T] -> Integer -> Integer -> [T]
 (define (swap lst i j)
     (define tmp (list-ref lst i))
     (define out (list-set lst i (list-ref lst j)))
@@ -26,6 +30,7 @@
 (swap '(3 1 2 5 4) 1 3)  ; '(3 5 2 1 4)
 
 
+; square-root :: Number -> Number
 (define (square-root n)  ; example only (Babylonian method) - use (sqrt n) primative
     (define epsilon 0.000000001)
     (define (improve-guess guess)
@@ -51,11 +56,14 @@
 
 
 ; currying
+; add :: Integer -> (Integer -> Integer)
 (define (add a)
-    (define (inner b) (+ a b)))
+    (lambda (b) (+ a b)))
 
-(define add3 (add 3) n)
-(add3 2)  ; 5
+((add 2) 3)  ; 5
+
+(define add2 (add 2))
+(add2 3)  ; 5
 
 
 ; function composition
