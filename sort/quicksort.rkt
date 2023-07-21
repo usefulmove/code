@@ -11,7 +11,7 @@
         [(empty? lst) empty]
         [(equal? 1 (length lst)) lst]
         (define pivot (car lst))  ; choose pivot
-        (define current (swap lst 0 (- (length lst) 1))) ; move pivot to the end
+        (define current (swap lst 0 (sub1 (length lst)))) ; move pivot to the end
         (define ins 0)  ; insertion index
         (TODO)
     )
