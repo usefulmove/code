@@ -11,7 +11,16 @@
 (init '(3 1 2 5 4))  ; '(3 1 2 5)
 
 
-; display-list :: [T] -> null  ( run for side effects )
+; macros
+(define-syntax-rule (head lst) (car lst))
+(define-syntax-rule (tail lst) (cdr lst))
+
+(define-syntax-rule (1st lst) (car lst))
+(define-syntax-rule (2nd lst) (car (cdr lst)))
+(define-syntax-rule (end lst) (last lst))
+
+
+; display-list :: [T] -> null  ( side effects only )
 (define (display-list lst)
     (for-each displayln lst))
 
