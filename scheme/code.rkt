@@ -41,7 +41,7 @@
 
 ;; functional programming
 
-; filter map reduce
+; higher-order functions
 (define seq '(1 2 3 4 5 6 7 8))
 (define (square a) (* a a))
 
@@ -70,9 +70,7 @@
 (define composed-f (compose h g f))
 (composed-f seq)  ; 84
 
+
 ; threading
 (require threading)
-(~> seq
-    (f)
-    (g)
-    (h))  ; 84
+(~> seq f g h)  ; 84

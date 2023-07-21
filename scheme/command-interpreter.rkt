@@ -18,13 +18,13 @@
 ; command definitions - command functions have the form:
 ;   cmd :: [string] -> [string]
 (define cmds (hash
+  "inv"  (create-unary-command (lambda (a) (/ 1 a)))
+  "sqrt" (create-unary-command sqrt)
   "+"    (create-binary-command +)
   "-"    (create-binary-command -)
   "*"    (create-binary-command *)
   "/"    (create-binary-command /)
   "dup"  (lambda (stack) (cons (car stack) stack))
-  "inv"  (create-unary-command (lambda (a) (/ 1 a)))
-  "sqrt" (create-unary-command sqrt)
 ))
 
 ; access function associated with op and execute against stack
