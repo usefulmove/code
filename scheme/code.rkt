@@ -117,3 +117,13 @@
 ; threading
 (require threading)
 (~> seq f g h)  ; 84
+
+
+; for loop
+(for ([i (range 1 9)])
+    (displayln (* i i)))
+
+
+; list comprehension
+(for/list ([i (range 1 9)])
+    (* i i))
