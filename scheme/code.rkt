@@ -53,6 +53,32 @@
 (square-root 618)  ; 24.859605789312106
 
 
+; fixed-point convergence
+; converge-fixed-point :: (Number -> Number) -> Number -> Number
+(define (converge-fixed-point f guess)
+    (define (close-enough? a b)
+        (define epsilon 0.000000001)
+        (> epsilon (abs (- a b))))
+    (define (improve-guess guess)
+        (cond
+            [(close-enough? guess (f guess)) (f guess)]
+            [else (improve-guess (f guess))]))
+    (improve-guess guess))
+
+(converge-fixed-point
+    (lambda (a) (/ (+ a (/ 618 a)) 2))
+    1.0)  ; 24.859605789312106
+
+
+; alternate square root function definition
+(define (square-root2 n)
+    (converge-fixed-point
+        (lambda (a) (/ (+ a (/ n a)) 2))
+        1.0))
+
+(square-root2 618)  ; 24.859605789312106
+
+
 ;; functional programming
 
 ; higher-order functions
