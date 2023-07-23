@@ -37,6 +37,7 @@
                     (qsort (drop current (add1 ins))))]))
 
 
+
 ; QuickSort alternate approach - in-place vector mutation
 
 ; swap! :: vector -> int -> int -> null
@@ -49,7 +50,7 @@
 (define (qsort-vec! vec start end)
     (cond
         [(empty? vec) (void)]
-        [(< (- end start) 2) (void)]
+        [(< (- end start) 1) (void)]
         [else
             (define pivot (vector-ref vec start))  ; choose pivot
             (swap! vec start end)  ; move pivot to the end
@@ -78,8 +79,13 @@
 
 ;;; unit tests ;;;
 
-(qsort (list 3 1 2 5 4 0))
-(qsort2 (list 3 1 2 5 4 0))
+(define test '(5 3 -2 0 1 -2 1 3 5))
+(unless (equal? (qsort test) (qsort2 test))
+        (error "qsort error: qsort and qsort2 do not match"))
 
-(qsort (list 5 3 -2 0 1 -2 1 3 5))
-(qsort2 (list 5 3 -2 0 1 -2 1 3 5))
+(define test2
+    '(-249.016 121.124 -37.366 156.593 -147.875 223.220 36.899 -153.859 42.676 28.080 -72.552
+    -54.085 91.863 2.371 133.471 252.705 62.376 -132.541 24.010 -127.511 183.825 185.620 41.171
+    13.460 -42.004 225.896 -11.915 -181.012 -170.233 232.589 168.992 -5.371 174.125 -53.697))
+(unless (equal? (qsort test2) (qsort2 test2))
+        (error "qsort error: qsort and qsort2 do not match"))
