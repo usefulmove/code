@@ -20,7 +20,7 @@
 (define-syntax-rule (end lst) (last lst))
 
 
-; display-list :: [T] -> null  ( side effects only )
+; display-list :: [T] -> null  ( side effect only )
 (define (display-list lst)
     (for-each displayln lst))
 
