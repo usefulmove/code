@@ -1,6 +1,8 @@
 #lang racket
 (provide (all-defined-out))
 
+;;; list operations ;;;
+
 ; head :: [T] -> T
 (define head car)
 ; tail :: [T] -> [T]
@@ -12,22 +14,26 @@
         (reverse (cdr (reverse lst)))))
 ; last :: [T] -> T  (build-in)
 
-; atom? :: object -> boolean
-(define (atom? obj)
-    (and (not (null? obj))
-         (not (pair? obj))))
-
-; display-list :: [T] -> null  ( side effect only )
-(define (display-list lst)
-    (for-each displayln lst))
-
 ; swap :: [T] -> Integer -> Integer -> [T]
 (define (swap lst i j)
     (define tmp (list-ref lst i))
     (define out (list-set lst i (list-ref lst j)))
     (list-set out j tmp))
 
-; fixed-point convergence
+; display-list :: [T] -> null  ( side effect only )
+(define (display-list lst)
+    (for-each displayln lst))
+
+
+
+; atom? :: object -> boolean
+(define (atom? obj)
+    (and (not (null? obj))
+         (not (pair? obj))))
+
+
+
+; fixed-point convergence function
 ; converge-fixed-point :: (Number -> Number) -> Number -> Number
 (define (converge-fixed-point f guess)
     (define (close-enough? a b)
@@ -38,3 +44,15 @@
             [(close-enough? guess (f guess)) (f guess)]
             [else (improve-guess (f guess))]))
     (improve-guess guess))
+
+
+
+;;; debug helper functions ;;;
+
+; debug-print :: T -> null  ( side effect only )
+(define-syntax-rule (debug-print var)
+  (begin (displayln (list 'debug: 'var 'is var))))
+
+; debug-args
+(define (debug-args . args)
+    (for-each displayln args))
