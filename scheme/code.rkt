@@ -92,10 +92,9 @@
 
 ; higher-order functions
 (define seq '(1 2 3 4 5 6 7 8))
-(define (square a) (* a a))
 
 (filter odd? seq)  ; '(1 3 5 7)
-(map square seq)  ; '(1 4 9 16 25 36 49 64)
+(map sqr seq)  ; '(1 4 9 16 25 36 49 64)
 (foldl + 0 seq)  ; 36
 
 
@@ -112,12 +111,11 @@
 
 ; function composition
 (define seq '(1 2 3 4 5 6 7 8))
-(define (square a) (* a a))
 
-(apply + (map square (filter odd? seq)))  ; 84
+(apply + (map sqr (filter odd? seq)))  ; 84
 
 (define (f lst) (filter odd? lst))
-(define (g lst) (map square lst))
+(define (g lst) (map sqr lst))
 (define (h lst) (apply + lst))
 (define composed-f (compose h g f))
 (composed-f seq)  ; 84
