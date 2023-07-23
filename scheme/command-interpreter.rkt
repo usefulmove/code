@@ -30,17 +30,16 @@
 ; access function associated with op and execute against stack
 ; process-op :: string -> [string] -> [string]
 (define (process-op op stack)
-    (cond
-        [(hash-has-key? cmds op) ((hash-ref cmds op) stack)]
-        [else (cons op stack)]))  ; op is not command, add to stack
+    (cond [(hash-has-key? cmds op) ((hash-ref cmds op) stack)]
+          [else (cons op stack)]))  ; op is not command, add to stack
 
 ; evaluate ops against stack
 ; evalute-ops :: [string] -> [string] -> [string]
 (define (evaluate-ops ops stack) (foldl process-op stack ops))
 
 ; evaluate S-expression
-; comp :: string -> null (prints to stdout)
-(define (comp s-exp)
+; evaluate-sexp :: string -> null (prints to stdout)
+(define (evaluate-sexp s-exp)
     (for-each displayln (reverse (evaluate-ops (string-split s-exp) '()))))
 
 
