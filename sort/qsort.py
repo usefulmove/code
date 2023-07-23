@@ -1,7 +1,9 @@
 from typing import Sequence
 
 
-def qsort(orig: Sequence) -> Sequence:
+# qsorted - return a new sorted sequence
+# qsorted :: Sequence -> Sequence
+def qsorted(orig: Sequence) -> Sequence:
     seq = orig[:]
 
     if len(seq) <= 1:
@@ -24,11 +26,12 @@ def qsort(orig: Sequence) -> Sequence:
     seq[ins], seq[-1] = seq[-1], seq[ins]
 
     # recursively sort left and right sides
-    return qsort(seq[:ins]) + [pivot] + qsort(seq[ins + 1:])
+    return qsorted(seq[:ins]) + [pivot] + qsorted(seq[ins + 1:])
 
 
-# sort in place
-def qs(seq: Sequence, start=0, end=None) -> None:
+# qsort - sort in place
+# qsort :: Sequence -> None
+def qsort(seq: Sequence, start=0, end=None) -> None:
     if not end:
         end = len(seq) - 1
 
@@ -52,5 +55,5 @@ def qs(seq: Sequence, start=0, end=None) -> None:
     seq[ins], seq[end] = seq[end], seq[ins]
 
     # recursively sort left and right sides
-    qs(seq, start, ins)
-    qs(seq, ins + 1, end)
+    qsort(seq, start, ins)
+    qsort(seq, ins + 1, end)
