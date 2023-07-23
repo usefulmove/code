@@ -1,19 +1,20 @@
 #lang racket
+(require "cuban.rkt")
 
 ; unary command decorator
 ; create-unary-command :: (number -> number) -> ([string] -> [string])
 (define (create-unary-command f)
     (lambda (stack)
-           (cons (number->string (f (string->number (car stack))))
-                 (cdr stack))))
+           (cons (number->string (f (string->number (head stack))))
+                 (tail stack))))
 
 ; binary command decorator
 ; create-binary-command :: (number -> number) -> ([string] -> [string])
 (define (create-binary-command f)
     (lambda (stack)
-           (cons (number->string (f (string->number (car (cdr stack)))
-                                    (string->number (car stack))))
-                 (cdr (cdr stack)))))
+           (cons (number->string (f (string->number (head (tail stack)))
+                                    (string->number (head stack))))
+                 (tail (tail stack)))))
 
 ; command definitions - command functions have the form:
 ;   cmd :: [string] -> [string]
@@ -24,7 +25,7 @@
   "-"    (create-binary-command -)
   "*"    (create-binary-command *)
   "/"    (create-binary-command /)
-  "dup"  (lambda (stack) (cons (car stack) stack))
+  "dup"  (lambda (stack) (cons (head stack) stack))
 ))
 
 ; access function associated with op and execute against stack
