@@ -1,7 +1,7 @@
 from typing import Sequence
 
 
-def quicksort(orig: Sequence) -> Sequence:
+def qsort(orig: Sequence) -> Sequence:
     seq = orig[:]
 
     if len(seq) <= 1:
@@ -24,7 +24,7 @@ def quicksort(orig: Sequence) -> Sequence:
     seq[ins], seq[-1] = seq[-1], seq[ins]
 
     # recursively sort left and right sides
-    return quicksort(seq[:ins]) + [pivot] + quicksort(seq[ins + 1:])
+    return qsort(seq[:ins]) + [pivot] + qsort(seq[ins + 1:])
 
 
 # sort in place
