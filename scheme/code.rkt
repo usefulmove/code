@@ -1,6 +1,6 @@
 #lang racket
 
-;; misc
+;; miscellaneous ;;
 
 ; init :: [T] -> [T]
 (define (init lst)
@@ -79,7 +79,16 @@
 (square-root2 618)  ; 24.859605789312106
 
 
-;; functional programming
+;; regular expressions ;;
+
+(regexp-match? #rx"needle" "hay needle stack")  ; #t
+
+(regexp-replace* #rx"[a-c]" "drracket" string-upcase)  ; "drrACket"
+
+(regexp-split #rx" +" "one  two   three")  ; '("one" "two" "three")
+
+
+;; functional programming ;;
 
 ; higher-order functions
 (define seq '(1 2 3 4 5 6 7 8))
