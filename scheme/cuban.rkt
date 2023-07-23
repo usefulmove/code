@@ -1,7 +1,6 @@
 #lang racket
 (provide (all-defined-out))
 
-
 ; head :: [T] -> T
 (define head car)
 ; tail :: [T] -> [T]
@@ -13,24 +12,20 @@
         (reverse (cdr (reverse lst)))))
 ; last :: [T] -> T  (build-in)
 
-
 ; atom? :: object -> boolean
 (define (atom? obj)
     (and (not (null? obj))
          (not (pair? obj))))
 
-
 ; display-list :: [T] -> null  ( side effect only )
 (define (display-list lst)
     (for-each displayln lst))
-
 
 ; swap :: [T] -> Integer -> Integer -> [T]
 (define (swap lst i j)
     (define tmp (list-ref lst i))
     (define out (list-set lst i (list-ref lst j)))
     (list-set out j tmp))
-
 
 ; fixed-point convergence
 ; converge-fixed-point :: (Number -> Number) -> Number -> Number
