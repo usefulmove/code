@@ -13,6 +13,8 @@
         '()
         (reverse (cdr (reverse lst)))))
 ; last :: [T] -> T  (build-in)
+; snd :: [T] -> T
+(define (snd lst) (cadr lst))
 
 ; swap :: [T] -> Integer -> Integer -> [T]
 (define (swap lst i j)
