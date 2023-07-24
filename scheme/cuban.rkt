@@ -1,6 +1,8 @@
 #lang racket
 (provide (all-defined-out))
 
+(require racket/contract)
+
 ;;; list operations ;;;
 
 ; head :: [T] -> T
@@ -37,7 +39,8 @@
 
 ; fixed-point convergence function
 ; converge-fixed-point :: (Number -> Number) -> Number -> Number
-(define (converge-fixed-point f guess)
+(define/contract (converge-fixed-point f guess)
+    (-> (-> number? number?) number? number?)
     (define (close-enough? a b)
         (define epsilon 0.000000001)
         (> epsilon (abs (- a b))))
