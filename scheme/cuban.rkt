@@ -1,6 +1,9 @@
 #lang racket
 (provide (all-defined-out))
 
+#|
+    Cuban - a general purpose util library
+|#
 (require racket/contract)
 
 ;;; list operations ;;;
