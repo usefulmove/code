@@ -1,16 +1,19 @@
 #lang racket
+(require racket/contract)
 (require "cuban.rkt")
 
 ; unary command decorator
 ; create-unary-command :: (number -> number) -> ([string] -> [string])
-(define (create-unary-command f)
+(define/contract (create-unary-command f)
+    (-> (-> number? number?) (-> (listof string?) (listof string?)))
     (lambda (stack)
            (cons (number->string (f (string->number (head stack))))
                  (tail stack))))
 
 ; binary command decorator
-; create-binary-command :: (number -> number) -> ([string] -> [string])
-(define (create-binary-command f)
+; create-binary-command :: (number -> number -> number) -> ([string] -> [string])
+(define/contract (create-binary-command f)
+    (-> (-> number? number? number?) (-> (listof string?) (listof string?)))
     (lambda (stack)
            (cons (number->string (f (string->number (head (tail stack)))
                                     (string->number (head stack))))
@@ -24,23 +27,28 @@
   "+"    (create-binary-command +)
   "-"    (create-binary-command -)
   "*"    (create-binary-command *)
+  "x"    (create-binary-command *)
   "/"    (create-binary-command /)
   "dup"  (lambda (stack) (cons (head stack) stack))
 ))
 
 ; access function associated with op and execute against stack
 ; process-op :: string -> [string] -> [string]
-(define (process-op op stack)
+(define/contract (process-op op stack)
+    (-> string? (listof string?) (listof string?))
     (cond [(hash-has-key? cmds op) ((hash-ref cmds op) stack)]
           [else (cons op stack)]))  ; op is not command, add to stack
 
 ; evaluate ops against stack
 ; evalute-ops :: [string] -> [string] -> [string]
-(define (evaluate-ops ops stack) (foldl process-op stack ops))
+(define/contract (evaluate-ops ops stack)
+    (-> (listof string?) (listof string?) (listof string?))
+    (foldl process-op stack ops))
 
 ; evaluate S-expression
 ; evaluate-sexp :: string -> null (prints to stdout)
-(define (evaluate-sexp s-exp)
+(define/contract (evaluate-sexp s-exp)
+    (-> string? null)
     (for-each displayln (reverse (evaluate-ops (string-split s-exp) '()))))
 
 
