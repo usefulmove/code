@@ -53,7 +53,7 @@
 (square-root 618)  ; 24.859605789312106
 
 
-; fixed-point convergence
+; fixed-point convergence numerical method
 ; converge-fixed-point :: (Number -> Number) -> Number -> Number
 (define (converge-fixed-point f guess)
     (define (close-enough? a b)
@@ -69,14 +69,30 @@
     (lambda (a) (/ (+ a (/ 618 a)) 2))
     1.0)  ; 24.859605789312106
 
-
-; alternate square root function definition
+; alternate square root function using fixed-point convergence
 (define (square-root2 n)
     (converge-fixed-point
         (lambda (a) (/ (+ a (/ n a)) 2))
         1.0))
 
 (square-root2 618)  ; 24.859605789312106
+
+; cube root using fixed-point convergence
+(define (cube-root n)
+    (converge-fixed-point
+        (lambda (a) (/ (+ (/ n (sqr a)) (* a 2)) 3))
+        1.0))
+
+(cube-root 512) ; 8.0
+
+; golden ratio using fixed-point convergence
+(define (golden-ratio)
+    (converge-fixed-point
+        (lambda (a) (/ (add1 (sqr a)) (add1 (* a 2))))
+        1.0))
+
+(golden-ratio)  ; 0.6180339887498949
+
 
 
 ;; regular expressions ;;
@@ -132,5 +148,8 @@
 
 
 ; list comprehension
-(for/list ([i (range 1 9)])
-    (* i i))
+(for/list ([a (range 1 9)])
+    (* a a))
+
+
+(define list. (lambda args args)) ; fun alias for list
