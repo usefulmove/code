@@ -45,6 +45,17 @@
             (list-index item (cdr lst) (add1 index)))))
 
 
+;;; currying ;;;
+
+; curry2 :: (T -> U -> V) -> (T -> (U -> V))
+(define (curry2 f)
+    (lambda (a) (lambda (b) (f a b))))
+
+; curry3 :: (T -> U -> V -> W) -> (T -> (U -> (V -> W)))
+(define (curry3 f)
+    (lambda (a) (lambda (b) (lambda (c) (f a b c)))))
+
+
 
 ; iota :: integer -> [integer]
 (define (iota n) (range 1 (add1 n)))
