@@ -26,9 +26,9 @@
 
 ; swap :: [T] -> integer -> integer -> [T]
 (define (list-swap lst i j)
-    (define tmp (list-ref lst i))
-    (define out (list-set lst i (list-ref lst j)))
-    (list-set out j tmp))
+    (let ([tmp (list-ref lst i)]
+          [out (list-set lst i (list-ref lst j))])
+        (list-set out j tmp)))
 
 ; display-list :: [T] -> null  ( side effect only )
 (define (display-list lst)
@@ -58,14 +58,12 @@
 ; converge-fixed-point :: (number -> number) -> number -> number
 (define/contract (converge-fixed-point f guess)
     (-> (-> number? number?) number? number?)
-    (define (close-enough? a b)
-        (define epsilon 0.000000001)
-        (> epsilon (abs (- a b))))
-    (define (improve-guess guess)
-        (cond
-            [(close-enough? guess (f guess)) (f guess)]
-            [else (improve-guess (f guess))]))
-    (improve-guess guess))
+    (letrec (
+      [epsilon 0.000000001]
+      [close-enough? (lambda (a b) (> epsilon (abs (- a b))))]
+      [improve-guess (lambda (guess) (cond [(close-enough? guess (f guess)) (f guess)]
+                                           [else (improve-guess (f guess))]))])
+        (improve-guess guess)))
 
 
 
@@ -82,5 +80,13 @@
 
 
 ;;; unit tests ;;;
+
 (unless (equal? (iota 8) '(1 2 3 4 5 6 7 8))
-    (error "error: iota failed"))
+    (error "error (dcode): iota failed"))
+
+(unless (let ([golden-ratio-est (converge-fixed-point
+                                 (lambda (a) (/ (add1 (sqr a)) (add1 (* a 2))))
+                                 1.0)]
+               [golden-ratio (/ (- (sqrt 5) 1) 2)])
+             (< (abs (- golden-ratio-est golden-ratio)) 0.001))
+    (error "error (dcode): converge-fixed-point failed"))
