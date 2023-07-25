@@ -21,7 +21,7 @@
 ; snd :: [T] -> T
 (define (snd lst) (cadr lst))
 
-; swap :: [T] -> Integer -> Integer -> [T]
+; swap :: [T] -> integer -> integer -> [T]
 (define (swap lst i j)
     (define tmp (list-ref lst i))
     (define out (list-set lst i (list-ref lst j)))
@@ -30,6 +30,16 @@
 ; display-list :: [T] -> null  ( side effect only )
 (define (display-list lst)
     (for-each displayln lst))
+
+; find index of first instance of an item in a list (returns -1 if not found)
+; list-index :: [T] -> T -> integer
+(define/contract (list-index item lst [index 0])
+    (-> exact-integer? (listof exact-integer?) exact-integer?)
+    (if (null? lst)
+        -1
+        (if (equal? item (car lst))
+            index
+            (list-index item (cdr lst) (add1 index)))))
 
 
 
@@ -41,7 +51,7 @@
 
 
 ; fixed-point convergence function
-; converge-fixed-point :: (Number -> Number) -> Number -> Number
+; converge-fixed-point :: (number -> number) -> number -> number
 (define/contract (converge-fixed-point f guess)
     (-> (-> number? number?) number? number?)
     (define (close-enough? a b)
