@@ -1,10 +1,10 @@
 #lang racket
-(provide (all-defined-out))
 
 #|
     dcode - a general purpose util library
 |#
 
+(provide (all-defined-out))
 (require racket/contract)
 
 ;;; list operations ;;;
