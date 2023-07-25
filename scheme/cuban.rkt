@@ -18,11 +18,13 @@
         '()
         (reverse (cdr (reverse lst)))))
 ; last :: [T] -> T  (build-in)
+; fst :: [T] -> T
+(define fst car)
 ; snd :: [T] -> T
-(define (snd lst) (cadr lst))
+(define snd cadr)
 
 ; swap :: [T] -> integer -> integer -> [T]
-(define (swap lst i j)
+(define (list-swap lst i j)
     (define tmp (list-ref lst i))
     (define out (list-set lst i (list-ref lst j)))
     (list-set out j tmp))
@@ -74,3 +76,7 @@
 ; debug-args
 (define (debug-args . args)
     (for-each displayln args))
+
+
+
+;;; unit tests ;;;
