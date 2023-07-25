@@ -45,12 +45,13 @@
 
 
 
+; iota :: integer -> [integer]
+(define (iota n) (range 1 (add1 n)))
+
 ; atom? :: object -> boolean
 (define (atom? obj)
     (and (not (null? obj))
          (not (pair? obj))))
-
-
 
 ; fixed-point convergence function
 ; converge-fixed-point :: (number -> number) -> number -> number
@@ -80,3 +81,5 @@
 
 
 ;;; unit tests ;;;
+(unless (equal? (iota 8) '(1 2 3 4 5 6 7 8))
+    (error "error: iota failed"))
