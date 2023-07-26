@@ -177,3 +177,17 @@
     (lambda (f acc lst) (if (null? lst)
                             acc
                             (reduce. f (f (car lst) acc) (cdr lst)))))
+
+
+; closure
+(define counter
+    (lambda ()
+        (let ([count 0])
+            (lambda () (set! count (add1 count)) count))))
+
+(define c1 (counter))
+(c1) ; 1
+(define c2 (counter))
+(c1) ; 2
+(c1) ; 3
+(c2) ; 1
