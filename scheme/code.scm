@@ -152,4 +152,28 @@
     (* a a))
 
 
-(define list. (lambda args args)) ; fun alias for list
+;;; aliases ;;;
+
+(define list. (lambda args args))
+
+(define list-copy.
+    (lambda (lst) (if (null? lst)
+                      '()
+                      (cons (car lst) (list-copy. (cdr lst))))))
+
+(define map.
+    (lambda (f lst) (if (null? lst)
+                        '()
+                        (cons (f (car lst)) (map. f (cdr lst))))))
+
+(define filter.
+    (lambda (f lst) (if (null? lst)
+                        '()
+                        (if (f (car lst))
+                            (cons (car lst) (filter. f (cdr lst)))
+                            (filter. f (cdr lst))))))
+
+(define reduce.
+    (lambda (f acc lst) (if (null? lst)
+                            acc
+                            (reduce. f (f (car lst) acc) (cdr lst)))))
