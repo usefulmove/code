@@ -191,3 +191,19 @@
 (c1) ; 2
 (c1) ; 3
 (c2) ; 1
+
+
+;;; data abstraction ;;;
+(define cons.
+    (lambda (a b)
+        (lambda (symbl) (cond [(equal? symbl 'car.) a]
+                              [(equal? symbl 'cdr.) b]))))
+
+(define pair. (cons. 2 3))
+
+(pair. 'car.)  ; 2
+(pair. 'cdr.)  ; 3
+
+((cons. 0 pair.) 'car.)  ; 0
+(((cons. 0 pair.) 'cdr.) 'car.)  ; 2
+(((cons. 0 pair.) 'cdr.) 'cdr.)  ; 3
