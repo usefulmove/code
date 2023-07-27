@@ -54,7 +54,7 @@
 
 ; evaluate command line S-expression
 (define (main)
-    (define args (current-command-line-arguments))
-    (for-each displayln (reverse (evaluate-ops (vector->list args) '()))))
+    (let ([args (current-command-line-arguments)])
+      (for-each displayln (reverse (evaluate-ops (vector->list args) '())))))
 
 (main)
