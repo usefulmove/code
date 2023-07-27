@@ -18,7 +18,7 @@
     (if (null? lst)
         '()
         (reverse (cdr (reverse lst)))))
-; last :: [T] -> T  (build-in)
+; last :: [T] -> T  (built-in)
 ; fst :: [T] -> T
 (define fst car)
 ; snd :: [T] -> T
