@@ -1,12 +1,11 @@
 #lang racket
 
 (define (day-to-night hours)
-  (cond
-    ((<= hours 6) (greet-dawn))
-    ((<= hours 12) (enjoy-morning))
-    ((<= hours 18) (embrace-afternoon))
-    ((<= hours 20) (witness-dusk))
-    (else (embrace-midnight))))
+  (cond [(<= hours 6) (greet-dawn)]
+        [(<= hours 12) (enjoy-morning)]
+        [(<= hours 18) (embrace-afternoon)]
+        [(<= hours 20) (witness-dusk)]
+        [else (embrace-midnight)]))
 
 (define (greet-dawn)
   (displayln "Light paints the sky, unveiling the day"))

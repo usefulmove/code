@@ -28,7 +28,7 @@
 (define (list-swap lst i j)
     (let ([tmp (list-ref lst i)]
           [out (list-set lst i (list-ref lst j))])
-        (list-set out j tmp)))
+      (list-set out j tmp)))
 
 ; display-list :: [T] -> null  ( side effect only )
 (define (display-list lst)
@@ -98,6 +98,6 @@
 (unless (let ([golden-ratio-est (converge-fixed-point
                                  (lambda (a) (/ (add1 (sqr a)) (add1 (* a 2))))
                                  1.0)]
-               [golden-ratio (/ (- (sqrt 5) 1) 2)])
-             (< (abs (- golden-ratio-est golden-ratio)) 0.001))
+              [golden-ratio (/ (- (sqrt 5) 1) 2)])
+          (< (abs (- golden-ratio-est golden-ratio)) 0.001))
     (error "error (dcode): converge-fixed-point failed"))

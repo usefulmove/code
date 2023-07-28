@@ -183,7 +183,7 @@
 (define counter
     (lambda ()
         (let ([count 0])
-            (lambda () (set! count (add1 count)) count))))
+          (lambda () (set! count (add1 count)) count))))
 
 (define c1 (counter))
 (c1) ; 1
