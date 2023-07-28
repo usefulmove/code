@@ -178,6 +178,11 @@
                             acc
                             (reduce. f (f (car lst) acc) (cdr lst)))))
 
+(define apply.
+    (lambda (f lst) (cond [(null? lst) '()]
+                          [(equal? 1 (length lst)) (car lst)]
+                          [else (f (car lst) (apply. f (cdr lst)))])))
+
 
 ; closure
 (define counter
