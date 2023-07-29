@@ -58,17 +58,20 @@
 
 
 ; any? :: [T] -> (T -> boolean) -> boolean
-(define (any? f lst)  ; TODO
-    (cond ([(null? lst) #f]
-	   [(f (car lst)) #t]
-	   [(any? f (cdr lst))])))
-      
+(define (any? f lst)
+    (if (null? lst)
+        #f
+	(if (f (car lst))
+	    #t
+	    (any? f (cdr lst)))))
 
 ; all? :: [T] -> (T -> boolean) -> boolean
 (define (all? f lst)
-    (cond ([(null? lst) #t]
-	   [(f (car lst)) (all? f (cdr lst))]
-	   [else #f])))
+    (if (null? lst)
+        #t
+	(if (not (f (car lst)))
+            #f
+	    (all? f (cdr lst)))))
 	  
 
 
