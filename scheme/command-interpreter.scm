@@ -7,16 +7,16 @@
 ; create-unary-command :: (number -> number) -> ([string] -> [string])
 (define/contract (create-unary-command f)
     (-> (-> number? number?) (-> (listof string?) (listof string?)))
-    (lambda (stack) (cons (number->string (f (string->number (head stack))))
-                          (tail stack))))
+    (lambda (stack) (cons (number->string (f (string->number (fst stack))))
+                          (rest stack))))
 
 ; binary command decorator
 ; create-binary-command :: (number -> number -> number) -> ([string] -> [string])
 (define/contract (create-binary-command f)
     (-> (-> number? number? number?) (-> (listof string?) (listof string?)))
-    (lambda (stack) (cons (number->string (f (string->number (head (tail stack)))
-                                             (string->number (head stack))))
-                          (tail (tail stack)))))
+    (lambda (stack) (cons (number->string (f (string->number (snd stack))
+                                             (string->number (fst stack))))
+                          (rest (rest stack)))))
 
 ; command definitions - command functions have the form:
 ;   cmd :: [string] -> [string]
