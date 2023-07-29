@@ -212,3 +212,7 @@
 ((cons. 0 pair.) 'car.)  ; 0
 (((cons. 0 pair.) 'cdr.) 'car.)  ; 2
 (((cons. 0 pair.) 'cdr.) 'cdr.)  ; 3
+
+
+
+(= 8 8 8)  ; #t
