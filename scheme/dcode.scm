@@ -7,6 +7,7 @@
 (provide (all-defined-out))
 (require racket/contract)
 
+
 ;;; list operations ;;;
 
 ; head :: [T] -> T
