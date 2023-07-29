@@ -7,12 +7,12 @@
 ; golden ratio
 
 
+#| procedures |#
+; define, lambda, procedure definition shortcut, +, -, *, /, sqr
+
+
 #| lists |#
 ; cons, car, cdr, first, rest, last, list, null?, length, append, reverse
-
-
-#| procedures |#
-; define, lambda, procedure definition shortcut
 
 
 #| compound procedures |#
@@ -39,6 +39,8 @@
 (= (+ 3 2) _)
 
 (= 8 (* _ 2 2))
+
+(= _ (+ (sqr 3) (sqr 4)))
 
 (equal? '(_) (list 3 1 2))
 
