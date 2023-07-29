@@ -57,6 +57,21 @@
 
 
 
+; any? :: [T] -> (T -> boolean) -> boolean
+(define (any? f lst)  ; TODO
+    (cond ([(null? lst) #f]
+	   [(f (car lst)) #t]
+	   [(any? f (cdr lst))])))
+      
+
+; all? :: [T] -> (T -> boolean) -> boolean
+(define (all? f lst)
+    (cond ([(null? lst) #t]
+	   [(f (car lst)) (all? f (cdr lst))]
+	   [else #f])))
+	  
+
+
 ; iota :: integer -> [integer]
 (define (iota n) (range 1 (add1 n)))
 
