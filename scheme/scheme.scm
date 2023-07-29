@@ -12,7 +12,7 @@
 
 
 #| procedures |#
-; define, lambda
+; define, lambda, procedure definition shortcut
 
 
 #| compound procedures |#
@@ -49,3 +49,5 @@
 (equal? 5 (_ '(3 1 2 4 6)))
 
 (equal? 5 (_ '(3 1 2 5)))
+
+(define add2 (lambda (n) _))
