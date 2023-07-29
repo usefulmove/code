@@ -10,31 +10,36 @@
 
 
 #| procedures |#
-; define, lambda, procedure definition shortcut, +, -, *, /, sqr
+; define, lambda, procedure definition shortcut, +, -, *, /, sqr, and, or, equal?
+
 
 
 #| lists |#
 ; cons, car, cdr, first, rest, last, list, null?, length, append, reverse
 
 
+
 #| compound procedures |#
 ; substitution model
-; magic 8 ball
+
 
 
 #| conditional expressions |#
 ; if, cond
 
 
+
 #| recursion |#
 ; factorial, fibonacci
+
 
 
 #| higher-order functions |#
 ; map, filter, reduce, any?, all?
 
 
-#| koans (fill in the underscore) |#
+
+#| koans |#
 
 (= _ 8)
 
@@ -59,3 +64,4 @@
 (define add2 (lambda (n) _))
 
 (define (cube n) _)
+
