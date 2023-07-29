@@ -3,8 +3,10 @@
 #| REPL (read-eval-print-loop) |#
 
 
+
 #| definitions and evalutation - S-expressions |#
 ; golden ratio
+
 
 
 #| procedures |#
@@ -29,7 +31,7 @@
 
 
 #| higher-order functions |#
-; map, filter, reduce
+; map, filter, reduce, any?, all?
 
 
 #| koans (fill in the underscore) |#
