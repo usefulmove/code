@@ -13,6 +13,7 @@
 
 #| compound procedures |#
 ; substitution model
+; magic 8 ball
 
 
 #| conditional expressions |#
