@@ -38,6 +38,8 @@
 
 (= (+ 3 2) _)
 
+(= 8 (* _ 2 2))
+
 (equal? '(_) (list 3 1 2))
 
 (equal? (car (list 3 1 2)) _)
@@ -51,3 +53,5 @@
 (equal? 5 (_ '(3 1 2 5)))
 
 (define add2 (lambda (n) _))
+
+(define (cube n) _)
