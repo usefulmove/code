@@ -56,7 +56,13 @@
 ; prod :: [T] -> T
 (define (prod lst) (apply * lst))
 
-; display-list :: [T] -> null  ( side effect only )
+; reduce :: (T -> T -> T) [T] -> T
+; reverses the argument order of the foldl primitive
+(define (reduce f acc lst) (if (null? lst)
+                               acc
+                               (reduce f (f (car lst) acc) (cdr lst))))
+
+; display-list :: [T] -> null  ( side effects only )
 (define (display-list lst)
   (for-each displayln lst))
 
