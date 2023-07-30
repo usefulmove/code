@@ -33,7 +33,7 @@
   "+"    (binary-command +)
   "-"    (binary-command -)
   "*"    (binary-command *)
-  "x"    (binary-command *)
+  "x"    (binary-command *)  ; helpful on command line ("*" has to be escaped)
   "/"    (binary-command /)
   "^"    (binary-command expt)
   "dup"  (lambda (stack) (cons (fst stack) stack))
