@@ -19,7 +19,13 @@
                                            (string->number (fst stack))))
                         (rest (rest stack)))))
 
-; command definitions - command functions have the form:
+; command-swap :: [string] -> [string]
+(define command-swap (lambda (stack) (let ([a (fst stack)]
+                                           [b (snd stack)]
+                                           [rst (drop2 stack)])
+                                       (append (list b a) rst))))
+
+; command definitions - command functions must have the form:
 ;   cmd :: [string] -> [string]
 (define cmds (hash
   "inv"  (unary-command (lambda (a) (/ a)))
@@ -29,7 +35,8 @@
   "*"    (binary-command *)
   "x"    (binary-command *)
   "/"    (binary-command /)
-  "dup"  (lambda (stack) (cons (head stack) stack))
+  "dup"  (lambda (stack) (cons (fst stack) stack))
+  "swap" command-swap
 ))
 
 ; access function associated with op and execute against stack
