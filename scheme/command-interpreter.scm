@@ -4,15 +4,15 @@
 (require "dcode.scm")
 
 ; unary command decorator
-; create-unary-command :: (number -> number) -> ([string] -> [string])
-(define/contract (create-unary-command f)
+; unary-command :: (number -> number) -> ([string] -> [string])
+(define/contract (unary-command f)
     (-> (-> number? number?) (-> (listof string?) (listof string?)))
     (lambda (stack) (cons (number->string (f (string->number (fst stack))))
                           (rest stack))))
 
 ; binary command decorator
-; create-binary-command :: (number -> number -> number) -> ([string] -> [string])
-(define/contract (create-binary-command f)
+; binary-command :: (number -> number -> number) -> ([string] -> [string])
+(define/contract (binary-command f)
     (-> (-> number? number? number?) (-> (listof string?) (listof string?)))
     (lambda (stack) (cons (number->string (f (string->number (snd stack))
                                              (string->number (fst stack))))
@@ -21,13 +21,13 @@
 ; command definitions - command functions have the form:
 ;   cmd :: [string] -> [string]
 (define cmds (hash
-  "inv"  (create-unary-command (lambda (a) (/ 1 a)))
-  "sqrt" (create-unary-command sqrt)
-  "+"    (create-binary-command +)
-  "-"    (create-binary-command -)
-  "*"    (create-binary-command *)
-  "x"    (create-binary-command *)
-  "/"    (create-binary-command /)
+  "inv"  (unary-command (lambda (a) (/ 1 a)))
+  "sqrt" (unary-command sqrt)
+  "+"    (binary-command +)
+  "-"    (binary-command -)
+  "*"    (binary-command *)
+  "x"    (binary-command *)
+  "/"    (binary-command /)
   "dup"  (lambda (stack) (cons (head stack) stack))
 ))
 
