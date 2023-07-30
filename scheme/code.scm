@@ -43,12 +43,10 @@
 (define (square-root n)  ; example only (Babylonian method) - use (sqrt n) primative
     (define epsilon 0.000000001)
     (define (improve-guess guess)
-        (cond
-            [(> epsilon (abs (- n (* guess guess)))) guess]
-            [else (improve-guess (/ (+ guess (/ n guess)) 2))]))
-    (cond
-        [(< n 0) (error "square-root of negative number")]
-        [else (improve-guess 1.0)]))
+        (cond [(> epsilon (abs (- n (* guess guess)))) guess]
+              [else (improve-guess (/ (+ guess (/ n guess)) 2))]))
+    (cond [(< n 0) (error "square-root of negative number")]
+          [else (improve-guess 1.0)]))
 
 (square-root 618)  ; 24.859605789312106
 
@@ -60,9 +58,8 @@
         (define epsilon 0.000000001)
         (> epsilon (abs (- a b))))
     (define (improve-guess guess)
-        (cond
-            [(close-enough? guess (f guess)) (f guess)]
-            [else (improve-guess (f guess))]))
+        (cond [(close-enough? guess (f guess)) (f guess)]
+              [else (improve-guess (f guess))]))
     (improve-guess guess))
 
 (converge-fixed-point
