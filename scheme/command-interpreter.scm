@@ -35,6 +35,7 @@
   "*"    (binary-command *)
   "x"    (binary-command *)
   "/"    (binary-command /)
+  "^"    (binary-command expt)
   "dup"  (lambda (stack) (cons (fst stack) stack))
   "swap" command-swap
 ))
