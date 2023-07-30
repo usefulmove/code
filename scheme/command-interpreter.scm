@@ -3,25 +3,26 @@
 (require racket/contract)
 (require "dcode.scm")
 
+
 ; unary command decorator
 ; create-unary-command :: (number -> number) -> ([string] -> [string])
 (define/contract (create-unary-command f)
-    (-> (-> number? number?) (-> (listof string?) (listof string?)))
-    (lambda (stack) (cons (number->string (f (string->number (fst stack))))
-                          (rest stack))))
+  (-> (-> number? number?) (-> (listof string?) (listof string?)))
+  (lambda (stack) (cons (number->string (f (string->number (fst stack))))
+                        (rest stack))))
 
 ; binary command decorator
 ; create-binary-command :: (number -> number -> number) -> ([string] -> [string])
 (define/contract (create-binary-command f)
-    (-> (-> number? number? number?) (-> (listof string?) (listof string?)))
-    (lambda (stack) (cons (number->string (f (string->number (snd stack))
-                                             (string->number (fst stack))))
-                          (rest (rest stack)))))
+  (-> (-> number? number? number?) (-> (listof string?) (listof string?)))
+  (lambda (stack) (cons (number->string (f (string->number (snd stack))
+                                           (string->number (fst stack))))
+                        (rest (rest stack)))))
 
 ; command definitions - command functions have the form:
 ;   cmd :: [string] -> [string]
 (define cmds (hash
-  "inv"  (create-unary-command (lambda (a) (/ 1 a)))
+  "inv"  (create-unary-command (lambda (a) (/ a)))
   "sqrt" (create-unary-command sqrt)
   "+"    (create-binary-command +)
   "-"    (create-binary-command -)
@@ -34,26 +35,27 @@
 ; access function associated with op and execute against stack
 ; process-op :: string -> [string] -> [string]
 (define/contract (process-op op stack)
-    (-> string? (listof string?) (listof string?))
-    (cond [(hash-has-key? cmds op) ((hash-ref cmds op) stack)]
-          [else (cons op stack)]))  ; op is not command, add to stack
+  (-> string? (listof string?) (listof string?))
+  (cond [(hash-has-key? cmds op) ((hash-ref cmds op) stack)]
+        [else (cons op stack)]))  ; op is not command, add to stack
 
 ; evaluate ops against stack
 ; evalute-ops :: [string] -> [string] -> [string]
 (define/contract (evaluate-ops ops stack)
-    (-> (listof string?) (listof string?) (listof string?))
-    (foldl process-op stack ops))
+  (-> (listof string?) (listof string?) (listof string?))
+  (foldl process-op stack ops))
 
 ; evaluate S-expression
 ; evaluate-sexp :: string -> null (prints to stdout)
 (define/contract (evaluate-sexp s-exp)
-    (-> string? null)
-    (for-each displayln (reverse (evaluate-ops (string-split s-exp) '()))))
+  (-> string? null)
+  (for-each displayln (reverse (evaluate-ops (string-split s-exp) '()))))
+
 
 
 ; evaluate command line S-expression
 (define (main)
-    (let ([args (current-command-line-arguments)])
-      (for-each displayln (reverse (evaluate-ops (vector->list args) '())))))
+  (let ([args (current-command-line-arguments)])
+    (for-each displayln (reverse (evaluate-ops (vector->list args) '())))))
 
 (main)
