@@ -1,8 +1,6 @@
 #lang racket
 
-#|
-    dcode - a general purpose util library
-|#
+#|  dcode - a general purpose util library  |#
 
 (provide (all-defined-out))
 (require racket/contract)
@@ -62,18 +60,18 @@
 (define (any? f lst)
     (if (null? lst)
         #f
-	(if (f (car lst))
-	    #t
-	    (any? f (cdr lst)))))
+    (if (f (car lst))
+        #t
+        (any? f (cdr lst)))))
 
 ; all? :: [T] -> (T -> boolean) -> boolean
 (define (all? f lst)
     (if (null? lst)
         #t
-	(if (not (f (car lst)))
-            #f
-	    (all? f (cdr lst)))))
-	  
+    (if (not (f (car lst)))
+        #f
+        (all? f (cdr lst)))))
+
 
 
 ; iota :: integer -> [integer]
@@ -120,4 +118,3 @@
               [golden-ratio (/ (- (sqrt 5) 1) 2)])
           (< (abs (- golden-ratio-est golden-ratio)) 0.001))
     (error "error (dcode): converge-fixed-point failed"))
-

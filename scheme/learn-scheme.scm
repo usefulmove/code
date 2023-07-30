@@ -1,11 +1,8 @@
 #lang racket
 
-#| minimal syntax |#
-;(function operand1 operand2 . . . )
-
-#| REPL (read-eval-print-loop) |#
 
 #| definitions and evalutation - S-expressions |#
+
 (/ (- (sqrt 5) 1) 2)  ; 0.6180339887498949
 
 (* pi (sqr 6))  ; 113.09733552923255
@@ -20,12 +17,8 @@
 (calculate-area radius)
 
 
-#| procedures |#
-; define, lambda, procedure definition shortcut, +, -, *, /, sqr, and, or, equal?
-
-
 #| lists |#
-; cons, car, cdr, first, rest, last, list, null?, length, append, reverse
+
 '(3 1 2)
 (list 3 1 2)
 
@@ -48,11 +41,6 @@ lst  ; '(3 1 2 5 4)
 (cons 0 lst)  ; '(0 3 1 2 5 4)
 
 (append lst lst)  ; '(3 1 2 5 4 3 1 2 5 4)
-
-
-#| compound procedures |#
-; substitution model
-
 
 
 #| conditional expressions |#
