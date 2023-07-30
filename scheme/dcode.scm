@@ -10,20 +10,27 @@
 
 ; head :: [T] -> T
 (define head car)
+
 ; tail :: [T] -> [T]
 (define tail cdr)
+
 ; init :: [T] -> [T]
 (define (init lst)
   (if (null? lst)
       '()
       (reverse (cdr (reverse lst)))))
+
 ; last :: [T] -> T  (built-in)
+;
 ; fst :: [T] -> T
 (define fst car)
+
 ; snd :: [T] -> T
 (define snd cadr)
+
 ; drop :: [T] -> [T]
 (define drop cdr)
+
 ; drop2 :: [T] -> [T]
 (define drop2 cddr)
 
@@ -32,10 +39,6 @@
   (let ([tmp (list-ref lst i)]
         [out (list-set lst i (list-ref lst j))])
     (list-set out j tmp)))
-
-; display-list :: [T] -> null  ( side effect only )
-(define (display-list lst)
-  (for-each displayln lst))
 
 ; find index of first instance of an item in a list (returns -1 if not found)
 ; list-index :: [T] -> T -> integer
@@ -46,6 +49,17 @@
       (if (equal? item (car lst))
           index
           (list-index item (cdr lst) (add1 index)))))
+
+; sum :: [T] -> T
+(define (sum lst) (apply + lst))
+
+; prod :: [T] -> T
+(define (prod lst) (apply * lst))
+
+; display-list :: [T] -> null  ( side effect only )
+(define (display-list lst)
+  (for-each displayln lst))
+
 
 
 #| currying |#
