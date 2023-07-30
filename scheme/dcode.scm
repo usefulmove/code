@@ -22,6 +22,10 @@
 (define fst car)
 ; snd :: [T] -> T
 (define snd cadr)
+; drop :: [T] -> [T]
+(define drop cdr)
+; drop2 :: [T] -> [T]
+(define drop2 cddr)
 
 ; swap :: [T] -> integer -> integer -> [T]
 (define (list-swap lst i j)
