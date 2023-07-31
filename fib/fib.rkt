@@ -1,12 +1,16 @@
+#lang racket
+
 (define (fib n)
-    (if (< n 2)
-        n
-        (+ (fib (- n 1))
-           (fib (- n 2)))))
+  (if (< n 2)
+      n
+      (+ (fib (- n 1)) (fib (- n 2)))))
 
-(define (fib2 n [a 0] [b 1])
-    (cond [(zero? n) a]
-          [(= n 1) b]
-          [else (fib2 (sub1 n) b (+ a b))]))
+(define (fib2 n)
+    (letrec
+      ([fibonacci2 (lambda (x a b)
+                       (cond [(= x 0) a]
+                             [(= x 1) b]
+                             [else (fibonacci2 (- x 1) b (+ a b))]))])
+        (fibonacci2 n 0 1)))
 
-(displayln (fib2 38))
+(display (fib2 38))
