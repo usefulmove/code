@@ -22,7 +22,7 @@
 ; command-swap :: [string] -> [string]
 (define command-swap (lambda (stack) (let ([a (fst stack)]
                                            [b (snd stack)]
-                                           [rst (drop2 stack)])
+                                           [rst (drop 2 stack)])
                                        (append (list b a) rst))))
 
 ; command definitions - command functions must have the form:
