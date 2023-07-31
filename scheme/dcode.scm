@@ -28,15 +28,14 @@
 ; snd :: [T] -> T
 (define snd cadr)
 
-;; TODO
-;; (define (drop n) TODO)
+; drop :: number -> [T] -> [T]
+(define (drop n lst)
+  (if (or (null? lst) (< n 1))
+      lst
+      (drop (sub1 n) (cdr lst))))
+
+; take :: number -> [T] -> [T]
 ;; (define (take n) TODO)
-
-; drop :: [T] -> [T]
-(define drop cdr)
-
-; drop2 :: [T] -> [T]
-(define drop2 cddr)
 
 ; swap :: [T] -> integer -> integer -> [T]
 (define (list-swap lst i j)
