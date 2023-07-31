@@ -35,7 +35,10 @@
       (drop (sub1 n) (cdr lst))))
 
 ; take :: number -> [T] -> [T]
-;; (define (take n) TODO)
+(define (take n lst)
+  (if (or (null? lst) (< n 1))
+      null
+      (cons (car lst) (take (sub1 n) (cdr lst)))))
 
 ; swap :: [T] -> integer -> integer -> [T]
 (define (list-swap lst i j)
