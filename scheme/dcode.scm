@@ -28,6 +28,10 @@
 ; snd :: [T] -> T
 (define snd cadr)
 
+;; TODO
+;; (define (drop n) TODO)
+;; (define (take n) TODO)
+
 ; drop :: [T] -> [T]
 (define drop cdr)
 
