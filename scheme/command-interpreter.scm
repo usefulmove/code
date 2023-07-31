@@ -25,6 +25,14 @@
                                            [rst (drop 2 stack)])
                                        (append (list b a) rst))))
 
+; command-iota :: [string] -> [string] (TODO - resolve . reverse of coren)
+(define command-iota
+  (lambda (stack) (let ([a (fst stack)]
+                        [rst (drop 1 stack)])
+                    (append
+                      (map number->string (range 1 (add1 (string->number a))))
+                      rst))))
+
 ; command definitions - command functions must have the form:
 ;   cmd :: [string] -> [string]
 (define cmds (hash
@@ -37,6 +45,7 @@
   "/"    (binary-command /)
   "^"    (binary-command expt)
   "dup"  (lambda (stack) (cons (fst stack) stack))
+  "iota" command-iota
   "swap" command-swap
 ))
 
