@@ -21,12 +21,6 @@
       (reverse (cdr (reverse lst)))))
 
 ; last :: [T] -> T  (built-in)
-;
-; fst :: [T] -> T
-(define fst car)
-
-; snd :: [T] -> T
-(define snd cadr)
 
 ; drop :: number -> [T] -> [T]
 (define (drop n lst)
