@@ -25,7 +25,7 @@
                                            [rst (drop 2 stack)])
                                        (append (list b a) rst))))
 
-; command-iota :: [string] -> [string] (TODO - resolve . reverse of coren)
+; command-iota :: [string] -> [string]
 (define command-iota
   (lambda (stack) (let ([a (fst stack)]
                         [rst (drop 1 stack)])
