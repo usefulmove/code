@@ -31,3 +31,10 @@
       (foldl f (funcall f acc (car lst)) (cdr lst))))
 
 (foldl (lambda (acc a) (+ acc a)) 0 '(3 1 2 5 4))
+
+(defun map (f lst)
+  (if (null lst)
+      lst
+      (cons (funcall f (car lst)) (map f (cdr lst)))))
+
+(map (lambda (a) (* a a)) '(3 1 2 5 4))
