@@ -5,7 +5,7 @@
 ;; Author: Duane Edmonds <duane.edmonds@gmail.com>
 ;; Maintainer: Duane Edmonds <duane.edmonds@gmail.com>
 ;; Created: August 02, 2023
-;; Modified: August 02, 2023
+;; Modified: August 03, 2023
 ;; Version: 0.0.1
 ;; Keywords:
 ;; Homepage: https://github.com/dedmonds/dcode
@@ -18,8 +18,6 @@
 ;;  Description
 ;;
 ;;; Code:
-
-(provide 'dcode)
 
 ; foldl :: (U -> T -> U) -> U -> [T] -> U
 (defun foldl (f acc lst)
@@ -41,10 +39,29 @@
           (filter f (cdr lst))
           (cons (car lst) (filter f (cdr lst))))))
 
-; even? :: number -> booleean
-(defun even? (n) (= 0 (mod n 2)))
+; any :: (T -> boolean) -> [T] -> boolean
+(defun any (f lst)
+  (if (null lst)
+      nil
+      (if (funcall f (car lst))
+          t
+          (any f (cdr lst)))))
 
-; odd? :: number -> booleean
-(defun odd? (n) (not (even? n)))
+; all :: (T -> boolean) -> [T] -> boolean
+(defun all (f lst)
+  (if (null lst)
+      t
+      (if (not (funcall f (car lst)))
+          nil
+          (all f (cdr lst)))))
+
+
+; even :: number -> booleean
+(defun even (n) (= 0 (mod n 2)))
+
+; odd :: number -> booleean
+(defun odd (n) (not (even n)))
+
+(provide 'dcode)
 
 ;;; dcode.el ends here
