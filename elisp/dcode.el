@@ -43,10 +43,8 @@
 
 ; even? :: number -> booleean
 (defun even? (n) (= 0 (mod n 2)))
-;
+
 ; odd? :: number -> booleean
 (defun odd? (n) (not (even? n)))
-
-(foldl (lambda (acc a) (+ acc a)) 0 (map (lambda (a) (* a a)) '(1 2 3 4 5 6 7 8)))  ; 204
 
 ;;; dcode.el ends here
