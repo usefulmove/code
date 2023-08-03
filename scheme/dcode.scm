@@ -56,29 +56,11 @@
 ; prod :: [T] -> T
 (define (prod lst) (apply * lst))
 
-; reduce :: (U -> T -> U) -> U -> [T] -> U
-; reverses the argument order of the foldl primitive
-(define (reduce f acc lst) (if (null? lst)
-                               acc
-                               (reduce f acc (f (car lst)) (cdr lst))))
-
 ; display-list :: [T] -> null  ( side effects only )
 (define (display-list lst)
   (for-each displayln lst))
 
-
-
-#| currying |#
-
-; curry2 :: (T -> U -> V) -> (T -> (U -> V))
-(define (curry2 f)
-  (lambda (a) (lambda (b) (f a b))))
-
-; curry3 :: (T -> U -> V -> W) -> (T -> (U -> (V -> W)))
-(define (curry3 f)
-  (lambda (a) (lambda (b) (lambda (c) (f a b c)))))
-
-
+#| higher-order functions |#
 
 ; any? :: [T] -> (T -> boolean) -> boolean
 (define (any? f lst)
@@ -95,6 +77,24 @@
   (if (not (f (car lst)))
       #f
       (all? f (cdr lst)))))
+
+; reduce :: (U -> T -> U) -> U -> [T] -> U
+; reverses the argument order of the foldl primitive
+(define (reduce f acc lst) (if (null? lst)
+                               acc
+                               (reduce f acc (f (car lst)) (cdr lst))))
+
+
+
+#| currying |#
+
+; curry2 :: (T -> U -> V) -> (T -> (U -> V))
+(define (curry2 f)
+  (lambda (a) (lambda (b) (f a b))))
+
+; curry3 :: (T -> U -> V -> W) -> (T -> (U -> (V -> W)))
+(define (curry3 f)
+  (lambda (a) (lambda (b) (lambda (c) (f a b c)))))
 
 
 
