@@ -213,3 +213,13 @@
 
 
 (= 8 8 8)  ; #t
+
+
+
+; for loops
+(for ([i (range 1 (add1 8))])
+  (display (* i i)))
+
+; for comprehensions
+(for/list ([i (range 1 (add1 8))])
+  (* i i))  ; '(1 4 9 16 25 36 49 64)
