@@ -1,6 +1,6 @@
 #lang racket
 
-#|  dcode - a general purpose util library  |#
+#|  dcode - a general purpose functional utility library  |#
 
 (provide (all-defined-out))
 (require racket/contract)
@@ -16,23 +16,20 @@
 
 ; init :: [T] -> [T]
 (define (init lst)
-  (if (null? lst)
-      '()
-      (reverse (cdr (reverse lst)))))
+  (cond [(null? lst) '()]
+        [else (reverse (cdr (reverse lst)))]))
 
 ; last :: [T] -> T  (built-in)
 
 ; drop :: number -> [T] -> [T]
 (define (drop n lst)
-  (if (or (null? lst) (< n 1))
-      lst
-      (drop (sub1 n) (cdr lst))))
+  (cond [(or (null? lst) (< n 1)) lst]
+        [else (drop (sub1 n) (cdr lst))]))
 
 ; take :: number -> [T] -> [T]
 (define (take n lst)
-  (if (or (null? lst) (< n 1))
-      null
-      (cons (car lst) (take (sub1 n) (cdr lst)))))
+  (cond [(or (null? lst) (< n 1)) null]
+        [else (cons (car lst) (take (sub1 n) (cdr lst)))]))
 
 ; swap :: [T] -> integer -> integer -> [T]
 (define (list-swap lst i j)
@@ -44,11 +41,9 @@
 ; list-index :: [T] -> T -> integer
 (define/contract (list-index item lst [index 0])
   (-> exact-integer? (listof exact-integer?) exact-integer?)
-  (if (null? lst)
-      -1
-      (if (equal? item (car lst))
-          index
-          (list-index item (cdr lst) (add1 index)))))
+  (cond [(null? lst) -1]
+        [(equal? item (car lst)) index]
+        [else (list-index item (cdr lst) (add1 index))]))
 
 ; sum :: [T] -> T
 (define (sum lst) (apply + lst))
@@ -76,9 +71,9 @@
 
 ; reduce :: (U -> T -> U) -> U -> [T] -> U
 ; reverses the argument order of the foldl primitive
-(define (reduce f acc lst) (if (null? lst)
-                               acc
-                               (reduce f acc (f (car lst)) (cdr lst))))
+(define (reduce f acc lst)
+  (cond [(null? lst) acc]
+        [else (reduce f acc (f (car lst)) (cdr lst))]))
 
 
 
@@ -136,8 +131,8 @@
 (unless (let ([golden-ratio-est (converge-fixed-point
                                     (lambda (a) (/ (add1 (sqr a)) (add1 (* a 2))))
                                     1.0)]
-            [golden-ratio (/ (- (sqrt 5) 1) 2)])
-        (< (abs (- golden-ratio-est golden-ratio)) 0.001))
+              [golden-ratio (/ (- (sqrt 5) 1) 2)])
+          (< (abs (- golden-ratio-est golden-ratio)) 0.001))
   (error "error (dcode): converge-fixed-point unit test failed"))
 
 (unless (equal? #t (any? identity '(#f #t #f)))
