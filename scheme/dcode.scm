@@ -64,19 +64,15 @@
 
 ; any? :: [T] -> (T -> boolean) -> boolean
 (define (any? f lst)
-  (if (null? lst)
-      #f
-  (if (f (car lst))
-      #t
-      (any? f (cdr lst)))))
+  (cond [(null? lst) #f]
+        [(f (car lst)) #t]
+        [else (any? f (cdr lst))]))
 
 ; all? :: [T] -> (T -> boolean) -> boolean
 (define (all? f lst)
-  (if (null? lst)
-      #t
-  (if (not (f (car lst)))
-      #f
-      (all? f (cdr lst)))))
+  (cond [(null? lst) #t]
+        [(not (f (car lst))) #f]
+        [else (all? f (cdr lst))]))
 
 ; reduce :: (U -> T -> U) -> U -> [T] -> U
 ; reverses the argument order of the foldl primitive
@@ -135,11 +131,17 @@
 #| unit tests |#
 
 (unless (equal? (iota 8) '(1 2 3 4 5 6 7 8))
-  (error "error (dcode): iota failed"))
+  (error "error (dcode): iota unit test failed"))
 
 (unless (let ([golden-ratio-est (converge-fixed-point
                                     (lambda (a) (/ (add1 (sqr a)) (add1 (* a 2))))
                                     1.0)]
             [golden-ratio (/ (- (sqrt 5) 1) 2)])
         (< (abs (- golden-ratio-est golden-ratio)) 0.001))
-  (error "error (dcode): converge-fixed-point failed"))
+  (error "error (dcode): converge-fixed-point unit test failed"))
+
+(unless (equal? #t (any? identity '(#f #t #f)))
+  (error "error (dcode): any? unit test failed"))
+
+(unless (equal? #f (all? identity '(#f #t #f)))
+  (error "error (dcode): all? unit test failed"))
