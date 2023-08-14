@@ -6,6 +6,7 @@
 (require racket/contract)
 
 
+
 #| list operations |#
 
 ; head :: [T] -> T
@@ -55,6 +56,8 @@
 (define (display-list lst)
   (for-each displayln lst))
 
+
+
 #| higher-order functions |#
 
 ; any? :: [T] -> (T -> boolean) -> boolean
@@ -88,6 +91,8 @@
   (lambda (a) (lambda (b) (lambda (c) (f a b c)))))
 
 
+
+#| miscellaneous |#
 
 ; iota :: integer -> [integer]
 (define (iota n) (range 1 (add1 n)))
