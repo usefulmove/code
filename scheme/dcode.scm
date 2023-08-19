@@ -103,7 +103,7 @@
        (not (pair? obj))))
 
 ; true? :: T -> boolean
-(define (true? obj) (not (equal? #f obj))
+(define (true? obj) (not (equal? #f obj)))
 
 ; fixed-point convergence function
 ; converge-fixed-point :: (number -> number) -> number -> number
