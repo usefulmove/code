@@ -1,7 +1,6 @@
 (defn fib [n]
-  (if (< n 2)
-    n
-    (+ (fib (- n 1)) (fib (- n 2)))))
+  (cond (< n 2) n
+        :else (+ (fib (- n 1)) (fib (- n 2)))))
 
 (defn fib2 [n]
   (letfn [(fibonacci2 [n a b] (cond (= n 0) a
