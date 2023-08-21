@@ -1,7 +1,7 @@
 (ns )
 
 ; memo :: (T -> U) -> (T -> U)
-; memoization (cache)
+; memoization (cache) decorator
 (defn memo [f]
   (let [cache {}]
     (fn [arg] (if (contains? cache arg)    ; if cache contains the passed argument
