@@ -1,4 +1,4 @@
-(ns )
+(ns counter)
 
 ; determine frequence of element occurence within sequence
 ; counter :: [T] -> {T -> number} (hashmap)
