@@ -1,0 +1,46 @@
+#+title: Lisp Evaluator
+
+Structure and Interpretation of Computer Programs (SICP)
+Massachussets Institute of Technonlogy (MIT)
+Lecture 7A: Metacircular Evaluator
+Chapter 4
+
+The `eval` program is a procedure that takes an expression (S-expression) (`exp`) and an environment (`env`). It can be considered a case analysis. The environment is a dictionary (or hashmap) in which the values of known symbols are stored.
+
+``` mit-scheme
+(define eval
+  (lambda (exp env)
+    (cond ((number? exp) exp)
+          ((symbol? exp) (lookup exp env))
+          ((eq? (car exp) 'quote) (cadr exp))
+          ((eq? (car exp) 'lambda) (list 'closure (cdr exp) env))
+          ((eq? (car exp) 'cond) (evalcond (cdr exp) env))
+          (else (apply (eval (car exp) env) (evallist (cdr exp) env))))))
+
+(define apply
+  (lambda (proc args)
+    (cond ((primitive? proc) (apply-primop proc args))
+          ((eq? (car proc) 'closure) (eval (cadadr proc) ; compound procedre
+                                           (bind (caadr proc)
+                                                 args
+                                                 (caddr proc))))
+          (else error))))
+
+(define evallist
+  (lambda (l environment)
+    (cond ((eq? l '()) '())
+          (else (cons (eval (car l) env)
+                      (evallist (cdr l) env))))))
+
+(define evalcond
+  (lambda (clauses env)
+    (cond ((eq? clauses '()) '())
+          ((eq? (caar clauses) 'else) (eval (cadar clauses) env))
+          ((false? (eval (caar clauses))) (evalcond (cdr clauses) env))
+          (else (eval (cadar clauses) env)))))
+
+(define bind
+  (lambda (vars vals env)
+    (cons (pair-up vars vals)
+          env)))
+```
