@@ -95,6 +95,16 @@ six
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; custom procedures
 
+(defun f () "hi")
+
+(f)
+
+
+(defun add (a b) (+ a b))
+
+(add 3 2)
+
+
 (defun square (n)
   (* n n))
 
@@ -164,7 +174,7 @@ six
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; higher-order functions
 
-(mapcar 'reverse '("apply" "function" "to" "all" "elements" "in" "list")) ; map
+(mapcar 'reverse '("apply" "function" "to" "elements" "of" "list")) ; map
 
 (cl-remove-if-not 'cl-oddp '(3 1 2 5 4)) ; filter
 
