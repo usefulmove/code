@@ -1,0 +1,26 @@
+#+title: Clojure and ClojureScript
+
+#+begin_src clojure
+
+(def a 8)
+
+(def cube
+  (fn [n] (* n n n)))
+
+(defn cube [n]
+  (* n n n))
+
+(let [a 8]
+  (* a a a)) ; => 512
+
+#+end_src
+
+#+begin_src clojure
+
+(let ()
+  (+ 8 2))
+
+((fn [] )
+  (+ 8 2))
+
+#+end_src
