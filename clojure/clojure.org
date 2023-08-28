@@ -24,3 +24,12 @@
   (+ 8 2))
 
 #+end_src
+
+#+begin_src clojure
+
+;; gcd :: int -> int -> int
+(defn gcd [a b]
+  (cond (zero? b) a
+        :else (gcd b (mod a b))))
+
+#+end_src
