@@ -24,7 +24,7 @@ Doom is a configuration of [[https://en.wikipedia.org/wiki/GNU_Emacs][GNU Emacs]
 * Org Mode
 - document editing and organization (similar to an interactive Markdown)
 - interactive tables
-- links between documents and out to the world wide web
+- links between [[~/repos/enc/src/enc.el][documents]] and out to online [[https://chat.openai.com/?model=gpt-4][sites]]
 - export org documents to various formats including HTML, PDF, and more.
 - embed code blocks with support for multiple programming languages
 
@@ -33,3 +33,4 @@ Doom is a configuration of [[https://en.wikipedia.org/wiki/GNU_Emacs][GNU Emacs]
 - Emacs built in C (30%) and Emacs Lisp (70%)
 - extendable using Emacs Lisp
 - example: enc
+- example: custom keybinding
