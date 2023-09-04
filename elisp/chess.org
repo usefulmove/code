@@ -2,77 +2,28 @@
 
 
 #+begin_src emacs-lisp
-; prototype(s)
-; first pass
-; _____B__
-; __p_____
-; _rpk____
-; __NpR_p_
-; ___P_nP_
-; _P___P_P
-; P_b____P
-; R_____K_
+(load-file "~/repos/cora/src/cora.el") ; load Cora language
 
-; second solution
-; 8 _ _ _ _ _ B _ _
-; 7 _ _ p _ _ _ _ _
-; 6 _ r p k _ _ _ _
-; 5 _ _ N p R _ p _
-; 4 _ _ _ P _ n P _
-; 3 _ P _ _ _ P _ P
-; 2 P _ b _ _ _ _ P
-; 1 R _ _ _ _ _ K _
-; @ a b c d e f g h
-#+end_src
-
-#+begin_src emacs-lisp
-(load-file "~/repos/cora/src/cora.el")
 (setq fen "5B2/2p5/1rpk4/2NpR1p1/3P1nP1/1P3P2/P1b4P/R5K1 b - - 4 34")
 
-(defun ascii-numeric? (c) ; TODO add to Cora
-  "Check is C a valid ascii numeric character?"
-  (and (>= c ?0) (<= c ?9)))
-
-(ascii-numeric? ?3)
+;(range 1 8) ; optional first arg TODO build and add to Cora
 
 
 
-
-
-(fset 'flatten '-flatten) ; TODO add to Cora
-
-(flatten '(3 1 (2 1 2))) ; (3 1 2 1 2)
-
-
-
-
-
-;(defun read-fen (fen)
-;  "Read in FEN (Forsyth-Edwards Notation) string and convert it to a board
-;(64-element character list)."
-;  (thread fen
-;    'split-string
-;    (lambda (lst)
-;      (car (take 1 lst))) ; 5B2/2p5/1rpk4/2NpR1p1/3P1nP1/1P3P2/P1b4P/R5K1
-;    (lambda (s)
-;      (string-split s "/")) ; (5B2 2p5 1rpk4 2NpR1p1 3P1nP1 1P3P2 P1b4P R5K1)
-;    (lambda (lst)
-;      (map
-;        (lambda (s) ; "5B2" becomes "_____B__"
-;          (map
-;            (lambda (c)
-;              (cond ((ascii-numeric? c) (let ((count (- c ?0)))
-;                                          (map
-;                                            (lambda (a) ?_)
-;                                            (range count))))
-;                    (t (list c))))
-;            s)) ; replace numbers with corresponding number of underscores
-;        lst))
-;    'flatten))
 
 (defun read-fen (fen)
   "Read in FEN (Forsyth-Edwards Notation) string and convert it to a board
-(64-element character list)."
+(64-element character list).
+  8 _ _ _ _ _ B _ _
+  7 _ _ p _ _ _ _ _
+  6 _ r p k _ _ _ _
+  5 _ _ N p R _ p _
+  4 _ _ _ P _ n P _
+  3 _ P _ _ _ P _ P
+  2 P _ b _ _ _ _ P
+  1 R _ _ _ _ _ K _
+  @ a b c d e f g h
+"
   (thread fen
     'split-string ; (5B2/2p5/1rpk4/2NpR1p1/3P1nP1/1P3P2/P1b4P/R5K1 b - - 4 34)
     (lambda (lst)
@@ -107,6 +58,7 @@
       (apply 'concat rows))))
 
 
+
 (defun add-spaces-between (s)
   (fold
     (lambda (acc c)
@@ -114,12 +66,7 @@
     ""
     (string-to-list s)))
 
-(add-spaces-between "this")
 
-(string-to-list " ")
-
-
-(apply 'concat '("this" "is" "a" "test"))
 
 
 (fold ; TODO add to unit tests (Cora)
@@ -127,6 +74,7 @@
          (concat acc (join-chars (list a))))
   ""
   (string-to-list "this is a test"))
+
 
 
 (read-fen fen)
@@ -140,14 +88,6 @@
 ; R _ _ _ _ _ K _
 
 
-
-
-(car (take 1 '(3 1 2)))
-(car (take 1 (string-to-list "test")))
-
-(join-chars '(116))
-
-(concat "this" (join-chars (list ?t)))
 
 
 
