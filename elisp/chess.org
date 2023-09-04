@@ -1,4 +1,4 @@
-#+title: Org Scratch
+#+title: Chess Org Scratch
 
 
 #+begin_src emacs-lisp
@@ -59,6 +59,7 @@
 
 
 
+
 (defun add-spaces-between (s)
   (fold
     (lambda (acc c)
@@ -77,6 +78,7 @@
 
 
 
+
 (read-fen fen)
 ; _ _ _ _ _ B _ _
 ; _ _ p _ _ _ _ _
@@ -90,13 +92,11 @@
 
 
 
-
 (defun format-board (board)
   (cond ((not (= 64 (length board))) (error "board size is incorrect"))
         (t "TODO fancy shit right about here")))
 
 (format-board (read-fen fen))
-
 
 
 
