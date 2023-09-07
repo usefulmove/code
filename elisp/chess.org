@@ -6,24 +6,18 @@
 
 (setq fen "5B2/2p5/1rpk4/2NpR1p1/3P1nP1/1P3P2/P1b4P/R5K1 b - - 4 34")
 
-;(range 1 8) ; optional first arg TODO build and add to Cora
 
-
+(defun add-spaces-between (s)
+  (fold
+    (lambda (acc c)
+      (concat acc (join-chars (cons 32 (list c)))))
+    ""
+    (string-to-list s)))
 
 
 (defun read-fen (fen)
-  "Read in FEN (Forsyth-Edwards Notation) string and convert it to a board
-(64-element character list).
-  8 _ _ _ _ _ B _ _
-  7 _ _ p _ _ _ _ _
-  6 _ r p k _ _ _ _
-  5 _ _ N p R _ p _
-  4 _ _ _ P _ n P _
-  3 _ P _ _ _ P _ P
-  2 P _ b _ _ _ _ P
-  1 R _ _ _ _ _ K _
-  @ a b c d e f g h
-"
+  "Read FEN (Forsyth-Edwards Notation) string and convert it to a board
+(list of 8 8-element strings)."
   (thread fen
     'split-string ; (5B2/2p5/1rpk4/2NpR1p1/3P1nP1/1P3P2/P1b4P/R5K1 b - - 4 34)
     (lambda (lst)
@@ -44,61 +38,46 @@
                                (join-chars (list c))))))
             ""
             (string-to-list s))) ; replace numbers with corresponding number of underscores
-        lst)) ; (_____B__ __p_____ _rpk____ __NpR_p_ ___P_nP_ _P___P__ P_b____P R_____K_)
-    (lambda (rows)
-      (map
-        (lambda (row)
-             (concat row "\n"))
-        rows))
-    (lambda (rows)
-      (map
-        'add-spaces-between
-        rows))
-    (lambda (rows)
-      (apply 'concat rows))))
-
-
-
-
-(defun add-spaces-between (s)
-  (fold
-    (lambda (acc c)
-      (concat acc (join-chars (cons 32 (list c)))))
-    ""
-    (string-to-list s)))
-
-
-
-
-(fold ; TODO add to unit tests (Cora)
-  (lambda (acc a)
-         (concat acc (join-chars (list a))))
-  ""
-  (string-to-list "this is a test"))
-
-
-
-
-(read-fen fen)
-; _ _ _ _ _ B _ _
-; _ _ p _ _ _ _ _
-; _ r p k _ _ _ _
-; _ _ N p R _ p _
-; _ _ _ P _ n P _
-; _ P _ _ _ P _ _
-; P _ b _ _ _ _ P
-; R _ _ _ _ _ K _
-
-
+        lst)))) ; (_____B__ __p_____ _rpk____ __NpR_p_ ___P_nP_ _P___P__ P_b____P R_____K_)
 
 
 (defun format-board (board)
-  (cond ((not (= 64 (length board))) (error "board size is incorrect"))
-        (t "TODO fancy shit right about here")))
+  "Format board for print output.
+    8 _ _ _ _ _ B _ _
+    7 _ _ p _ _ _ _ _
+    6 _ r p k _ _ _ _
+    5 _ _ N p R _ p _
+    4 _ _ _ P _ n P _
+    3 _ P _ _ _ P _ P
+    2 P _ b _ _ _ _ P
+    1 R _ _ _ _ _ K _
+    @ a b c d e f g h "
+  (cond ((not (and (= 8 (length board))
+                   (all? (lambda (row) (= 8 (length row)))
+                         board))) (error "board size is incorrect"))
+        (t (thread board
+             (lambda (rows)
+               (map
+                 (lambda (row)
+                      (concat row "\n"))
+                 rows))
+             (lambda (rows)
+               (map
+                 'add-spaces-between
+                 rows))
+             (lambda (rows)
+               (apply 'concat rows))))))
+
 
 (format-board (read-fen fen))
-
-
-
-
 #+end_src
+
+#+RESULTS:
+:  _ _ _ _ _ B _ _
+:  _ _ p _ _ _ _ _
+:  _ r p k _ _ _ _
+:  _ _ N p R _ p _
+:  _ _ _ P _ n P _
+:  _ P _ _ _ P _ _
+:  P _ b _ _ _ _ P
+:  R _ _ _ _ _ K _
