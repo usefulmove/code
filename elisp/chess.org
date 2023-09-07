@@ -34,6 +34,9 @@
         lst)))) ; (_____B__ __p_____ _rpk____ __NpR_p_ ___P_nP_ _P___P__ P_b____P R_____K_)
 
 
+(setq board (read-fen fen))
+
+
 (defun add-spaces-between (s)
   (fold
     (lambda (acc c)
@@ -53,10 +56,7 @@
     2 P _ b _ _ _ _ P
     1 R _ _ _ _ _ K _
     @ a b c d e f g h"
-  (cond ((not (and (= 8 (length board))
-                   (all? (lambda (row)
-                           (= 8 (length row)))
-                         board))) (error "board size is incorrect"))
+  (cond ((not= 64 (length (apply 'concat board))) (error "board size is incorrect"))
         (t (thread board
              (lambda (rows)
                (map
