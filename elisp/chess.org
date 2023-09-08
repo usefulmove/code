@@ -1,52 +1,18 @@
 #+title: Chess Org Scratch
 
 
+
+
 #+begin_src emacs-lisp
 (load-file "~/repos/cora/src/cora.el") ; load Cora language
 
 
-(setq fen "5B2/2p5/1rpk4/2NpR1p1/3P1nP1/1P3P2/P1b4P/R5K1 b - - 4 34")
+(setq fen "8/2p3B1/1rpk4/2NpR1p1/3P1nP1/1P3P2/P1b4P/R5K1 w - - 4 34")
 
 
-(defun read-fen (fen)
+(defun make-board (fen)
   "Read FEN (Forsyth-Edwards Notation) string and convert it to a board
-(list of 8 8-element strings)."
-  (thread fen
-    'split-string ; (5B2/2p5/1rpk4/2NpR1p1/3P1nP1/1P3P2/P1b4P/R5K1 b - - 4 34)
-    (lambda (lst)
-      (car (take 1 lst))) ; 5B2/2p5/1rpk4/2NpR1p1/3P1nP1/1P3P2/P1b4P/R5K1
-    (lambda (s)
-      (string-split s "/")) ; (5B2 2p5 1rpk4 2NpR1p1 3P1nP1 1P3P2 P1b4P R5K1)
-    (lambda (lst)
-      (map
-        (lambda (s) ; "5B2" becomes "_____B__"
-          (fold
-            (lambda (acc c)
-              (cond ((ascii-numeric? c) (let ((count (- c ?0)))
-                                          (concat acc
-                                                  (join-chars (map
-                                                                (lambda (a) ?_)
-                                                                (range count))))))
-                    (t (concat acc
-                               (join-chars (list c))))))
-            ""
-            (string-to-list s))) ; replace numbers with corresponding number of underscores
-        lst)))) ; (_____B__ __p_____ _rpk____ __NpR_p_ ___P_nP_ _P___P__ P_b____P R_____K_)
-
-
-(setq board (read-fen fen))
-
-
-(defun add-spaces-between (s)
-  (fold
-    (lambda (acc c)
-      (concat acc (join-chars (cons 32 (list c)))))
-    ""
-    (string-to-list s)))
-
-
-(defun format-board (board)
-  "Format board for print output.
+(list of 8 8-element strings).
     8 _ _ _ _ _ B _ _
     7 _ _ p _ _ _ _ _
     6 _ r p k _ _ _ _
@@ -55,53 +21,103 @@
     3 _ P _ _ _ P _ P
     2 P _ b _ _ _ _ P
     1 R _ _ _ _ _ K _
-    @ a b c d e f g h"
-  (cond ((not= 64 (length (apply 'concat board))) (error "board size is incorrect"))
-        (t (thread board
-             (lambda (rows)
-               (map
-                 (lambda (row)
-                      (concat row "\n"))
-                 rows))
-             (lambda (rows)
-               (map
-                 'add-spaces-between
-                 rows))
-             (lambda (rows)
-               (apply 'concat rows))))))
+    @ a b c d e f g h _
+"
+  (let ((board (thread fen
+                 'split-string ; (5B2/2p5/1rpk4/2NpR1p1/3P1nP1/1P3P2/P1b4P/R5K1 b - - 4 34)
+                 (lambda (lst)
+                   (car (take 1 lst))) ; 5B2/2p5/1rpk4/2NpR1p1/3P1nP1/1P3P2/P1b4P/R5K1
+                 (lambda (s)
+                   (string-split s "/")) ; (5B2 2p5 1rpk4 2NpR1p1 3P1nP1 1P3P2 P1b4P R5K1)
+                 (lambda (lst)
+                   (map
+                     (lambda (s) ; "5B2" becomes "_____B__"
+                       (fold
+                         (lambda (acc c)
+                           (cond ((ascii-numeric? c) (let ((count (- c ?0)))
+                                                       (concat acc
+                                                               (join-chars (map
+                                                                             (lambda (a) ?_)
+                                                                             (range count))))))
+                                 (t (concat acc
+                                            (join-chars (list c))))))
+                         ""
+                         (string-to-list s))) ; replace numbers with corresponding number of underscores
+                     lst)))) ; (_____B__ __p_____ _rpk____ __NpR_p_ ___P_nP_ _P___P__ P_b____P R_____K_)
+        (add-spaces-between (lambda (s)
+                              (fold
+                                (lambda (acc c)
+                                  (concat acc (join-chars (cons 32 (list c)))))
+                                ""
+                                (string-to-list s))))
+        (black-to-move? (equal "b"
+                             (cadr (split-string fen)))))
 
 
-(format-board (read-fen fen))
+    (cond ((not= 64 (length (apply 'concat board))) (error "board size is incorrect"))
+          (t (thread board
+               (lambda (rows)
+                 (map
+                   (pipe
+                     (lambda (enumerated-row)
+                       (concat (number-to-string (- 8 (car enumerated-row))) ; add rank numbers
+                               (cadr enumerated-row)
+                               "\n"))
+                     'add-spaces-between) ; space out characters to make more square (aesthetic)
+                   (enumerate rows)))
+               (lambda (rows)
+                 (concat (apply 'concat rows)
+                         " @ a b c d e f g h "
+                         (unless black-to-move? "_")
+                         "\n")))))))
+
+
+(make-board fen)
 #+end_src
 
 #+RESULTS:
-:  _ _ _ _ _ B _ _
-:  _ _ p _ _ _ _ _
-:  _ r p k _ _ _ _
-:  _ _ N p R _ p _
-:  _ _ _ P _ n P _
-:  _ P _ _ _ P _ _
-:  P _ b _ _ _ _ P
-:  R _ _ _ _ _ K _
+:  8 _ _ _ _ _ _ _ _
+:  7 _ _ p _ _ _ B _
+:  6 _ r p k _ _ _ _
+:  5 _ _ N p R _ p _
+:  4 _ _ _ P _ n P _
+:  3 _ P _ _ _ P _ _
+:  2 P _ b _ _ _ _ P
+:  1 R _ _ _ _ _ K _
+:  @ a b c d e f g h _
+
+
 
 
 #+begin_src emacs-lisp
-(defun flip-board (board)
-  (reverse (thread board
-             (lambda (rows)
-               (map
-                 'reverse
-                 rows)))))
-
-(format-board (flip-board board))
+(make-board "5B2/2p5/1rpk4/2NpR1p1/3P1nP1/1P3P2/P1b4P/R5K1 b - - 4 34")
 #+end_src
 
 #+RESULTS:
-:  _ K _ _ _ _ _ R
-:  P _ _ _ _ b _ P
-:  _ _ P _ _ _ P _
-:  _ P n _ P _ _ _
-:  _ p _ R p N _ _
-:  _ _ _ _ k p r _
-:  _ _ _ _ _ p _ _
-:  _ _ B _ _ _ _ _
+:  8 _ _ _ _ _ B _ _
+:  7 _ _ p _ _ _ _ _
+:  6 _ r p k _ _ _ _
+:  5 _ _ N p R _ p _
+:  4 _ _ _ P _ n P _
+:  3 _ P _ _ _ P _ _
+:  2 P _ b _ _ _ _ P
+:  1 R _ _ _ _ _ K _
+:  @ a b c d e f g h
+
+
+
+
+#+begin_src emacs-lisp
+(make-board "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq - 0 1")
+#+end_src
+
+#+RESULTS:
+:  8 r n b q k b n r
+:  7 p p p p p p p p
+:  6 _ _ _ _ _ _ _ _
+:  5 _ _ _ _ _ _ _ _
+:  4 _ _ _ P _ _ _ _
+:  3 _ _ _ _ _ _ _ _
+:  2 P P P _ P P P P
+:  1 R N B Q K B N R
+:  @ a b c d e f g h
