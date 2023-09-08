@@ -121,3 +121,21 @@
 :  2 P P P _ P P P P
 :  1 R N B Q K B N R
 :  @ a b c d e f g h
+
+
+
+
+#+begin_src emacs-lisp
+(make-board "rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2")
+#+end_src
+
+#+RESULTS:
+:  8 r n b q k b n r
+:  7 p p _ p p p p p
+:  6 _ _ _ _ _ _ _ _
+:  5 _ _ p _ _ _ _ _
+:  4 _ _ _ _ P _ _ _
+:  3 _ _ _ _ _ N _ _
+:  2 P P P P _ P P P
+:  1 R N B Q K B _ R
+:  @ a b c d e f g h
