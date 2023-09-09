@@ -1,26 +1,20 @@
 #+title: Chess Org Scratch
 
 
-
-
 #+begin_src emacs-lisp
 (load-file "~/repos/cora/src/cora.el") ; load Cora language
 
-
-(setq fen "8/2p3B1/1rpk4/2NpR1p1/3P1nP1/1P3P2/P1b4P/R5K1 w - - 4 34")
-
-
-(defun make-board (fen)
+(defun create-board (fen)
   "Read FEN (Forsyth-Edwards Notation) string and convert it to a board
 (list of 8 8-element strings).
-    8 _ _ _ _ _ B _ _
-    7 _ _ p _ _ _ _ _
-    6 _ r p k _ _ _ _
-    5 _ _ N p R _ p _
-    4 _ _ _ P _ n P _
-    3 _ P _ _ _ P _ P
-    2 P _ b _ _ _ _ P
-    1 R _ _ _ _ _ K _
+    8 r n b q k b n r
+    7 p p p p p p p p
+    6 _ _ _ _ _ _ _ _
+    5 _ _ _ _ _ _ _ _
+    4 _ _ _ _ _ _ _ _
+    3 _ _ _ _ _ _ _ _
+    2 P P P P P P P P
+    1 R N B Q K B N R
     @ a b c d e f g h _
 "
   (let ((board (thread fen
@@ -71,26 +65,7 @@
                          (unless black-to-move? "_")
                          "\n")))))))
 
-
-(make-board fen)
-#+end_src
-
-#+RESULTS:
-:  8 _ _ _ _ _ _ _ _
-:  7 _ _ p _ _ _ B _
-:  6 _ r p k _ _ _ _
-:  5 _ _ N p R _ p _
-:  4 _ _ _ P _ n P _
-:  3 _ P _ _ _ P _ _
-:  2 P _ b _ _ _ _ P
-:  1 R _ _ _ _ _ K _
-:  @ a b c d e f g h _
-
-
-
-
-#+begin_src emacs-lisp
-(make-board "5B2/2p5/1rpk4/2NpR1p1/3P1nP1/1P3P2/P1b4P/R5K1 b - - 4 34")
+(create-board "5B2/2p5/1rpk4/2NpR1p1/3P1nP1/1P3P2/P1b4P/R5K1 b - - 4 34")
 #+end_src
 
 #+RESULTS:
@@ -105,28 +80,8 @@
 :  @ a b c d e f g h
 
 
-
-
 #+begin_src emacs-lisp
-(make-board "rnbqkbnr/pppppppp/8/8/3P4/8/PPP1PPPP/RNBQKBNR b KQkq - 0 1")
-#+end_src
-
-#+RESULTS:
-:  8 r n b q k b n r
-:  7 p p p p p p p p
-:  6 _ _ _ _ _ _ _ _
-:  5 _ _ _ _ _ _ _ _
-:  4 _ _ _ P _ _ _ _
-:  3 _ _ _ _ _ _ _ _
-:  2 P P P _ P P P P
-:  1 R N B Q K B N R
-:  @ a b c d e f g h
-
-
-
-
-#+begin_src emacs-lisp
-(make-board "rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2")
+(create-board "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2")
 #+end_src
 
 #+RESULTS:
@@ -135,7 +90,77 @@
 :  6 _ _ _ _ _ _ _ _
 :  5 _ _ p _ _ _ _ _
 :  4 _ _ _ _ P _ _ _
-:  3 _ _ _ _ _ N _ _
+:  3 _ _ _ _ _ _ _ _
 :  2 P P P P _ P P P
-:  1 R N B Q K B _ R
-:  @ a b c d e f g h
+:  1 R N B Q K B N R
+:  @ a b c d e f g h _
+
+
+#+begin_src emacs-lisp
+(defun reverse-board (board)
+  "Reverse (flip) chess BOARD."
+  (require 'cl-lib)
+  (cl-labels ((split-into-rows (board)
+                               (filter
+                                 (fn (row)
+                                   (= 19 (length row)))
+                                 (split-string board "\n")))
+              (move-first-to-end (rows)
+                                 (append (cdr rows) (list (car rows))))
+              (move-rank-to-front (rows)
+                                  (map
+                                    (fn (row)
+                                      (thread row
+                                        'string-to-list
+                                        (fn (lst)
+                                          (append (take 2 (reverse lst))
+                                                  (takebut 2 lst)))
+                                        'join-chars
+                                        (fn (s)
+                                          (concat s "\n"))))
+                                    rows))
+              (concatenate-rows (rows) (apply 'concat rows)))
+    (let* ((white-to-move (= ?_ (car (dropbut 2 (string-to-list board)))))
+           (reversed-board-raw (thread-last (join-chars (takebut 2 (string-to-list board)))
+                                 reverse
+                                 split-into-rows
+                                 move-first-to-end
+                                 move-rank-to-front
+                                 concatenate-rows)))
+      (print reversed-board-raw)
+      (if white-to-move
+          (thread reversed-board-raw
+            'string-to-list
+            (fn (lst) ; remove add "_"
+              (append (takebut 1 lst)
+                      (list ?_ 10)))
+            'join-chars)
+          reversed-board-raw))))
+
+(setq board (create-board "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 1 2"))
+
+(reverse-board board)
+#+end_src
+
+#+RESULTS:
+:  1 R N B K Q B N R
+:  2 P P P _ P P P P
+:  3 _ _ _ _ _ _ _ _
+:  4 _ _ _ P _ _ _ _
+:  5 _ _ _ _ _ p _ _
+:  6 _ _ _ _ _ _ _ _
+:  7 p p p p p _ p p
+:  8 r n b k q b n r
+:  @ h g f e d c b a _
+
+
+
+
+#+begin_src emacs-lisp
+; unit test(s)
+(let ((board (create-board "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")))
+  (assert-equal
+    (reverse-board (reverse-board board))
+    board
+    "error: reverse test(s) failed"))
+#+end_src
