@@ -45,7 +45,7 @@
                                 ""
                                 (string-to-list s))))
         (black-to-move? (equal "b"
-                             (cadr (split-string fen)))))
+                               (cadr (split-string fen)))))
 
 
     (cond ((not= 64 (length (apply 'concat board))) (error "board size is incorrect"))
@@ -57,7 +57,7 @@
                        (concat (number-to-string (- 8 (car enumerated-row))) ; add rank numbers
                                (cadr enumerated-row)
                                "\n"))
-                     'add-spaces-between) ; space out characters to make more square (aesthetic)
+                     add-spaces-between) ; space out characters to make more square (aesthetic)
                    (enumerate rows)))
                (lambda (rows)
                  (concat (apply 'concat rows)
@@ -102,21 +102,21 @@
   (require 'cl-lib)
   (cl-labels ((split-into-rows (board)
                                (filter
-                                 (fn (row)
+                                 (lambda (row)
                                    (= 19 (length row)))
                                  (split-string board "\n")))
               (move-first-to-end (rows)
                                  (append (cdr rows) (list (car rows))))
               (move-rank-to-front (rows)
                                   (map
-                                    (fn (row)
+                                    (lambda (row)
                                       (thread row
                                         'string-to-list
-                                        (fn (lst)
+                                        (lambda (lst)
                                           (append (take 2 (reverse lst))
                                                   (takebut 2 lst)))
                                         'join-chars
-                                        (fn (s)
+                                        (lambda (s)
                                           (concat s "\n"))))
                                     rows))
               (concatenate-rows (rows) (apply 'concat rows)))
@@ -131,7 +131,7 @@
       (if white-to-move
           (thread reversed-board-raw
             'string-to-list
-            (fn (lst) ; remove add "_"
+            (lambda (lst) ; remove add "_"
               (append (takebut 1 lst)
                       (list ?_ 10)))
             'join-chars)
