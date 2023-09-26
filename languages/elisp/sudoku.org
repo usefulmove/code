@@ -28,8 +28,10 @@ Design Notes:
 #+end_src
 
 #+begin_src emacs-lisp
-(defun list-to-hash-set (lst) ; move to Cora
-  TODO)
+;; remove-duplicates :: [T] -> [T]
+(defun remove-duplicates (values) ; TODO move to Cora
+  (let ((counts (tally values)))
+    (map 'car counts)))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -47,23 +49,19 @@ Design Notes:
                       (enumerate row)))
                   '()
                   board)))
-    (list-to-hash-set values)))
+    (remove-duplicates values)))
 
-;; list-to-hash-set ::
-(defun list-to-hash-set (values) ; TODO move to Cora
-  values)
-
-(read-col-values board 0) ; (0 5 0 0 7 3 2 6 0)
+(tally (list-ref board 0))
 
 ;; read-row-values :: [[integer]] -> [integers]
 (defun read-row-values (board row)
   "Return the set of values assigned to the ROW on the BOARD."
   (let ((values (TODO)))
-    (list-to-hash-set values)))
+    (remove-duplicates values)))
 
 ;; read-cell-values :: [[integer]] -> [integers]
 (defun read-cell-values (board cell)
   "Return the set of values assigned to the CELL on the BOARD."
   (let ((values (TODO)))
-    (list-to-hash-set values)))
+    (remove-duplicates values)))
 #+end_src
