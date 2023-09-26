@@ -77,7 +77,7 @@ Design Notes:
 #+end_src
 
 #+begin_src emacs-lisp
-(defun for (var lst)
+(defun for ((var lst))
   TODO)
 #+end_src
 
