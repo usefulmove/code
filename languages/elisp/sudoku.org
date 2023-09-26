@@ -1,5 +1,8 @@
 #+title: sudoku solver
 
+Design Notes:
+- The board (a list of lists of integers) is the fundamental datatype.
+
 #+begin_src emacs-lisp
 (load-file "~/repos/cora/src/cora.el")
 #+end_src
@@ -19,39 +22,48 @@
 #+end_src
 
 #+begin_src emacs-lisp
-; index board - need random access - there are no primitives
-(list-ref '(3 1 2 0 5) 2) ; 2
-(list-ref board 0 3) ; 8
-
-
-; alternatively
-(list-ref (list-ref board 0) 3) ; 8
+; indexing into board
+(list-ref board 3 6) ; 8
+(list-ref board 1 1) ; 7
 #+end_src
 
 #+begin_src emacs-lisp
-(defun list-ref (nested-lst &rest inds)
-  "Get item in the nested list (NESTED-LST) referenced by the
-specified indicies (INDS)."
-  (letrec ((list-ref-base (lambda (lst ind)
-                            (if (= 0 ind)
-                              (car lst)
-                              (list-ref (cdr lst) (- ind 1))))))
-    (cond ((= 0 (length inds)) nil)
-          ((= 1 (length inds)) (funcall list-ref-base
-                                 nested-lst
-                                 (car inds)))
-          (t (apply 'list-ref
-               (funcall list-ref-base
-                 nested-lst
-                 (car inds))
-               (cdr inds))))))
-
-(list-ref '(8 1 2) 0) ; 8
-
-(list-ref '((8 1 2)
-            (0 5 4)) 1 2) ; 4
+(defun list-to-hash-set (lst) ; move to Cora
+  TODO)
 #+end_src
 
 #+begin_src emacs-lisp
+;; read-col-values :: [[integer]] -> [integers]
+(defun read-col-values (board col)
+  "Return the set of values assigned to the column (COL) on the BOARD."
+  (let ((values (foldl
+                  (lambda (outer-acc row)
+                    (foldl
+                      (lambda (inner-acc pair)
+                        (if (= col (car pair)) ; if column
+                          (cons (cdr pair) inner-acc)
+                          inner-acc))
+                      outer-acc
+                      (enumerate row)))
+                  '()
+                  board)))
+    (list-to-hash-set values)))
 
+;; list-to-hash-set ::
+(defun list-to-hash-set (values) ; TODO move to Cora
+  values)
+
+(read-col-values board 0) ; (0 5 0 0 7 3 2 6 0)
+
+;; read-row-values :: [[integer]] -> [integers]
+(defun read-row-values (board row)
+  "Return the set of values assigned to the ROW on the BOARD."
+  (let ((values (TODO)))
+    (list-to-hash-set values)))
+
+;; read-cell-values :: [[integer]] -> [integers]
+(defun read-cell-values (board cell)
+  "Return the set of values assigned to the CELL on the BOARD."
+  (let ((values (TODO)))
+    (list-to-hash-set values)))
 #+end_src
