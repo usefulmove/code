@@ -1,6 +1,10 @@
 #+title: sudoku solver
 
 #+begin_src emacs-lisp
+(load-file "~/repos/cora/src/cora.el")
+#+end_src
+
+#+begin_src emacs-lisp
 (setq board '((0 0 1  8 0 0  0 0 0)
               (6 7 0  2 0 3  0 1 0)
               (2 0 5  7 0 0  6 0 3)
@@ -18,6 +22,34 @@
 ; index board - need random access - there are no primitives
 (list-ref '(3 1 2 0 5) 2) ; 2
 (list-ref board 0 3) ; 8
+
+
+; alternatively
+(list-ref (list-ref board 0) 3) ; 8
+#+end_src
+
+#+begin_src emacs-lisp
+(defun list-ref (nested-lst &rest inds)
+  "Get item in the nested list (NESTED-LST) referenced by the
+specified indicies (INDS)."
+  (letrec ((list-ref-base (lambda (lst ind)
+                            (if (= 0 ind)
+                              (car lst)
+                              (list-ref (cdr lst) (- ind 1))))))
+    (cond ((= 0 (length inds)) nil)
+          ((= 1 (length inds)) (funcall list-ref-base
+                                 nested-lst
+                                 (car inds)))
+          (t (apply 'list-ref
+               (funcall list-ref-base
+                 nested-lst
+                 (car inds))
+               (cdr inds))))))
+
+(list-ref '(8 1 2) 0) ; 8
+
+(list-ref '((8 1 2)
+            (0 5 4)) 1 2) ; 4
 #+end_src
 
 #+begin_src emacs-lisp
