@@ -35,6 +35,11 @@ Design Notes:
 #+end_src
 
 #+begin_src emacs-lisp
+(defun get-cell (board row col)
+  TODO)
+#+end_src
+
+#+begin_src emacs-lisp
 ;; read-col-values :: [[integer]] -> [integers]
 (defun read-col-values (board col)
   "Return the set of values assigned to the column (COL) on the BOARD."
@@ -68,7 +73,9 @@ Design Notes:
 
 #+begin_src emacs-lisp
 (defun possible? (board row col value)
-  TODO)
+  (remove-duplicates (append (read-col-values (board col))
+                             (read-row-values (board row))
+                             (read-cell-values (board (get-cell row col))))))
 #+end_src
 
 #+begin_src emacs-lisp
