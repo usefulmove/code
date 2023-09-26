@@ -65,3 +65,20 @@ Design Notes:
   (let ((values (TODO)))
     (remove-duplicates values)))
 #+end_src
+
+#+begin_src emacs-lisp
+(defun possible? (board row col value)
+  TODO)
+#+end_src
+
+#+begin_src emacs-lisp
+;; solve :: [[integer]] -> [[integer]]
+;;
+;; Strategy: Iterate over the board and check for what's possible, then enter
+;; possiblity and continue. Backtrack when no option is possible.
+(defun solve (board)
+  "Solve Sudoku BOARD."
+  board)
+
+(solve board)
+#+end_src
