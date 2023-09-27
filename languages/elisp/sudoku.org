@@ -27,16 +27,20 @@ Design Notes:
 (list-ref board 1 1) ; 7
 #+end_src
 
+#+begin_src emacs-lis
 #+begin_src emacs-lisp
-;; remove-duplicates :: [T] -> [T]
-(defun remove-duplicates (values) ; TODO move to Cora
-  (let ((counts (tally values)))
-    (map 'car counts)))
-#+end_src
-
-#+begin_src emacs-lisp
-(defun get-cell (board row col)
-  TODO)
+(defun get-cell (row col)
+  (let ((a (/ row 3))
+        (b (/ col 3)))
+    (cond ((= 0 a) (cond ((= 0 b) 0)
+                         ((= 1 b) 1)
+                         ((= 2 b) 2)))
+          ((= 1 a) (cond ((= 0 b) 3)
+                         ((= 1 b) 4)
+                         ((= 2 b) 5)))
+          ((= 2 a) (cond ((= 0 b) 6)
+                         ((= 1 b) 7)
+                         ((= 2 b) 8))))))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -56,13 +60,13 @@ Design Notes:
                   board)))
     (remove-duplicates values)))
 
-(tally (list-ref board 0))
 
 ;; read-row-values :: [[integer]] -> [integers]
 (defun read-row-values (board row)
   "Return the set of values assigned to the ROW on the BOARD."
-  (let ((values (TODO)))
+  (let ((values (list-ref board row)))
     (remove-duplicates values)))
+
 
 ;; read-cell-values :: [[integer]] -> [integers]
 (defun read-cell-values (board cell)
@@ -73,9 +77,13 @@ Design Notes:
 
 #+begin_src emacs-lisp
 (defun possible? (board row col value)
-  (remove-duplicates (append (read-col-values (board col))
-                             (read-row-values (board row))
-                             (read-cell-values (board (get-cell row col))))))
+  "Predicate. Is it possible to enter the given VALUE in at this position (ROW
+and COL) on the BOARD?"
+  (not (member value (remove-duplicates (append (read-col-values (board col))
+                                                (read-row-values (board row))
+                                                (read-cell-values (board (get-cell row col))))))))
+
+(possible? board 0 0 1) ; TODO test
 #+end_src
 
 #+begin_src emacs-lisp
