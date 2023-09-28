@@ -110,23 +110,6 @@ and COL) on the BOARD?"
 #+end_src
 
 #+begin_src emacs-lisp
-(defun for ((var lst)) ; TODO move to Cora
-  TODO)
-#+end_src
-
-#+begin_src emacs-lisp
-; for usage prototype
-(let ((out '()))
-  (for ((i '(1 2 3))
-        (j '(10 11)))
-    (setq out (cons (list i j) out)))) ; ((3 11) (3 10) (2 11) (2 10) (1 11) (1 10))
-
-(for-comp ((i '(1 2 3))
-           (j '(10 11)))
-  (cons i j))
-#+end_src
-
-#+begin_src emacs-lisp
 ;; solve :: [[integer]] -> [[integer]]
 ;; Strategy: Iterate over the board and check for what's possible, then enter
 ;; possiblity and continue. Backtrack when no option is possible.
