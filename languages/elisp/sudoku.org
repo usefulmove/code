@@ -111,26 +111,27 @@ and COL) on the BOARD?"
 
 #+begin_src emacs-lisp
 ;; solve :: [[integer]] -> [[integer]]
+;;
 ;; Strategy: Iterate over the board and check for what's possible, then enter
 ;; possiblity and continue. Backtrack when no option is possible.
 (defun solve (board)
   "Solve Sudoku BOARD."
   (foldl
-    (lambda (acc a)
-      (foldl
-        (lambda (acc a)
-          TODO)
-
-        ))
-    board
-    (for-comp ((col (range 9))
-               (row (range 9)))
+    (lambda (current-board pair)
+      (let ((row (car pair))
+            (col (cdr pair)))
+        (foldl
+          (lambda (inner-board n)
+            (when (and (= 0 (list-ref inner-board row col))
+                       (possible? inner-board row col n))
+              ; set value to n and solve if solve returns, continue to next n
+              (solve (set-ref inner-board row col n))))
+          current-board
+          (range 1 (inc 9)))))
+    board ; initial condition
+    (for-comp ((row (range 9))
+               (col (range 9)))
       (cons row col))))
-
-      (when (and (= 0 (list-ref board row col))
-                 (possible? board row col n))
-        ; set value to n and solve if solve returns, continue
-        (solve (set-ref board row col n)))
 #+end_src
 
 #+begin_src emacs-lisp
