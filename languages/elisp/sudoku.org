@@ -1,7 +1,7 @@
 #+title: sudoku solver
 
 Design Notes:
-- The board (a list of lists of integers) is the fundamental datatype.
+- The board (a list of lists of integers) is the fundamental data type.
 
 #+begin_src emacs-lisp
 (load-file "~/repos/cora/src/cora.el")
@@ -22,14 +22,8 @@ Design Notes:
 #+end_src
 
 #+begin_src emacs-lisp
-; indexing into board
-(list-ref board 3 6) ; 8
-(list-ref board 1 1) ; 7
-#+end_src
-
-#+begin_src emacs-lis
-#+begin_src emacs-lisp
 (defun get-cell (row col)
+  "Return the cell index given the ROW and COL indicies."
   (let ((a (/ row 3))
         (b (/ col 3)))
     (cond ((= 0 a) (cond ((= 0 b) 0)
@@ -52,7 +46,7 @@ Design Notes:
                     (foldl
                       (lambda (inner-acc pair)
                         (if (= col (car pair)) ; if column
-                          (cons (cdr pair) inner-acc)
+                          (cons (cdr pair) inner-acc) ; add to accumulator
                           inner-acc))
                       outer-acc
                       (enumerate row)))
@@ -71,7 +65,24 @@ Design Notes:
 ;; read-cell-values :: [[integer]] -> [integers]
 (defun read-cell-values (board cell)
   "Return the set of values assigned to the CELL on the BOARD."
-  (let ((values (TODO)))
+  (let ((values (foldl
+                  (lambda (outer-acc enum-row)
+                    (let ((row (car enum-row))
+                          (row-values (cdr enum-row)))
+                      (foldl
+                        (lambda (inner-acc pair)
+                          (let ((col (car pair))
+                                (value (cdr pair))
+                                (row-cell (/ cell 3))
+                                (col-cell (mod cell 3)))
+                            (if (and (= row-cell (/ row 3))
+                                     (= col-cell (/ col 3)))
+                             (cons value inner-acc) ; add value to accumulator
+                            inner-acc)))
+                        outer-acc
+                        (enumerate row-values))))
+                  '()
+                  (enumerate board))))
     (remove-duplicates values)))
 #+end_src
 
@@ -79,11 +90,9 @@ Design Notes:
 (defun possible? (board row col value)
   "Predicate. Is it possible to enter the given VALUE in at this position (ROW
 and COL) on the BOARD?"
-  (not (member value (remove-duplicates (append (read-col-values (board col))
-                                                (read-row-values (board row))
-                                                (read-cell-values (board (get-cell row col))))))))
-
-(possible? board 0 0 1) ; TODO test
+  (not (member value (remove-duplicates (append (read-col-values board col)
+                                                (read-row-values board row)
+                                                (read-cell-values board (get-cell row col)))))))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -92,13 +101,12 @@ and COL) on the BOARD?"
 #+end_src
 
 #+begin_src emacs-lisp
-(defun for ((var lst))
+(defun for ((var lst)) ; TODO move to Cora
   TODO)
 #+end_src
 
 #+begin_src emacs-lisp
 ;; solve :: [[integer]] -> [[integer]]
-;;
 ;; Strategy: Iterate over the board and check for what's possible, then enter
 ;; possiblity and continue. Backtrack when no option is possible.
 (defun solve (board)
@@ -110,6 +118,8 @@ and COL) on the BOARD?"
                (possible? board row col n))
       ; set value to n and solve if solve returns, continue
       (solve (set-ref board row col n)))))
+#+end_src
 
+#+begin_src emacs-lisp
 (solve board)
 #+end_src
