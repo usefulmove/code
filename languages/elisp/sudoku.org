@@ -47,7 +47,7 @@ Design Notes:
                     (foldl
                       (lambda (inner-acc pair)
                         (if (= col (car pair)) ; if column
-                          (cons (cdr pair) inner-acc) ; add to accumulator
+                            (cons (cdr pair) inner-acc) ; add to accumulator
                           inner-acc))
                       outer-acc
                       (enumerate row)))
@@ -78,7 +78,7 @@ Design Notes:
                                 (col-cell (mod cell 3)))
                             (if (and (= row-cell (/ row 3))
                                      (= col-cell (/ col 3)))
-                             (cons value inner-acc) ; add value to accumulator
+                                (cons value inner-acc) ; add value to accumulator
                             inner-acc)))
                         outer-acc
                         (enumerate row-values))))
@@ -116,14 +116,22 @@ and COL) on the BOARD?"
 ;; possiblity and continue. Backtrack when no option is possible.
 (defun solve (board)
   "Solve Sudoku BOARD."
-  (for ((row (range 9))
-        (col (range 9)))
-    (for ((n (range 1 (inc 9))))
-      (when (and (= 0 (list-ref board row col))
-                 (possible? board row col n))
-        ; set value to n and solve if solve returns, continue to next n
-        (solve (set-ref board row col n)))))
-    board)
+  (catch 'found-solution
+    (let ((current-board (copy-sequence board)))
+      (for ((row (range 9))
+            (col (range 9)))
+        (when (= 0 (list-ref current-board row col))
+          ; set value to n and solve if solve returns, continue to next n
+          (for ((n (range 1 (inc 9))))
+            (when (possible? current-board row col n)
+              (let ((orig-board (copy-sequence current-board)))
+                (setq current-board (set-ref current-board row col n))
+                (if (solve current-board)
+                    (do
+                      (print current-board)
+                      (throw 'found-solution current-board))
+                  (setq current-board orig-board)))))))
+      nil)))
 #+end_src
 
 #+begin_src emacs-lisp
