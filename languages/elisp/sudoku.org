@@ -130,12 +130,10 @@ and COL) on the BOARD?"
           ; set value to n and solve if solve returns, continue to next n
           (for ((n (range 1 (inc 9))))
             (when (possible? current-board row col n)
-              (let ((orig-board (copy-sequence current-board)))
-                (setq current-board (set-ref current-board row col n))
-                (let ((solution (solve current-board)))
-                  (if solution
-                      (throw 'found-solution solution)
-                    (setq current-board orig-board))))))))
+              (let ((updated-board (set-ref current-board row col n)))
+                (let ((solved-board (solve updated-board)))
+                  (if solved-board
+                      (throw 'found-solution solved-board))))))))
       nil)))
 #+end_src
 
