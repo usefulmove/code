@@ -126,11 +126,10 @@ and COL) on the BOARD?"
             (when (possible? current-board row col n)
               (let ((orig-board (copy-sequence current-board)))
                 (setq current-board (set-ref current-board row col n))
-                (if (solve current-board)
-                    (do
-                      (print current-board)
-                      (throw 'found-solution current-board))
-                  (setq current-board orig-board)))))))
+                (let ((solution (solve current-board)))
+                  (if solution
+                      (throw 'found-solution solution)
+                    (setq current-board orig-board))))))))
       nil)))
 #+end_src
 
