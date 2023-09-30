@@ -134,6 +134,7 @@ and COL) on the BOARD?"
                 (let ((solved-board (solve updated-board)))
                   (if solved-board
                       (throw 'found-solution solved-board))))))))
+
       nil)))
 #+end_src
 
