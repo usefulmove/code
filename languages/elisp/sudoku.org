@@ -118,6 +118,9 @@ and COL) on the BOARD?"
   "Solve Sudoku BOARD."
   (catch 'found-solution
     (let ((current-board (copy-sequence board)))
+      (unless (some 'identity (mapcar (lambda (row) (member 0 row)) current-board)) ; Check if there are no zeros left
+        (throw 'found-solution current-board))
+
       (for ((row (range 9))
             (col (range 9)))
         (when (= 0 (list-ref current-board row col))
