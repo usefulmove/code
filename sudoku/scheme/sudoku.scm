@@ -1,6 +1,7 @@
 #lang racket
 
 
+; sudoku board
 (define board
   (list
    (list 5 3 0 0 7 0 0 0 0)
@@ -14,7 +15,8 @@
    (list 0 0 0 0 8 0 0 7 9)))
 
 
-;; (read-pos 5 7) => 5  ( zero-based )
+; read-pos :: int -> int -> int
+; read-pos 5 7 => 5 (zero-based)
 (define (read-pos rank file)
     (list-ref
       (list-ref
