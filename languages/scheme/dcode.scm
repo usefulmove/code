@@ -78,6 +78,14 @@
   (cond [(null? lst) acc]
         [else (reduce f acc (f (car lst)) (cdr lst))]))
 
+; scan :: (T -> T -> U) -> [T] -> [U]
+(define (scanl f lst)
+  (foldl
+    (lambda (a acc) 
+      (if (null? acc) (append acc (list a))
+          (append acc (list (f (last acc) a)))))
+    '()
+    lst))
 
 
 #| currying |#
