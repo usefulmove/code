@@ -32,19 +32,28 @@
     (todo)))
 
 
-; solve :: [[int]] -> (int . int) -> [int] -> [[int]] (todo)
+; solve :: [[int]] -> (int . int) -> [int] -> [[int]]
 (define solve
   (lambda (board pos attempted)
     (let ((rank (car pos))
           (file (cdr pos)))
       (cond ((= rank -1) board) ; solution found. return board.
             ((equal? (sort attempted <) (range 1 10)) empty) ; no solution. failed all attempts.
-            ((not (zero? (get-value board pos))) (solve board (get-next-pos pos) empty)) ; solve next position
-            (else (let (result (solve (set-value board pos (todo)) (get-next-pos pos) empty) ; zero at current position
-                    (if (empty? result)
-                      empty ; no solution.
-                      (solve board pos (cons (todo)
-                                             attempted)))))))))) ; solve with the next attempt
+            ((not (zero? (get-value board pos))) (solve ; solve next position
+                                                   board
+                                                   (get-next-pos pos)
+                                                   empty))
+            (else ; zero at current position
+             (let (result (solve
+                            (set-value board pos (todo))
+                            (get-next-pos pos)
+                            empty)
+                (if (empty? result)
+                  empty ; no solution.
+                  (solve ; solve using the next attempt
+                    board
+                    pos
+                    (cons (todo) attempted))))))))))
 
 
 ; get-next-pos :: (int . int) -> (int . int)
