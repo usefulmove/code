@@ -34,22 +34,22 @@
 
 ; solve :: [[int]] -> [int] -> [[int]] (todo)
 (define solve
-  (lambda (board attempts)
+  (lambda (board attempted)
     (let ((first-zero-pos (get-first-zero-pos board)))
       (if (= -1 (car first-zero-pos))
         board ; no zeros. solution found. return board.
         (let ((valid-values (get-valid-values board first-zero-pos))
-              (attempts-reduced (todo)))
-          (if (empty? valid-values)
-            '() ; no valid solution exists
+              (valid-values-minus-attempts (set->list (todo))))
+          (if (empty? valid-values-minus-attempts)
+            empty ; no valid solution exists
             (let ((result (solve
-                            (set-value board first-zero-pos (car attempts-reduced))
-                            (range 1 10))))
+                            (set-value board first-zero-pos (car valid-values-minus-attempts))
+                            empty)))
               (if (not (empty? result))
                 result ; valid solution
                 (solve
-                  (set-value board first-zero-pos (todo))
-                  (cdr attempts-orig))))))))))
+                  (set-value board first-zero-pos (cadr valid-values-minus-attempts))
+                  empty)))))))))
 
 
 ; get-valid-values :: [[int]] -> (int . int) -> [int]
@@ -68,7 +68,7 @@
         (set->list (set-intersect (get-valid-values-rank board rank)
                                   (get-valid-values-file board file)
                                   (get-valid-values-cell board cell)))
-        '()))))
+        empty))))
 
 
 ; get-first-zero-pos :: [[int]] -> (int . int)
@@ -77,4 +77,4 @@
     (todo)))
 
 
-(solve board (range 1 10))
+(solve board empty)
