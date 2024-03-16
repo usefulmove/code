@@ -88,7 +88,7 @@
 
 
 ; get-cell :: [int] -> [int] -> [int]
-(define get-cel
+(define get-cell
   (lambda (rank file)
     (todo)))
 
