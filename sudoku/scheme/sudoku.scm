@@ -32,24 +32,40 @@
     (todo)))
 
 
-; solve :: [[int]] -> [int] -> [[int]] (todo)
+; solve :: [[int]] -> (int . int) -> [int] -> [[int]] (todo)
 (define solve
-  (lambda (board attempted)
-    (let ((first-zero-pos (get-first-zero-pos board)))
-      (if (= -1 (car first-zero-pos))
-        board ; no zeros. solution found. return board.
-        (let ((valid-values (get-valid-values board first-zero-pos))
-              (valid-values-minus-attempts (set->list (todo))))
-          (if (empty? valid-values-minus-attempts)
-            empty ; no valid solution exists
-            (let ((result (solve
-                            (set-value board first-zero-pos (car valid-values-minus-attempts))
-                            empty)))
-              (if (not (empty? result))
-                result ; valid solution
-                (solve
-                  (set-value board first-zero-pos (cadr valid-values-minus-attempts))
-                  empty)))))))))
+  (lambda (board pos attempted)
+    (let ((rank (car pos))
+          (file (cdr pos)))
+      (cond ((= rank -1) board) ; solution found. return board.
+            ((equal? (sort attempted <) (range 1 10)) empty) ; no solution. failed all attempts.
+            ((not (zero? (get-value board pos))) (solve board (get-next-pos pos) empty)) ; solve next position
+            (else (let (result (solve (set-value board pos (todo)) (get-next-pos pos) empty) ; zero at current position
+                    (if (empty? result)
+                      empty ; no solution.
+                      (solve board pos (cons (todo)
+                                             attempted)))))))))) ; solve with the next attempt
+
+      ;(if (= -1 (car first-zero-pos))
+      ;  board ; no zeros. solution found. return board.
+      ;  (let ((valid-values (get-valid-values board first-zero-pos))
+      ;        (valid-values-minus-attempts (set->list (todo))))
+      ;    (if (empty? valid-values-minus-attempts)
+      ;      empty ; no valid solution exists
+      ;      (let ((result (solve
+      ;                      (set-value board first-zero-pos (car valid-values-minus-attempts))
+      ;                      empty)))
+      ;        (if (not (empty? result))
+      ;          result ; valid solution
+      ;          (solve
+      ;            (set-value board first-zero-pos (cadr valid-values-minus-attempts))
+      ;            empty)))))))))
+
+
+; get-next-pos :: (int . int) -> (int . int)
+(define get-next-pos
+  (lambda (pos)
+    (todo)))
 
 
 ; get-valid-values :: [[int]] -> (int . int) -> [int]
@@ -77,4 +93,4 @@
     (todo)))
 
 
-(solve board empty)
+(solve board '(0 . 0) empty)
