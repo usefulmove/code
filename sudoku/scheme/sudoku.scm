@@ -1,7 +1,7 @@
 #lang racket
 
 
-; sudoku board
+; sudoku board :: [[int]]
 (define board
   (list
    (list 5 3 0 0 7 0 0 0 0)
@@ -16,16 +16,21 @@
 
 
 ; get-value :: int -> int -> int
-; get-value 5 7 => 5 (zero-based)
 (define get-value (lambda (board rank file)
                     (list-ref
                       (list-ref
                       	board
-                      	(- 8 file))
-                      rank)))
+                      	(- 8 rank))
+                      file)))
 
 
-; solve :: [[int]] -> [[int]]
+; set-value :: [[int]] -> (int . int) -> int -> [[int]]
+(define set-value
+  (lambda (board pos value)
+    (todo)))
+
+
+; solve :: [[int]] -> [[int]] (todo)
 (define solve
   (lambda (board)
     (let ((first-zero-pos (get-first-zero-pos board)))
@@ -35,19 +40,13 @@
           (if (empty? possibles)
             empty ; no solution exists
             (solve
-              (set-possible first-zero-pos (car possibles))
-              (car possibles))))))))
+              (set-value board first-zero-pos (car possibles)))))))))
 
 
 ; get-possibles :: [[int]] -> (int . int) -> [int]
 (define get-possibles
   (lambda (board pos)
     (todo)))
-
-
-; set-possible :: (int . int) -> int -> [[int]]
-(define set-possible
-  (todo))
 
 
 ; get-first-zero-pos :: [[int]] -> (int . int)
