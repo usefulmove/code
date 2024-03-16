@@ -59,7 +59,13 @@
 ; get-next-pos :: (int . int) -> (int . int)
 (define get-next-pos
   (lambda (pos)
-    (todo)))
+    (let ((rank (car pos))
+          (file (cdr pos)))
+      (cond ((and (>= rank 8) ; no valid next position
+                  (>= file 8)) '(-1 . -1)
+             ((< file 8) (cons rank (add1 file))) ; increment file before rank
+             ((= file 8) (cons (add1 rank) 0)) ; end of file. increment rank and reset file.
+             (else '(-1 . -1)))))))
 
 
 ; get-valid-values :: [[int]] -> (int . int) -> [int]
@@ -67,7 +73,7 @@
   (lambda (board pos)
     (let* ((rank (car pos))
            (file (cdr pos))
-           (cell (todo))
+           (cell (get-cell rank file))
            (get-valid-values-rank (lambda (board file)
                                     (todo)))
            (get-valid-values-file (lambda (board rank)
@@ -81,10 +87,13 @@
         empty))))
 
 
-; get-first-zero-pos :: [[int]] -> (int . int)
-(define get-first-zero-pos
-  (lambda (board)
+; get-cell :: [int] -> [int] -> [int]
+(define get-cel
+  (lambda (rank file)
     (todo)))
 
 
+
+
+; solve board
 (solve board '(0 . 0) empty)
