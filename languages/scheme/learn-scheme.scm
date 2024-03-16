@@ -50,9 +50,9 @@ lst  ; '(3 1 2 5 4)
     "this"
     "that")
 
-(cond [(zero? 1) "this"]
-      [(equal? 2 2) "that"]
-      [else "the other thing"])
+(cond ((zero? 1) "this")
+      ((equal? 2 2) "that")
+      (else "the other thing"))
 
 
 #| recursion |#
