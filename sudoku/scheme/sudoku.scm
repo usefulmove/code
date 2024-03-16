@@ -15,13 +15,42 @@
    (list 0 0 0 0 8 0 0 7 9)))
 
 
-; read-pos :: int -> int -> int
-; read-pos 5 7 => 5 (zero-based)
-(define (read-pos rank file)
-    (list-ref
-      (list-ref
-	board
-	(- 8 file))
-      rank))
+; get-value :: int -> int -> int
+; get-value 5 7 => 5 (zero-based)
+(define get-value (lambda (board rank file)
+                    (list-ref
+                      (list-ref
+                      	board
+                      	(- 8 file))
+                      rank)))
 
 
+; solve :: [[int]] -> [[int]]
+(define solve
+  (lambda (board)
+    (let ((first-zero-pos (get-first-zero-pos board)))
+      (if (= -1 (car first-zero-pos))
+        board ; solution found. return board.
+        (let ((possibles (get-possibles board first-zero-pos)))
+          (if (empty? possibles)
+            empty ; no solution exists
+            (solve
+              (set-possible first-zero-pos (car possibles))
+              (car possibles))))))))
+
+
+; get-possibles :: [[int]] -> (int . int) -> [int]
+(define get-possibles
+  (lambda (board pos)
+    (todo)))
+
+
+; set-possible :: (int . int) -> int -> [[int]]
+(define set-possible
+  (todo))
+
+
+; get-first-zero-pos :: [[int]] -> (int . int)
+(define get-first-zero-pos
+  (lambda (board)
+    (todo)))
