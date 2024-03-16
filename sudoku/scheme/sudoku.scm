@@ -34,17 +34,22 @@
 
 ; solve :: [[int]] -> [int] -> [[int]] (todo)
 (define solve
-  (lambda (board lst-to-attempt-orig)
+  (lambda (board attempts)
     (let ((first-zero-pos (get-first-zero-pos board)))
       (if (= -1 (car first-zero-pos))
-        board ; solution found. return board.
+        board ; no zeros. solution found. return board.
         (let ((valid-values (get-valid-values board first-zero-pos))
-              (lst-to-attempt (todo)))
+              (attempts-reduced (todo)))
           (if (empty? valid-values)
             '() ; no valid solution exists
-            (solve ; (todo)
-              (set-value board first-zero-pos (car lst-to-attempt))
-              (cdr lst-to-attempt-orig))))))))
+            (let ((result (solve
+                            (set-value board first-zero-pos (car attempts-reduced))
+                            (range 1 10))))
+              (if (not (empty? result))
+                result ; valid solution
+                (solve
+                  (set-value board first-zero-pos (todo))
+                  (cdr attempts-orig))))))))))
 
 
 ; get-valid-values :: [[int]] -> (int . int) -> [int]
