@@ -46,21 +46,6 @@
                       (solve board pos (cons (todo)
                                              attempted)))))))))) ; solve with the next attempt
 
-      ;(if (= -1 (car first-zero-pos))
-      ;  board ; no zeros. solution found. return board.
-      ;  (let ((valid-values (get-valid-values board first-zero-pos))
-      ;        (valid-values-minus-attempts (set->list (todo))))
-      ;    (if (empty? valid-values-minus-attempts)
-      ;      empty ; no valid solution exists
-      ;      (let ((result (solve
-      ;                      (set-value board first-zero-pos (car valid-values-minus-attempts))
-      ;                      empty)))
-      ;        (if (not (empty? result))
-      ;          result ; valid solution
-      ;          (solve
-      ;            (set-value board first-zero-pos (cadr valid-values-minus-attempts))
-      ;            empty)))))))))
-
 
 ; get-next-pos :: (int . int) -> (int . int)
 (define get-next-pos
