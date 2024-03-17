@@ -1,6 +1,7 @@
 #lang racket
 
 
+
 #| definitions and evalutation - S-expressions |#
 
 (/ (- (sqrt 5) 1) 2)  ; 0.6180339887498949
@@ -15,6 +16,7 @@
 
 (define calculate-area (lambda (r) (* pi (square r))))
 (calculate-area radius)
+
 
 
 #| lists |#
@@ -43,6 +45,7 @@ lst  ; '(3 1 2 5 4)
 (append lst lst)  ; '(3 1 2 5 4 3 1 2 5 4)
 
 
+
 #| conditional expressions |#
 
 ; if, cond
@@ -56,21 +59,34 @@ lst  ; '(3 1 2 5 4)
       (else "the other thing"))
 
 
+
 #| recursion |#
 
 ; factorial, fibonacci
 
 
 
+#| function composition |#
+(todo)
+
+
+
 #| higher-order functions |#
 
-; map, filter, reduce, any?, all?
+; map, filter, reduce/fold, any?, all?
 (todo)
+
 
 
 #| closures |#
 
-(todo)
+(define counter
+  (lambda (base)
+    (let ((current-value base))
+      (lambda ()
+        (displayln current-value)
+        (set! current-value (add1 current-value))))))
+
 
 
 #| koans |#
