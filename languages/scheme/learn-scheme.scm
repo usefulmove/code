@@ -44,6 +44,7 @@ lst  ; '(3 1 2 5 4)
 
 
 #| conditional expressions |#
+
 ; if, cond
 
 (if (zero? 1)
@@ -56,13 +57,20 @@ lst  ; '(3 1 2 5 4)
 
 
 #| recursion |#
+
 ; factorial, fibonacci
 
 
 
 #| higher-order functions |#
-; map, filter, reduce, any?, all?
 
+; map, filter, reduce, any?, all?
+(todo)
+
+
+#| closures |#
+
+(todo)
 
 
 #| koans |#
