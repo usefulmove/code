@@ -5,7 +5,7 @@
 
 ; tail recursion
 (defun fib2 (n)
-  (letrec
+  (let
       ((fibonacci2 (lambda (n a b)
                      (cond ((= 0 n) a)
                            ((= 1 n) b)
