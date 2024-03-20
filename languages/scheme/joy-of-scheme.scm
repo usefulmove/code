@@ -12,7 +12,7 @@
   
   4. Functions
 
-  5. Conditional Expressions and Forms
+  5. Conditional Expressions and Flow Control
 
   6. Recursion
 
@@ -20,7 +20,9 @@
 
   8. Higher-Order Functions
 
-  9. Closures
+  9. Let (local scoping)
+
+  10. Closures
 
 |#
 
@@ -40,6 +42,17 @@
 (/ (- (sqrt 5) 1) 2)  ; 0.6180339887498949
 
 (* pi (sqr 6))  ; 113.09733552923255
+
+(null? lst)  ; #f
+(null? '())  ; #t
+
+(length lst)  ; 5
+
+(reverse lst)  ; '(4 5 2 1 3)
+
+(cons 0 lst)  ; '(0 3 1 2 5 4)
+
+(append lst lst)  ; '(3 1 2 5 4 3 1 2 5 4)
 
 
 
@@ -69,20 +82,9 @@ lst  ; '(3 1 2 5 4)
 
 (snd lst)  ; 1
 
-(null? lst)  ; #f
-(null? '())  ; #t
-
-(length lst)  ; 5
-
-(reverse lst)  ; '(4 5 2 1 3)
-
-(cons 0 lst)  ; '(0 3 1 2 5 4)
-
-(append lst lst)  ; '(3 1 2 5 4 3 1 2 5 4)
 
 
-
-;; Conditional Expressions and Forms
+;; Conditional Expressions and Flow Control
 
 ; if, cond
 (if (zero? 1)
@@ -112,6 +114,9 @@ lst  ; '(3 1 2 5 4)
 ; map, filter, reduce/fold, any?, all?
 (todo)
 
+
+
+;; Let (local scoping)
 
 
 ;; Closures
