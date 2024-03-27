@@ -25,6 +25,17 @@
 
 ; dynamic programming
 
+;; get-square-value :: board -> position -> board
+;;                  :: [int] -> int -> -> [int]
+(defun get-square-value (board pos)
+  todo) 
+
+;; set-square-value :: board -> position -> value -> board
+;;                  :: [int] -> int -> -> int -> [int]
+(defun set-square-value (board pos value)
+  todo) 
+
+
 ;; evaluate-board :: board -> position -> board
 ;;                :: [int] -> int -> [int]
 (defun evaluate-board (input-board pos)
@@ -33,7 +44,7 @@ on the range 0 to 9 that satisfies the row, column, and cell constraints for tha
 position. When the first candidate is found, insert it and 'pass it on'.
 Evaluate (recursively) the new board at the next position. If that succeeds, we
 have a solved board. If not, move on to the next candidate."
-  (let ((value (get-square-value input-board pos)))  ; todo - defun get-square-value (board pos)
+  (let ((value (get-square-value input-board pos)))
     (if (not (zero? value))
         (evaluate-board
          input-board
@@ -42,7 +53,7 @@ have a solved board. If not, move on to the next candidate."
        (lambda (in-board candidate-value)
          (if (possible-value? in-board candidate-value)
              (evaluate-board
-              (set-square-value in-board pos candidate-value) ; todo - defun set-square-value (board pos value)
+              (set-square-value in-board pos candidate-value)
               (inc pos))
            in-board))
        input-board
@@ -53,3 +64,7 @@ have a solved board. If not, move on to the next candidate."
  'evaluate-board
  board
  (range (length board)))
+
+
+(+) ; 0
+(*) ; 1
