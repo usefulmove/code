@@ -1,7 +1,7 @@
 (load-file "~/repos/cora/src/cora.elc")
 
 
-(setq board
+(setq original-board
   (list 5 3 0 0 7 0 0 0 0
         6 0 0 1 9 5 0 0 0
         0 9 8 0 0 0 0 6 0
@@ -54,9 +54,9 @@ return a new board."
        (floor col 3))))
 
 
-;; get-row-values :: row -> [values]
-;;                :: int -> [int]
-(defun get-row-values (row)
+;; get-row-values :: board -> row -> [values]
+;;                :: [int] -> int -> [int]
+(defun get-row-values (board row)
   (let ((matching-pairs (filter
                          (lambda (pair)
                            (let ((index (car pair))
@@ -69,9 +69,9 @@ return a new board."
      matching-pairs)))
 
 
-;; get-col-values :: col -> [values]
-;;                :: int -> [int]
-(defun get-col-values (col)
+;; get-col-values :: board -> col -> [values]
+;;                :: [int] -> int -> [int]
+(defun get-col-values (board col)
   (let ((matching-pairs (filter
                          (lambda (pair)
                            (let ((index (car pair))
@@ -84,9 +84,9 @@ return a new board."
      matching-pairs)))
 
 
-;; get-box-values :: box -> [values]
-;;                :: int -> [int]
-(defun get-box-values (box)
+;; get-box-values :: board -> box -> [values]
+;;                :: [int] -> int -> [int]
+(defun get-box-values (board box)
   (let ((matching-pairs (filter
                          (lambda (pair)
                            (let ((index (car pair))
@@ -96,24 +96,20 @@ return a new board."
                               board))))
     (map
      'cdr
-     matching-pairs))) ; get-box-values
+     matching-pairs)))
 
 
-; possible-in-col? :: board -> cell -> value
-;                  :: [int] -> int -> int
-(defun possible-in-col? (board cell value)
-  todo)
-
-; possible-in-row?
-; possible-in-box?
+(defun get-non-candidates (board cell)
+  (remove-duplicates
+   (append (get-row-values board (get-row cell))
+           (get-col-values board (get-col cell))
+           (get-box-values board (get-box cell)))))
 
 
-;; possible? :: board -> position -> value -> boolean
-;;           :: [int] -> int -> int -> boolean
+; possible? :: board -> cell -> value -> boolean
+;           :: [int] -> int -> int -> boolean
 (defun possible? (board cell value)
-  (and (possible-in-row? board cell value)
-       (possible-in-col? board cell value)
-       (possible-in-box? board cell value)))
+  (not (member value (get-non-candidates board cell))))
 
 
 ;; evaluate-board :: board -> cell -> board
@@ -143,5 +139,5 @@ have a solved board. If not, move on to the next candidate."
 
 (foldl
  'evaluate-board
- board
- (range (length board)))
+ original-board
+ (range (length original-board)))
