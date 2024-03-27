@@ -13,22 +13,18 @@
         0 0 0 0 8 0 0 7 9 ))
 
 
-; access the board by row and column using the modulus function in helper functions - only necessary for block determination (possibly true)
-; language: board, cell, block
+; access the board by row and column using the modulus function in helper functions - only necessary for box determination (possibly true)
+; language: board, cell, box, value (0-9)
 
-
-
-
-; dynamic programming
 
 ;; get-cell-value :: board -> cell -> board
-;;                  :: [int] -> int -> -> [int]
+;;                :: [int] -> int -> -> [int]
 (setf get-cell-value 'list-ref) ; list-ref ( point-free )
 ;(get-cell-value board 80) ; 9
 
 
 ;; set-cell-value :: board -> cell -> value -> board
-;;                  :: [int] -> int -> -> int -> [int]
+;;                :: [int] -> int -> -> int -> [int]
 (defun set-cell-value (board cell value)
   "Insert VALUE into the BOARD provided at the cell (CELL) specified and
 return a new board."
@@ -37,20 +33,94 @@ return a new board."
           (drop (inc cell) board)))
 
 
+; get-row :: cell -> row (0-8)
+;         :: int -> int
+(defun get-row (cell)
+  (floor cell 9))
+
+
+; get-col :: cell -> col (0-8)
+;         :: int -> int
+(defun get-col (cell)
+  (mod cell 9))
+
+
+; get-box :: cell -> box (0-8)
+;         :: int -> int
+(defun get-box (cell)
+  (let ((row (get-row cell))
+        (col (get-col cell)))
+    (+ (* (floor row 3) 3)
+       (floor col 3))))
+
+
+;; get-row-values :: row -> [values]
+;;                :: int -> [int]
+(defun get-row-values (row)
+  (let ((matching-pairs (filter
+                         (lambda (pair)
+                           (let ((index (car pair))
+                                 (value (cdr pair)))
+                             (= row (get-row index))))
+                         (zip (range (length board))
+                              board))))
+    (map
+     'cdr
+     matching-pairs)))
+
+
+;; get-col-values :: col -> [values]
+;;                :: int -> [int]
+(defun get-col-values (col)
+  (let ((matching-pairs (filter
+                         (lambda (pair)
+                           (let ((index (car pair))
+                                 (value (cdr pair)))
+                             (= col (get-col index))))
+                         (zip (range (length board))
+                              board))))
+    (map
+     'cdr
+     matching-pairs)))
+
+
+;; get-box-values :: box -> [values]
+;;                :: int -> [int]
+(defun get-box-values (box)
+  (let ((matching-pairs (filter
+                         (lambda (pair)
+                           (let ((index (car pair))
+                                 (value (cdr pair)))
+                             (= box (get-box index))))
+                         (zip (range (length board))
+                              board))))
+    (map
+     'cdr
+     matching-pairs))) ; get-box-values
+
+
+; possible-in-col? :: board -> cell -> value
+;                  :: [int] -> int -> int
+(defun possible-in-col? (board cell value)
+  todo)
+
+; possible-in-row?
+; possible-in-box?
+
+
 ;; possible? :: board -> position -> value -> boolean
 ;;           :: [int] -> int -> int -> boolean
 (defun possible? (board cell value)
-  (and (possible-row? board cell value) ; todo
-       (possible-col? board cell value) ; todo
-       (possible-block? board cell value))) ; todo
-; todo - convert to make use of set data structure?
+  (and (possible-in-row? board cell value)
+       (possible-in-col? board cell value)
+       (possible-in-box? board cell value)))
 
 
 ;; evaluate-board :: board -> cell -> board
 ;;                :: [int] -> int -> [int]
 (defun evaluate-board (input-board cell)
   "Evaluate the INPUT BOARD at the specified cell (CELL). Search for a value
-on the range 0 to 9 that satisfies the row, column, and block constraints for that
+on the range 0 to 9 that satisfies the row, column, and box constraints for that
 cell. When the first candidate is found, insert it and 'pass it on'.
 Evaluate (recursively) the new board at the next cell. If that succeeds, we
 have a solved board. If not, move on to the next candidate."
@@ -67,7 +137,7 @@ have a solved board. If not, move on to the next candidate."
               (inc cell))
            in-board))
        input-board
-       (range 1 (inc 9)))))) ; iterate over value candidates 1 - 9.
+       (range 1 (inc 9)))))) ; iterate over value candidates (1-9).
 ; todo - missing null return when no answer found for any candidate.
 
 
