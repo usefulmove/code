@@ -1,4 +1,4 @@
-(load-file "~/repos/cora/src/cora.elc") ; t
+(load-file "~/repos/cora/src/cora.elc")
 
 
 (setq board
@@ -21,48 +21,50 @@
 
 ; dynamic programming
 
-;; get-cell-value :: board -> pos -> board
+;; get-cell-value :: board -> cell -> board
 ;;                  :: [int] -> int -> -> [int]
 (setf get-cell-value 'list-ref) ; list-ref ( point-free )
 ;(get-cell-value board 80) ; 9
 
 
-;; set-cell-value :: board -> pos -> value -> board
+;; set-cell-value :: board -> cell -> value -> board
 ;;                  :: [int] -> int -> -> int -> [int]
-(defun set-cell-value (board pos value)
-  "Insert VALUE into the BOARD provided at the pos (POS) specified and
+(defun set-cell-value (board cell value)
+  "Insert VALUE into the BOARD provided at the cell (CELL) specified and
 return a new board."
-  todo) 
+  (append (take cell board)
+          (list value)
+          (drop (inc cell) board)))
 
 
 ;; possible? :: board -> position -> value -> boolean
 ;;           :: [int] -> int -> int -> boolean
-(defun possible? (board pos value)
-  (and (possible-row? board pos value) ; todo
-       (possible-col? board pos value) ; todo
-       (possible-block? board pos value))) ; todo
+(defun possible? (board cell value)
+  (and (possible-row? board cell value) ; todo
+       (possible-col? board cell value) ; todo
+       (possible-block? board cell value))) ; todo
 ; todo - convert to make use of set data structure?
 
 
-;; evaluate-board :: board -> pos -> board
+;; evaluate-board :: board -> cell -> board
 ;;                :: [int] -> int -> [int]
-(defun evaluate-board (input-board pos)
-  "Evaluate the INPUT BOARD at the specified pos (POS). Search for a value
+(defun evaluate-board (input-board cell)
+  "Evaluate the INPUT BOARD at the specified cell (CELL). Search for a value
 on the range 0 to 9 that satisfies the row, column, and block constraints for that
-pos. When the first candidate is found, insert it and 'pass it on'.
-Evaluate (recursively) the new board at the next pos. If that succeeds, we
+cell. When the first candidate is found, insert it and 'pass it on'.
+Evaluate (recursively) the new board at the next cell. If that succeeds, we
 have a solved board. If not, move on to the next candidate."
-  (let ((value (get-cell-value input-board pos)))
+  (let ((value (get-cell-value input-board cell)))
     (if (not (zero? value))
         (evaluate-board
          input-board
-         (inc pos))
+         (inc cell))
       (foldl
        (lambda (in-board candidate-value)
-         (if (possible? in-board pos candidate-value)
+         (if (possible? in-board cell candidate-value)
              (evaluate-board
-              (set-cell-value in-board pos candidate-value)
-              (inc pos))
+              (set-cell-value in-board cell candidate-value)
+              (inc cell))
            in-board))
        input-board
        (range 1 (inc 9)))))) ; iterate over value candidates 1 - 9.
