@@ -1,4 +1,4 @@
-(load-file "~/repos/cora/src/cora.elc")
+(load-file "~/repos/cora/src/cora.el")
 
 
 (setq original-board
@@ -13,14 +13,9 @@
         0 0 0 0 8 0 0 7 9 ))
 
 
-; access the board by row and column using the modulus function in helper functions - only necessary for box determination (possibly true)
-; language: board, cell, box, value (0-9)
-
-
 ;; get-cell-value :: board -> cell -> board
 ;;                :: [int] -> int -> -> [int]
 (setf get-cell-value 'list-ref) ; list-ref ( point-free )
-;(get-cell-value board 80) ; 9
 
 
 ;; set-cell-value :: board -> cell -> value -> board
@@ -99,6 +94,8 @@ return a new board."
      matching-pairs)))
 
 
+; get-non-candidates :: board -> cell -> [values]
+;                    :: [int] -> int -> [int]
 (defun get-non-candidates (board cell)
   (remove-duplicates
    (append (get-row-values board (get-row cell))
