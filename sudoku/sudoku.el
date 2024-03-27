@@ -22,32 +22,36 @@
 
 ; dynamic programming
 
-;; get-square-value :: board -> position -> board
+;; get-square-value :: board -> pos -> board
 ;;                  :: [int] -> int -> -> [int]
 (setf get-square-value 'list-ref) ; list-ref ( point-free )
 ;(get-square-value board 80) ; 9
 
 
-;; set-square-value :: board -> position -> value -> board
+;; set-square-value :: board -> pos -> value -> board
 ;;                  :: [int] -> int -> -> int -> [int]
 (defun set-square-value (board pos value)
-  "Insert VALUE into the BOARD provided at the position (POS) specified and
+  "Insert VALUE into the BOARD provided at the pos (POS) specified and
 return a new board."
   todo) 
 
 
-;; possible?
-(defun possible? (todo)
-  todo)
+;; possible? :: board -> position -> value -> boolean
+;;           :: [int] -> int -> int -> boolean
+(defun possible? (board pos value)
+  (and (possible-row? board pos value) ; todo
+       (possible-col? board pos value) ; todo
+       (possible-cell? board pos value))) ; todo
+; todo - convert to make use of set data structure?
 
 
-;; evaluate-board :: board -> position -> board
+;; evaluate-board :: board -> pos -> board
 ;;                :: [int] -> int -> [int]
 (defun evaluate-board (input-board pos)
-  "Evaluate the INPUT BOARD at the specified position (POS). Search for a value
+  "Evaluate the INPUT BOARD at the specified pos (POS). Search for a value
 on the range 0 to 9 that satisfies the row, column, and cell constraints for that
-position. When the first candidate is found, insert it and 'pass it on'.
-Evaluate (recursively) the new board at the next position. If that succeeds, we
+pos. When the first candidate is found, insert it and 'pass it on'.
+Evaluate (recursively) the new board at the next pos. If that succeeds, we
 have a solved board. If not, move on to the next candidate."
   (let ((value (get-square-value input-board pos)))
     (if (not (zero? value))
@@ -56,13 +60,14 @@ have a solved board. If not, move on to the next candidate."
          (inc pos))
       (foldl
        (lambda (in-board candidate-value)
-         (if (possible? in-board candidate-value)
+         (if (possible? in-board pos candidate-value)
              (evaluate-board
               (set-square-value in-board pos candidate-value)
               (inc pos))
            in-board))
        input-board
        (range 1 (inc 9)))))) ; iterate over value candidates 1 - 9.
+; todo - missing null return when no answer found for any candidate.
 
 
 (foldl
