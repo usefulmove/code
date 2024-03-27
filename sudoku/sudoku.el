@@ -15,25 +15,30 @@
             0 0 0 0 8 0 0 7 9 ))
 
 
-                                        ; access the board by row and column using the modulus function
+; access the board by row and column using the modulus function - only necessary for cell determination (possibly true)
 
 
-(setf get-square-value 'list-ref) ; list-ref ( point-free )
-
-(get-square-value board 80) ; 9
 
 
 ; dynamic programming
 
 ;; get-square-value :: board -> position -> board
 ;;                  :: [int] -> int -> -> [int]
-(defun get-square-value (board pos)
-  todo) 
+(setf get-square-value 'list-ref) ; list-ref ( point-free )
+;(get-square-value board 80) ; 9
+
 
 ;; set-square-value :: board -> position -> value -> board
 ;;                  :: [int] -> int -> -> int -> [int]
 (defun set-square-value (board pos value)
+  "Insert VALUE into the BOARD provided at the position (POS) specified and
+return a new board."
   todo) 
+
+
+;; possible?
+(defun possible? (todo)
+  todo)
 
 
 ;; evaluate-board :: board -> position -> board
@@ -51,7 +56,7 @@ have a solved board. If not, move on to the next candidate."
          (inc pos))
       (foldl
        (lambda (in-board candidate-value)
-         (if (possible-value? in-board candidate-value)
+         (if (possible? in-board candidate-value)
              (evaluate-board
               (set-square-value in-board pos candidate-value)
               (inc pos))
