@@ -109,41 +109,46 @@ return a new board."
   (not (member value (get-non-candidates board cell))))
 
 
-; todo - rethink this strategy to remove fold implementation as is and allow early exit when successful solution is found
-;; evaluate-board :: board -> cell -> board
-;;                :: [int] -> int -> [int]
-(defun evaluate-board (input-board cell)
-  "Evaluate the INPUT BOARD at the specified cell (CELL). Search for a value
-on the range 0 to 9 that satisfies the row, column, and box constraints for that
-cell. When the first candidate is found, insert it and 'pass it on'.
-Evaluate (recursively) the new board at the next cell. If that succeeds, we
-have a solved board. If not, move on to the next candidate."
-  (if (= cell (length input-board))
-      input-board
-    (let ((cell-value (call get-cell-value input-board cell)))
-      (if (not (zero? cell-value))
-          (evaluate-board
-           input-board
-           (inc cell))
-        (foldl
-         (lambda (in-board candidate-value)
-           (if (possible? in-board cell candidate-value)
-               (evaluate-board
-                (set-cell-value in-board cell candidate-value)
-                (inc cell))
-             in-board))
-         input-board
-         (range 1 (inc 9)))) ; iterate over value candidates (1-9).
-      '()))) ; fail - return empty list.
+;; solved? :: board -> boolean
+;;         :: [int] -> boolean
+(defun solved? (board)
+  (not (member 0 board)))
 
 
-; todo - rethink this strategy to remove fold implementation as is and allow early exit when successful solution is found
-(defun solve (board)
-  (foldl
-   'evaluate-board
-   board
-   (range (length original-board))))
-
-
-
-(solve original-board)
+;; todo - rethink this strategy to remove fold implementation as is and allow early exit when successful solution is found
+;;; evaluate-board :: board -> cell -> board
+;;;                :: [int] -> int -> [int]
+;(defun evaluate-board (board cell)
+;  "Evaluate the INPUT BOARD at the specified cell (CELL). Search for a value
+;on the range 0 to 9 that satisfies the row, column, and box constraints for that
+;cell. When the first candidate is found, insert it and 'pass it on'.
+;Evaluate (recursively) the new board at the next cell. If that succeeds, we
+;have a solved board. If not, move on to the next candidate."
+;  (if (or (solved? board)
+;          (= cell (length board)))
+;      board
+;    (let ((cell-value (call get-cell-value board cell)))
+;      (if (not (zero? cell-value))
+;          (evaluate-board
+;           board
+;           (inc cell))
+;        (foldl
+;         (lambda (in-board candidate-value)
+;           (if (possible? in-board cell candidate-value)
+;               (evaluate-board
+;                (set-cell-value in-board cell candidate-value)
+;                (inc cell))
+;             in-board))
+;         board
+;         (range 1 (inc 9)))) ; iterate over value candidates (1-9).
+;      '()))) ; fail - return empty list.
+;
+;
+;; todo - rethink this strategy to remove fold implementation as is and allow early exit when successful solution is found
+;(defun solve (board)
+;  (foldl
+;   'evaluate-board
+;   board
+;   (range (length original-board))))
+;
+;(solve original-board)
