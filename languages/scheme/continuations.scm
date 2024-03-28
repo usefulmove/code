@@ -1,4 +1,4 @@
-#lang racket
+#lang scheme
 
 (define (sum-up-to-threshold numbers threshold)
   (call/cc (lambda (return-to-context)
