@@ -140,7 +140,5 @@
 
 ;;; evaluate-board :: board -> cell -> board
 ;;;                :: [int] -> int -> [int]
-(define (evaluate-board board cell)
-  (if (solved? board)
-      board
-    (for/or todo))
+;(define (evaluate-board board cell)
+;  (for/or todo))
