@@ -1,6 +1,12 @@
 (load-file "~/repos/cora/src/cora.el")
 
 
+;; core "data types":
+;;   board - [int] (length 81)
+;;   cell - int (0-80)
+;;   value - int (0-9)
+
+
 (setq original-board
   (list 5 3 0 0 7 0 0 0 0
         6 0 0 1 9 5 0 0 0
@@ -13,7 +19,7 @@
         0 0 0 0 8 0 0 7 9 ))
 
 
-;; get-cell-value :: board -> cell -> board
+;; get-cell-value :: board -> cell -> value (-)
 ;;                :: [int] -> int -> -> [int]
 (setf get-cell-value 'list-ref)  ; list-ref ( point-free )
 
@@ -152,3 +158,17 @@ return a new board."
 ;   (range (length original-board))))
 ;
 ;(solve original-board)
+
+
+;;; evaluate-board :: board -> cell -> board
+;;;                :: [int] -> int -> [int]
+(defun evaluate-board (board cell)
+  "Evaluate the INPUT BOARD at the specified cell (CELL). Search for a value
+on the range 0 to 9 that satisfies the row, column, and box constraints for that
+cell. When the first candidate is found, insert it and 'pass it on'.
+Evaluate (recursively) the new board at the next cell. If that succeeds, we
+have a solved board. If not, move on to the next candidate. Returns either a
+solved board (list) or an empty list."
+  (if (solved? board)
+      board
+    (for/or ))
