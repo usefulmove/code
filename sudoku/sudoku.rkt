@@ -117,6 +117,24 @@
      matching-pairs)))
 
 
-(get-box-values original-board 8)
-(get-box-values original-board 5)
+; get-non-candidates :: board -> cell -> [values]
+;                    :: [int] -> int -> [int]
+(define (get-non-candidates board cell)
+  (remove-duplicates
+   (append (get-row-values board (get-row cell))
+           (get-col-values board (get-col cell))
+           (get-box-values board (get-box cell)))))
+
+
+; possible? :: board -> cell -> value -> boolean
+;           :: [int] -> int -> int -> boolean
+(define (possible? board cell value)
+  (not (member value (get-non-candidates board cell))))
+
+
+;; solved? :: board -> boolean
+;;         :: [int] -> boolean
+(define (solved? board)
+  (not (member 0 board)))
+
 
