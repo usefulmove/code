@@ -158,17 +158,3 @@ return a new board."
 ;   (range (length original-board))))
 ;
 ;(solve original-board)
-
-
-;;; evaluate-board :: board -> cell -> board
-;;;                :: [int] -> int -> [int]
-(defun evaluate-board (board cell)
-  "Evaluate the INPUT BOARD at the specified cell (CELL). Search for a value
-on the range 0 to 9 that satisfies the row, column, and box constraints for that
-cell. When the first candidate is found, insert it and 'pass it on'.
-Evaluate (recursively) the new board at the next cell. If that succeeds, we
-have a solved board. If not, move on to the next candidate. Returns either a
-solved board (list) or an empty list."
-  (if (solved? board)
-      board
-    (for/or ))

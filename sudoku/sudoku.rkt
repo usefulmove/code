@@ -138,3 +138,9 @@
   (not (member 0 board)))
 
 
+;;; evaluate-board :: board -> cell -> board
+;;;                :: [int] -> int -> [int]
+(define (evaluate-board board cell)
+  (if (solved? board)
+      board
+    (for/or todo))
