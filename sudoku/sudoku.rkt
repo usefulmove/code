@@ -1,10 +1,17 @@
 #lang racket
 
 
+(require algorithms)
+
+
 ;; core "data types":
 ;;   board - [int] (length 81)
 ;;   cell - int (0-80)
-;;   value - int (0-9)
+;;   row - int (0-8)
+;;   col - int (0-8)
+;;   box - int (0-8)
+;;   value - int (1-9)
+
 
 
 (define original-board
@@ -44,5 +51,72 @@
           (drop board (add1 cell))))
 
 
+; get-row :: cell -> row
+;         :: int -> int
+(define (get-row cell)
+  (floor (/ cell 9)))
 
+
+; get-col :: cell -> col
+;         :: int -> int
+(define (get-col cell)
+  (modulo cell 9))
+
+
+; get-box :: cell -> box
+;         :: int -> int
+(define (get-box cell)
+  (let ((row (get-row cell))
+        (col (get-col cell)))
+    (+ (* (floor (/ row 3)) 3)
+       (floor (/ col 3)))))
+
+
+;; get-row-values :: board -> row -> [values]
+;;                :: [int] -> int -> [int]
+(define (get-row-values board row)
+  (let ((matching-pairs (filter
+                         (lambda (pair)
+                           (let ((index (car pair))
+                                 (value (cdr pair)))
+                             (= row (get-row index))))
+                         (zip (range (length board))
+                              board))))
+    (map
+     cadr
+     matching-pairs)))
+
+
+;; get-col-values :: board -> col -> [values]
+;;                :: [int] -> int -> [int]
+(define (get-col-values board col)
+  (let ((matching-pairs (filter
+                         (lambda (pair)
+                           (let ((index (car pair))
+                                 (value (cdr pair)))
+                             (= col (get-col index))))
+                         (zip (range (length board))
+                              board))))
+    (map
+     cadr
+     matching-pairs)))
+
+
+;; get-box-values :: board -> box -> [values]
+;;                :: [int] -> int -> [int]
+(define (get-box-values board box)
+  (let ((matching-pairs (filter
+                         (lambda (pair)
+                           (let ((index (car pair))
+                                 (value (cdr pair)))
+                             (= box (get-box index))))
+                         (zip (range (length board))
+                              board))))
+    (map
+     cadr
+     matching-pairs)))
+
+
+(get-box-values original-board 8)
+(get-box-values original-board 5)
 
