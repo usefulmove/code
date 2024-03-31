@@ -147,7 +147,7 @@
 
 ;; backtracking solver
 ;; solve :: board -> board
-;; solve :: [int] -> [int] (empty list if fails to solve the board)
+;; solve :: [int] -> [int] (empty list no solution found)
 (define (solve board)
   (call/cc
    (lambda (return)
