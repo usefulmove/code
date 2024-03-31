@@ -117,6 +117,12 @@
      matching-pairs)))
 
 
+; find-empty-cell :: board -> cell
+;               :: board -> int
+(define (find-empty-cell board)
+  (index-of board 0))
+
+
 ; get-non-candidates :: board -> cell -> [values]
 ;                    :: [int] -> int -> [int]
 (define (get-non-candidates board cell)
@@ -138,7 +144,24 @@
   (not (member 0 board)))
 
 
-;;; evaluate-board :: board -> cell -> board
-;;;                :: [int] -> int -> [int]
-;(define (evaluate-board board cell)
-;  (for/or todo))
+;; solve :: board -> board
+;; solve :: [int] -> [int] (empty list if fails to solve the board)
+(define (solve board)
+  (call/cc
+   (lambda (return)
+     (let ((empty-cell (find-empty-cell board)))
+       (if (false? empty-cell)
+           board ; return solution.
+           (begin
+             (for ((candidate (range 1 (add1 9))))
+               (if (possible? board empty-cell candidate)
+                   (let ((possible-solution (solve(set-cell-value board empty-cell candidate))))
+                     (if (solved? possible-solution)
+                         (return possible-solution) ; return solution.
+                         (void)))
+                   (void)))
+             null)))))) ; all candidates exhausted. no solution found.
+
+
+
+(solve original-board)
