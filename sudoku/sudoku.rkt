@@ -4,7 +4,7 @@
 (require algorithms)
 
 
-;; core "data types":
+;; core "data types"
 ;;   board - [int] (length 81)
 ;;   cell - int (0-80)
 ;;   row - int (0-8)
