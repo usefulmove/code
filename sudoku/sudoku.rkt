@@ -10,8 +10,7 @@
 ;;   row - int (0-8)
 ;;   col - int (0-8)
 ;;   box - int (0-8)
-;;   value - int (1-9)
-
+;;   digit - int (1-9)
 
 
 (define original-board
@@ -27,27 +26,33 @@
 
 
 (define (display-board board)
-  (displayln (take board 9))
-  (displayln (drop (take board 18) 9))
-  (displayln (drop (take board 27) 18))
-  (displayln (drop (take board 36) 27))
-  (displayln (drop (take board 45) 36))
-  (displayln (drop (take board 54) 45))
-  (displayln (drop (take board 63) 54))
-  (displayln (drop (take board 72) 63))
-  (displayln (drop (take board 81) 72)))
+  (let ((display-row (lambda (row)
+                       (for ((digit (get-row-digits board row)))
+                         (display (string-append
+                                   " "
+                                   (number->string digit)
+                                   " ")))
+                       (newline))))
+    (newline)
+    (for ((row (range 9)))
+      (display-row row))
+    (newline)))
 
 
-;; get-cell-value :: board -> cell -> value
+(define valid-digits
+  (range 1 (add1 9)))
+
+
+;; get-cell-digit :: board -> cell -> digit
 ;;                :: [int] -> int -> -> int
-(define get-cell-value list-ref) ; list-ref ( point-free )
+(define get-cell-digit list-ref) ; list-ref ( point-free )
 
 
-;; set-cell-value :: board -> cell -> value -> board
+;; set-cell-digit :: board -> cell -> digit -> board
 ;;                :: [int] -> int -> -> int -> [int]
-(define (set-cell-value board cell value)
+(define (set-cell-digit board cell digit)
   (append (take board cell)
-          (list value)
+          (list digit)
           (drop board (add1 cell))))
 
 
@@ -72,13 +77,13 @@
        (floor (/ col 3)))))
 
 
-;; get-row-values :: board -> row -> [values]
+;; get-row-digits :: board -> row -> [digits]
 ;;                :: [int] -> int -> [int]
-(define (get-row-values board row)
+(define (get-row-digits board row)
   (let ((matching-pairs (filter
                          (lambda (pair)
                            (let ((index (car pair))
-                                 (value (cdr pair)))
+                                 (digit (cdr pair)))
                              (= row (get-row index))))
                          (zip (range (length board))
                               board))))
@@ -87,13 +92,13 @@
      matching-pairs)))
 
 
-;; get-col-values :: board -> col -> [values]
+;; get-col-digits :: board -> col -> [digits]
 ;;                :: [int] -> int -> [int]
-(define (get-col-values board col)
+(define (get-col-digits board col)
   (let ((matching-pairs (filter
                          (lambda (pair)
                            (let ((index (car pair))
-                                 (value (cdr pair)))
+                                 (digit (cdr pair)))
                              (= col (get-col index))))
                          (zip (range (length board))
                               board))))
@@ -102,13 +107,13 @@
      matching-pairs)))
 
 
-;; get-box-values :: board -> box -> [values]
+;; get-box-digits :: board -> box -> [digits]
 ;;                :: [int] -> int -> [int]
-(define (get-box-values board box)
+(define (get-box-digits board box)
   (let ((matching-pairs (filter
                          (lambda (pair)
                            (let ((index (car pair))
-                                 (value (cdr pair)))
+                                 (digit (cdr pair)))
                              (= box (get-box index))))
                          (zip (range (length board))
                               board))))
@@ -123,19 +128,19 @@
   (index-of board 0))
 
 
-; get-non-candidates :: board -> cell -> [values]
+; get-non-candidates :: board -> cell -> [digits]
 ;                    :: [int] -> int -> [int]
 (define (get-non-candidates board cell)
   (remove-duplicates
-   (append (get-row-values board (get-row cell))
-           (get-col-values board (get-col cell))
-           (get-box-values board (get-box cell)))))
+   (append (get-row-digits board (get-row cell))
+           (get-col-digits board (get-col cell))
+           (get-box-digits board (get-box cell)))))
 
 
-; possible? :: board -> cell -> value -> boolean
+; possible? :: board -> cell -> digit -> boolean
 ;           :: [int] -> int -> int -> boolean
-(define (possible? board cell value)
-  (not (member value (get-non-candidates board cell))))
+(define (possible? board cell digit)
+  (not (member digit (get-non-candidates board cell))))
 
 
 ;; solved? :: board -> boolean
@@ -155,10 +160,10 @@
        (if (false? empty-cell)
            board ; return solution.
            (begin
-             (for ((candidate (range 1 (add1 9))))
+             (for ((candidate valid-digits))
                (if (possible? board empty-cell candidate)
                    (let ((possible-solution
-                          (solve(set-cell-value board empty-cell candidate))))
+                          (solve(set-cell-digit board empty-cell candidate))))
                      (if (solved? possible-solution)
                          (return possible-solution) ; return solution.
                          (void)))
