@@ -162,13 +162,11 @@
            board ; return solution.
            (begin
              (for ((candidate valid-digits))
-               (if (possible? board empty-cell candidate)
-                   (let ((possible-solution
-                          (solve(set-cell-digit board empty-cell candidate))))
-                     (if (solved? possible-solution)
-                         (return possible-solution) ; return solution.
-                         (void)))
-                   (void)))
+               (when (possible? board empty-cell candidate)
+                 (let ((possible-solution
+                        (solve(set-cell-digit board empty-cell candidate))))
+                   (when (solved? possible-solution)
+                     (return possible-solution))))) ; return solution.
              null)))))) ; all candidates exhausted. no solution found.
 
 

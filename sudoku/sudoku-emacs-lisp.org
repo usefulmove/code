@@ -8,17 +8,17 @@ Design Notes:
 #+end_src
 
 #+begin_src emacs-lisp
-(setq board '((0 0 1  8 0 0  0 0 0)
-              (6 7 0  2 0 3  0 1 0)
-              (2 0 5  7 0 0  6 0 3)
+(setq original-board '((0 0 1  8 0 0  0 0 0)
+                       (6 7 0  2 0 3  0 1 0)
+                       (2 0 5  7 0 0  6 0 3)
 
-              (3 5 0  6 2 0  8 0 0)
-              (7 6 2  0 5 8  3 0 0)
-              (0 0 0  0 0 4  0 5 0)
+                       (3 5 0  6 2 0  8 0 0)
+                       (7 6 2  0 5 8  3 0 0)
+                       (0 0 0  0 0 4  0 5 0)
 
-              (0 9 0  5 8 6  0 0 0)
-              (5 0 0  9 0 0  7 0 0)
-              (0 2 6  4 3 0  5 9 0)))
+                       (0 9 0  5 8 6  0 0 0)
+                       (5 0 0  9 0 0  7 0 0)
+                       (0 2 6  4 3 0  5 9 0)))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -118,26 +118,33 @@ and COL) on the BOARD?"
   "Solve Sudoku BOARD."
   (catch 'found-solution
     (let ((current-board (copy-sequence board)))
-      (unless (any?
+      (unless (any? ; guard
                 (lambda (row)
-                  (member 0 row))
+                  (contains? 0 row))
                 current-board) ; check that there are no zeros
-        (throw 'found-solution current-board))
+        (throw 'found-solution current-board)) ; solution found
 
       (for ((row (range 9))
             (col (range 9)))
-        (when (= 0 (list-ref current-board row col))
-          ; set value to n and solve if solve returns, continue to next n
-          (for ((n (range 1 (inc 9))))
-            (when (possible? current-board row col n)
-              (let ((updated-board (set-ref current-board row col n)))
-                (let ((solved-board (solve updated-board)))
-                  (if solved-board
-                      (throw 'found-solution solved-board))))))))
+        (when (zero? (list-ref current-board row col)) ; empty cell
+          ; set value to candidate and solve if solve returns, continue to next candidate
+          (for ((candidate (range 1 (inc 9))))
+            (progn
+              (message (concat "candidate:" (number-to-string candidate) " row: " (number-to-string row) " col: " (number-to-string col)))
+              (when (possible? current-board row col candidate)
+                (let ((updated-board (set-ref current-board row col candidate)))
+                  (let ((solved-board (solve updated-board)))
+                    (if solved-board
+                        (throw 'found-solution solved-board)))))))))
 
       nil)))
 #+end_src
 
 #+begin_src emacs-lisp
-(solve board)
+(solve original-board)
 #+end_src
+
+
+;(run-with-idle-timer 30 t (lambda ()
+;                             (with-current-buffer "*Messages*"
+;                               (write-file "~/Desktop/emacs-messages.log"))))
