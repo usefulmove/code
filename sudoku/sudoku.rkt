@@ -1,9 +1,6 @@
 #lang racket
 
 
-(require algorithms)
-
-
 ;; core "data types"
 ;;   board - [int] (length 81)
 ;;   cell - int (0-80)
@@ -25,6 +22,10 @@
         0 0 0 0 8 0 0 7 9 ))
 
 
+(define valid-digits
+  (range 1 (add1 9)))
+
+
 (define (display-board board)
   (let ((display-row (lambda (row)
                        (for ((digit (get-row-digits board row)))
@@ -37,10 +38,6 @@
     (for ((row (range 9)))
       (display-row row))
     (newline)))
-
-
-(define valid-digits
-  (range 1 (add1 9)))
 
 
 ;; get-cell-digit :: board -> cell -> digit
@@ -75,6 +72,10 @@
         (col (get-col cell)))
     (+ (* (floor (/ row 3)) 3)
        (floor (/ col 3)))))
+
+
+(define (zip lst . lsts)
+  (apply map list lst lsts))
 
 
 ;; get-row-digits :: board -> row -> [digits]
@@ -146,8 +147,8 @@
 ;; solved? :: board -> boolean
 ;;         :: [int] -> boolean
 (define (solved? board)
-  (not (or (null? board)
-           (member 0 board))))
+  (not (or (null? board) ; board is not null
+           (member 0 board)))) ; board contains no zeros
 
 
 ;; backtracking solver
