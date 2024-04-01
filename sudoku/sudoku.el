@@ -1,13 +1,6 @@
-#+title: sudoku solver
-
-Design Notes:
-- The board (a list of lists of integers) is the fundamental data type.
-
-#+begin_src emacs-lisp
 (load-file "~/repos/cora/src/cora.el")
-#+end_src
 
-#+begin_src emacs-lisp
+
 (setq original-board '((0 0 1  8 0 0  0 0 0)
                        (6 7 0  2 0 3  0 1 0)
                        (2 0 5  7 0 0  6 0 3)
@@ -19,9 +12,9 @@ Design Notes:
                        (0 9 0  5 8 6  0 0 0)
                        (5 0 0  9 0 0  7 0 0)
                        (0 2 6  4 3 0  5 9 0)))
-#+end_src
 
-#+begin_src emacs-lisp
+
+
 ;; get-cell :: integer -> integer -> integer
 (defun get-cell (row col)
   "Return the cell index given the ROW and COL indicies."
@@ -36,9 +29,8 @@ Design Notes:
           ((= 2 a) (cond ((= 0 b) 6)
                          ((= 1 b) 7)
                          ((= 2 b) 8))))))
-#+end_src
 
-#+begin_src emacs-lisp
+
 ;; read-col-values :: [[integer]] -> [integers]
 (defun read-col-values (board col)
   "Return the set of values assigned to the column (COL) on the BOARD."
@@ -85,9 +77,8 @@ Design Notes:
                   '()
                   (enumerate board))))
     (remove-duplicates values)))
-#+end_src
 
-#+begin_src emacs-lisp
+
 ;; possible? :: [[integer]] -> integer -> integer -> integer -> boolean
 (defun possible? (board row col value)
   "Predicate. Is it possible to enter the given VALUE in at this position (ROW
@@ -96,9 +87,8 @@ and COL) on the BOARD?"
                                           (read-cell-values board (get-cell row col))
                                           (read-row-values board row)
                                           (read-col-values board col))))))
-#+end_src
 
-#+begin_src emacs-lisp
+
 ;; set-ref :: [[integer]] -> [[integer]]
 (defun set-ref (board row col value)
   "Set the value at ROW and COL of BOARD to VALUE and return the modified board."
@@ -107,13 +97,9 @@ and COL) on the BOARD?"
     (setf (nth col new-row) value)
     (setf (nth row out-board) new-row)
     out-board))
-#+end_src
 
-#+begin_src emacs-lisp
+
 ;; solve :: [[integer]] -> [[integer]]
-;;
-;; Strategy: Iterate over the board and check for what's possible, then enter
-;; possiblity and continue. Backtrack when no option is possible.
 (defun solve (board)
   "Solve Sudoku BOARD."
   (catch 'found-solution
@@ -138,11 +124,9 @@ and COL) on the BOARD?"
                         (throw 'found-solution solved-board)))))))))
 
       nil)))
-#+end_src
 
-#+begin_src emacs-lisp
+
 (solve original-board)
-#+end_src
 
 
 ;(run-with-idle-timer 30 t (lambda ()
