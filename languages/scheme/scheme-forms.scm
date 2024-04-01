@@ -26,4 +26,4 @@
   (body-expression))
 
 (begin (expression-1)
-       (expression-2))
+       (expression-2)) ; returns result from last expression
