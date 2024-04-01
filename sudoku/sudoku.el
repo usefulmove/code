@@ -126,14 +126,9 @@ and COL) on the BOARD?"
                 (let ((updated-board (set-ref current-board row col candidate)))
                   (let ((solved-board (solve updated-board)))
                     (if solved-board
-                        (throw 'found-solution solved-board))))))))) ; solution
+                        (throw 'found-solution solved-board)))))))))
 
       nil)))
 
 
 (solve original-board)
-
-
-;(run-with-idle-timer 30 t (lambda ()
-;                             (with-current-buffer "*Messages*"
-;                               (write-file "~/Desktop/emacs-messages.log"))))
