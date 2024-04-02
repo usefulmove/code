@@ -120,7 +120,7 @@ and COL) on the BOARD?"
         (when (zero? (list-ref current-board row col)) ; empty cell
           ; set digit to candidate and solve if solve returns, continue to next candidate
           (for ((candidate valid-digits))
-            (progn
+            (begin
               (message (concat "candidate: " (number-to-string candidate) "  row: " (number-to-string row) "  col: " (number-to-string col)))
               (when (possible? current-board row col candidate)
                 (let ((updated-board (set-ref current-board row col candidate)))
