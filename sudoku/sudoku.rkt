@@ -26,18 +26,21 @@
   (range 1 (add1 9)))
 
 
+;; display-board :: board -> null (impure)
+;;               :: [int] -> null
 (define (display-board board)
+  (newline)
   (let ((display-row (lambda (row)
-                       (for ((digit (get-row-digits board row)))
-                         (display (string-append
-                                   " "
-                                   (number->string digit)
-                                   " ")))
+                       (for-each
+                        (lambda (digit)
+                          (display (format " ~a " digit)))
+                        (get-row-digits board row))
                        (newline))))
-    (newline)
-    (for ((row (range 9)))
-      (display-row row))
-    (newline)))
+    (for-each
+     (lambda (row)
+       (display-row row))
+     (range 9)))
+  (newline))
 
 
 ;; get-cell-digit :: board -> cell -> digit
