@@ -86,8 +86,7 @@
 (define (get-row-digits board row)
   (let ((matching-pairs (filter
                          (lambda (pair)
-                           (let ((index (car pair))
-                                 (digit (cdr pair)))
+                           (let ((index (car pair)))
                              (= row (get-row index))))
                          (zip (range (length board))
                               board))))
@@ -101,8 +100,7 @@
 (define (get-col-digits board col)
   (let ((matching-pairs (filter
                          (lambda (pair)
-                           (let ((index (car pair))
-                                 (digit (cdr pair)))
+                           (let ((index (car pair)))
                              (= col (get-col index))))
                          (zip (range (length board))
                               board))))
@@ -116,8 +114,7 @@
 (define (get-box-digits board box)
   (let ((matching-pairs (filter
                          (lambda (pair)
-                           (let ((index (car pair))
-                                 (digit (cdr pair)))
+                           (let ((index (car pair)))
                              (= box (get-box index))))
                          (zip (range (length board))
                               board))))
