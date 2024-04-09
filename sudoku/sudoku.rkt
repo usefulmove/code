@@ -77,6 +77,7 @@
        (floor (/ col 3)))))
 
 
+;; zip :: [T] -> [U] -> ... -> [T U ...]
 (define (zip lst . lsts)
   (apply map list lst lsts))
 
@@ -124,7 +125,7 @@
 
 
 ; find-empty-cell :: board -> cell
-;               :: board -> int
+;                 :: board -> int
 (define (find-empty-cell board)
   (index-of board 0))
 
@@ -167,7 +168,7 @@
                         (solve(set-cell-digit board empty-cell candidate))))
                    (when (solved? possible-solution)
                      (return possible-solution))))) ; return solution.
-             null)))))) ; all candidates exhausted. no solution found.
+             '())))))) ; all candidates exhausted. no solution found.
 
 
 
