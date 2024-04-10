@@ -151,7 +151,7 @@
 
 ;; backtracking solver
 ;; solve :: board -> board
-;; solve :: [int] -> [int] (empty list if no solution found)
+;;       :: [int] -> [int] (empty list if no solution found)
 (define (solve board)
   (call/cc
    (lambda (return)
@@ -169,5 +169,4 @@
 
 
 
-(display-board
- (solve original-board))
+(display-board (solve original-board))
