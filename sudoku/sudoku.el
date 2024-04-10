@@ -29,7 +29,7 @@
 ;;   row - int (0-8)
 ;;   col - int (0-8)
 ;;   box - int (0-8)
-;;   digit - int (1-9)
+;;   val - int (1-9)
 
 
 (setq original-board
@@ -44,7 +44,7 @@
             0 0 0 0 8 0 0 7 9 ))
 
 
-(setq valid-digits
+(setq valid-vals
       (o-range 1 (o-inc 9)))
 
 
@@ -52,19 +52,24 @@
 ;;               :: [int] -> nil
 (defun display-board (board)
   (let ((display-row (lambda (row)
-                       todo)))
+                       (o-for-each
+                        (lambda (digit)
+                          (message (int-to-string digit))
+                          (insert (format " %d " digit)))
+                        (get-row-vals board row))
+                       (newline))))
     (switch-to-buffer (get-buffer-create "Sudoku"))
     (org-mode)
+    (setq show-trailing-whitespace nil)
     (erase-buffer)
-    (insert "\n")
+    (newline)
+    (o-for-each display-row (o-range 9))
+    (newline)))
 
-    (o-for-each
-     (lambda (n)
-       (insert " ")
-       (insert (int-to-string n)))
-     original-board)
 
-    (insert "\n")))
+
+(defun get-row-vals (board row)
+  (o-range 9)) ; todo - placeholder
+
 
 (display-board original-board)
-
