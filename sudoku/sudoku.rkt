@@ -153,7 +153,7 @@
 ;; solve :: board -> board
 ;;       :: [int] -> [int] (empty list if no solution found)
 (define (solve board)
-  (call/cc
+  (call-with-current-continuation
    (lambda (return)
      (let ((empty-cell (find-empty-cell board)))
        (if (false? empty-cell)
