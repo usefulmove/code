@@ -67,9 +67,13 @@
     (newline)))
 
 
-
+;; get-row-vals :: board -> row -> [vals]
+;;              :: [int] -> int -> [int]
 (defun get-row-vals (board row)
-  (o-range 9)) ; todo - placeholder
+  )
 
 
 (display-board original-board)
+
+
+(o-zip (o-range 8) (make-list 8 0))
