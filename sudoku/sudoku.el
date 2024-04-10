@@ -5,7 +5,7 @@
 ;; Author: Duane Edmonds <duane.edmonds@gmail.com>
 ;; Maintainer: Duane Edmonds <duane.edmonds@gmail.com>
 ;; Created: April 9, 2024
-;; Modified: April 9, 2024
+;; Modified: April 10, 2024
 ;; Version: 0.0.1
 ;; Keywords:
 ;; Homepage:
@@ -71,7 +71,7 @@
     (o-for-each display-row (o-range 9))))
 
 
-;; get-row-vals :: board -> row -> [vals]
+;; get-row-vals :: board -> row -> [val]
 ;;              :: [int] -> int -> [int]
 (defun get-row-vals (board row)
   (o-map 'cadr (o-filter
