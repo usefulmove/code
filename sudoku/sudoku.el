@@ -48,20 +48,23 @@
       (o-range 1 (o-inc 9)))
 
 
-;; display-board :: board -> null (impure)
-;;               :: [int] -> null
+;; display-board :: board -> nil (impure)
+;;               :: [int] -> nil
 (defun display-board (board)
-  (switch-to-buffer (get-buffer-create "Sudoku"))
-  (text-mode)
-  (o-for-each
-   (lambda (n)
-     (insert "\n")
-     (insert (int-to-string n))
-     (insert "\n"))
-   original-board)) ; display-board
+  (let ((display-row (lambda (row)
+                       todo)))
+    (switch-to-buffer (get-buffer-create "Sudoku"))
+    (org-mode)
+    (erase-buffer)
+    (insert "\n")
 
-(display-board original-board) 
+    (o-for-each
+     (lambda (n)
+       (insert " ")
+       (insert (int-to-string n)))
+     original-board)
 
+    (insert "\n")))
 
-
+(display-board original-board)
 
