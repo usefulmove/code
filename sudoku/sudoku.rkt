@@ -36,10 +36,7 @@
                           (display (format " ~a " digit)))
                         (get-row-digits board row))
                        (newline))))
-    (for-each
-     (lambda (row)
-       (display-row row))
-     (range 9)))
+    (for-each display-row (range 9)))
   (newline))
 
 
