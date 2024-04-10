@@ -51,7 +51,8 @@
 ;; display-board :: board -> nil (impure)
 ;;               :: [int] -> nil
 (defun display-board (board)
-  (let ((display-row (lambda (row)
+  (let ((title "           Sudoku Solver")(display-row (lambda (row)
+                       (insert "    ")
                        (o-for-each
                         (lambda (digit)
                           (message (int-to-string digit))
@@ -60,20 +61,30 @@
                        (newline))))
     (switch-to-buffer (get-buffer-create "Sudoku"))
     (org-mode)
+    (display-line-numbers-mode -1)
     (setq show-trailing-whitespace nil)
     (erase-buffer)
     (newline)
-    (o-for-each display-row (o-range 9))
-    (newline)))
+    (insert title)
+    (newline)
+    (newline)
+    (o-for-each display-row (o-range 9))))
 
 
 ;; get-row-vals :: board -> row -> [vals]
 ;;              :: [int] -> int -> [int]
 (defun get-row-vals (board row)
-  )
+  (o-map 'cadr (o-filter
+                (lambda (tuple)
+                  (let ((index (car tuple)))
+                    (= row (get-row index))))
+                (o-zip-with-index board))))
+
+
+; get-row :: cell -> row
+;         :: int -> int
+(defun get-row (cell)
+  (floor cell 9))
 
 
 (display-board original-board)
-
-
-(o-zip (o-range 8) (make-list 8 0))
