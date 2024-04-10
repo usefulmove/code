@@ -6,7 +6,7 @@
 ;; Maintainer: Duane Edmonds <duane.edmonds@gmail.com>
 ;; Created: April 9, 2024
 ;; Modified: April 10, 2024
-;; Version: 0.0.1
+;; Version: 0.0.2
 ;; Keywords:
 ;; Homepage:
 ;; Package-Requires: ((emacs "25.1"))
@@ -20,7 +20,8 @@
 ;;; Code:
 
 
-(load-file "~/repos/othello/src/othello.el")
+(add-to-list 'load-path "~/repos/othello/src/")
+(require 'othello)
 
 
 ;; core "data types"
@@ -33,15 +34,15 @@
 
 
 (setq original-board
-      (list 5 3 0 0 7 0 0 0 0
-            6 0 0 1 9 5 0 0 0
-            0 9 8 0 0 0 0 6 0
-            8 0 0 0 6 0 0 0 3
-            4 0 0 8 0 3 0 0 1
-            7 0 0 0 2 0 0 0 6
-            0 6 0 0 0 0 2 8 0
-            0 0 0 4 1 9 0 0 5
-            0 0 0 0 8 0 0 7 9 ))
+  (list 5 3 0 0 7 0 0 0 0
+        6 0 0 1 9 5 0 0 0
+        0 9 8 0 0 0 0 6 0
+        8 0 0 0 6 0 0 0 3
+        4 0 0 8 0 3 0 0 1
+        7 0 0 0 2 0 0 0 6
+        0 6 0 0 0 0 2 8 0
+        0 0 0 4 1 9 0 0 5
+        0 0 0 0 8 0 0 7 9 ))
 
 
 (setq valid-vals
@@ -55,8 +56,9 @@
                        (insert "    ")
                        (o-for-each
                         (lambda (digit)
-                          (message (int-to-string digit))
-                          (insert (format " %d " digit)))
+                          (insert (if (o-zero-p digit)
+                                      "   "
+                                    (format " %d " digit))))
                         (get-row-vals board row))
                        (newline))))
     (switch-to-buffer (get-buffer-create "Sudoku"))
