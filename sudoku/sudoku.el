@@ -45,6 +45,25 @@
         0 0 0 0 8 0 0 7 9 ))
 
 
+;; backtracking solver
+;; solve :: board -> board
+;;       :: [int] -> [int]
+(defun solve (board)
+  (catch 'return
+    (throw 'return board)
+    (let ((empty-cell (find-empty-cell board)))
+      (if (= -1 empty-cell) ; if no cells are empty
+          board ; return solution
+        (o-begin
+         (dolist (candidate valid-vals)
+           (when (possible? board empty-cell candidate)
+             (let ((possible-solution
+                    (solve (set-cell-val board empty-cell candidate))))
+               (when (solved? possible-solution)
+                 (throw possible-solution))))) ; return solution
+         '()))))) ; all candidates exhausted. no solution found.
+
+
 (setq valid-vals
       (o-range 1 (o-inc 9)))
 
@@ -55,10 +74,10 @@
   (let ((title "           Sudoku Solver")(display-row (lambda (row)
                        (insert "    ")
                        (o-for-each
-                        (lambda (digit)
-                          (insert (if (o-zero-p digit)
-                                      "   "
-                                    (format " %d " digit))))
+                        (lambda (val)
+                          (insert (if (o-zero-p val)
+                                      " _ "
+                                    (format " %d " val))))
                         (get-row-vals board row))
                        (newline))))
     (switch-to-buffer (get-buffer-create "Sudoku"))
@@ -77,16 +96,106 @@
 ;;              :: [int] -> int -> [int]
 (defun get-row-vals (board row)
   (o-map 'cadr (o-filter
-                (lambda (tuple)
-                  (let ((index (car tuple)))
+                (lambda (tup)
+                  (let ((index (car tup)))
                     (= row (get-row index))))
                 (o-zip-with-index board))))
 
 
-; get-row :: cell -> row
-;         :: int -> int
+;; get-row :: cell -> row
+;;         :: int -> int
 (defun get-row (cell)
   (floor cell 9))
 
 
+;; find-empty-cell :: board -> cell
+;;                 :: [int] -> int
+(defun find-empty-cell (board &optional index)
+  (unless index (setq index 0))
+  (cond ((o-null-p board) -1)
+        ((= 0 (car board)) index)
+        (o-else (find-empty-cell (cdr board) (o-inc index)))))
+
+
+; possible? :: board -> cell -> val -> boolean
+;           :: [int] -> int -> int -> boolean
+(defun possible? (board cell val)
+  (o-true-p (member val (get-non-candidates board cell))))
+
+
+; get-non-candidates :: board -> cell -> [val]
+;                    :: [int] -> int -> [int]
+(defun get-non-candidates (board cell)
+  (o-remove-duplicates
+   (append (get-row-vals board (get-row cell))
+           (get-col-vals board (get-col cell))
+           (get-box-vals board (get-box cell)))))
+
+
+;; get-row-vals :: board -> row -> [val]
+;;              :: [int] -> int -> [int]
+(defun get-row-vals (board row)
+  (let ((matching-tups (o-filter
+                        (lambda (tup)
+                          (let ((index (car tup)))
+                            (= row (get-row index))))
+                        (o-zip-with-index board))))
+    (map 'cadr matching-tups)))
+
+
+;; get-col-vals :: board -> col -> [val]
+;;              :: [int] -> int -> [int]
+(defun get-col-vals (board col)
+  (let ((matching-tups (o-filter
+                        (lambda (tup)
+                          (let ((index (car tup)))
+                            (= col (get-col index))))
+                        (o-zip-with-index board))))
+    (map 'cadr matching-tups)))
+
+
+;; get-box-vals :: board -> box -> [val]
+;;              :: [int] -> int -> [int]
+(defun get-box-vals (board box)
+  (let ((matching-tups (o-filter
+                        (lambda (tup)
+                          (let ((index (car tup)))
+                            (= box (get-box index))))
+                        (o-zip-with-index board))))
+    (map 'cadr matching-tups)))
+
+
+; get-row :: cell -> row
+;         :: int -> int
+(defun (get-row cell)
+  (floor cell 9))
+
+
+; get-col :: cell -> col
+;         :: int -> int
+(defun get-col (cell)
+    (mod cell 9))
+
+
+(display-board
+ (map 'get-box (o-range 81)))
+
+
+; get-box :: cell -> box
+;         :: int -> int
+(defun get-box (cell)
+  (let ((row (get-row cell))
+        (col (get-col cell)))
+    (+ (* (floor row 3) 3)
+       (floor col 3))))
+
+
+;; solved? :: board -> boolean
+;;         :: [int] -> boolean
+(defun solved? (board)
+  (and (not (o-null-p board)) ; board is not nil
+       (= -1 (find-empty-cell board)))) ; board contains no empty cells
+
+
+(display-board (solve original-board))
 (display-board original-board)
