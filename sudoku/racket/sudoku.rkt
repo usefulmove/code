@@ -3,14 +3,14 @@
 
 ;; core "data types"
 ;;   board - [int] (length 81)
-;;   cell - int (0-80)
+;;   pos - int (0-80)
 ;;   row - int (0-8)
 ;;   col - int (0-8)
 ;;   box - int (0-8)
 ;;   value - int (1-9)
 
 
-(define original-board
+(define unsolved-board
   (list 5 3 0 0 7 0 0 0 0
         6 0 0 1 9 5 0 0 0
         0 9 8 0 0 0 0 6 0
@@ -40,36 +40,36 @@
   (newline))
 
 
-;; get-cell-value :: board -> cell -> value
-;;                :: [int] -> int -> -> int
-(define get-cell-value list-ref) ; list-ref ( point-free )
+;; get-pos-value :: board -> pos -> value
+;;               :: [int] -> int -> -> int
+(define get-pos-value list-ref) ; list-ref ( point-free )
 
 
-;; set-cell-value :: board -> cell -> value -> board
-;;                :: [int] -> int -> -> int -> [int]
-(define (set-cell-value board cell value)
-  (append (take board cell)
+;; set-pos-value :: board -> pos -> value -> board
+;;               :: [int] -> int -> -> int -> [int]
+(define (set-pos-value board pos value)
+  (append (take board pos)
           (list value)
-          (drop board (add1 cell))))
+          (drop board (add1 pos))))
 
 
-; get-row :: cell -> row
+; get-row :: pos -> row
 ;         :: int -> int
-(define (get-row cell)
-  (floor (/ cell 9)))
+(define (get-row pos)
+  (floor (/ pos 9)))
 
 
-; get-col :: cell -> col
+; get-col :: pos -> col
 ;         :: int -> int
-(define (get-col cell)
-  (modulo cell 9))
+(define (get-col pos)
+  (modulo pos 9))
 
 
-; get-box :: cell -> box
+; get-box :: pos -> box
 ;         :: int -> int
-(define (get-box cell)
-  (let ((row (get-row cell))
-        (col (get-col cell)))
+(define (get-box pos)
+  (let ((row (get-row pos))
+        (col (get-col pos)))
     (+ (* (floor (/ row 3)) 3)
        (floor (/ col 3)))))
 
@@ -112,51 +112,51 @@
     (map cadr matching-pairs)))
 
 
-; get-first-empty-cell :: board -> cell
-;                 :: [int] -> int
-; note: get-first-empty-cell returns #f no empty cells are found
-(define (get-first-empty-cell board)
+; get-first-hole-pos :: board -> pos
+;                    :: [int] -> int
+; note: get-first-hole-pos returns #f no empty positions are found
+(define (get-first-hole-pos board)
   (index-of board 0))
 
 
-; get-non-candidates :: board -> cell -> [value]
+; get-non-candidates :: board -> pos -> [value]
 ;                    :: [int] -> int -> [int]
-(define (get-non-candidates board cell)
+(define (get-non-candidates board pos)
   (remove-duplicates
-   (append (get-row-values board (get-row cell))
-           (get-col-values board (get-col cell))
-           (get-box-values board (get-box cell)))))
+   (append (get-row-values board (get-row pos))
+           (get-col-values board (get-col pos))
+           (get-box-values board (get-box pos)))))
 
 
-; possible? :: board -> cell -> value -> boolean
-;           :: [int] -> int -> int -> boolean
-(define (possible? board cell value)
-  (not (member value (get-non-candidates board cell))))
+; candidate-allowed? :: board -> pos -> value -> boolean
+;                     :: [int] -> int -> int -> boolean
+(define (candidate-allowed? board pos value)
+  (not (member value (get-non-candidates board pos))))
 
 
 ;; board-solved? :: board -> boolean
-;;         :: [int] -> boolean
+;;               :: [int] -> boolean
 (define (board-solved? board)
   (and (not (null? board)) ; board is not null
-       (not (get-first-empty-cell board)))) ; board contains no empty cells
+       (not (get-first-hole-pos board)))) ; board contains no empty positions
 
 
 ;; backtracking solver
 ;; solve-board :: board -> board
-;;                  :: [int] -> [int] (empty list if no solution found)
+;;             :: [int] -> [int] (empty list if no solution found)
 (define (solve-board board)
   (call-with-current-continuation
    (lambda (return)
-     (let ((empty-cell (get-first-empty-cell board)))
-       (if (not empty-cell)
+     (let ((hole (get-first-hole-pos board)))
+       (if (not hole)
            board ; return solved board.
            (begin
              (for ((candidate valid-values))
-               (when (possible? board empty-cell candidate)
+               (when (candidate-allowed? board hole candidate)
                  (let ((could-be-solution (solve-board
-                                           (set-cell-value
+                                           (set-pos-value
                                             board
-                                            empty-cell
+                                            hole
                                             candidate))))
                    (when (board-solved? could-be-solution)
                      (return could-be-solution))))) ; return solved board.
@@ -164,4 +164,4 @@
 
 
 
-(display-board (solve-board original-board))
+(display-board (solve-board unsolved-board))
