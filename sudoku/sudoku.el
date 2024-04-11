@@ -57,9 +57,9 @@
          (dolist (candidate valid-vals)
            (when (possible? board empty-cell candidate)
              (let ((possible-solution
-                    (solve (set-cell-val board empty-cell candidate))))
-               ;(display-board (set-cell-val board empty-cell candidate))
-               ;(sit-for 0.2)
+                    (solve (display-board
+                            (set-cell-val board empty-cell candidate)))))
+               (sit-for 0.001)
                (when (solved? possible-solution)
                  (throw 'return possible-solution))))) ; return solution (continuation)
          '()))))) ; all candidates exhausted. no solution found.
@@ -69,7 +69,7 @@
       (o-range 1 (o-inc 9)))
 
 
-;; display-board :: board -> nil (impure)
+;; display-board :: board -> board (impure)
 ;;               :: [int] -> nil
 (defun display-board (board)
   (let ((title "           Sudoku Solver")(display-row (lambda (row)
@@ -85,12 +85,14 @@
     (org-mode)
     (display-line-numbers-mode -1)
     (setq show-trailing-whitespace nil)
+    (face-remap-add-relative 'default :height 420)
     (erase-buffer)
     (newline)
     (insert title)
     (newline)
     (newline)
-    (o-for-each display-row (o-range 9))))
+    (o-for-each display-row (o-range 9))
+    board))
 
 
 ;; get-row-vals :: board -> row -> [val]
