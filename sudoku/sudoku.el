@@ -50,7 +50,6 @@
 ;;       :: [int] -> [int]
 (defun solve (board)
   (catch 'return
-    (throw 'return board)
     (let ((empty-cell (find-empty-cell board)))
       (if (= -1 empty-cell) ; if no cells are empty
           board ; return solution
@@ -59,8 +58,10 @@
            (when (possible? board empty-cell candidate)
              (let ((possible-solution
                     (solve (set-cell-val board empty-cell candidate))))
+               ;(display-board (set-cell-val board empty-cell candidate))
+               ;(sit-for 0.2)
                (when (solved? possible-solution)
-                 (throw possible-solution))))) ; return solution
+                 (throw 'return possible-solution))))) ; return solution (continuation)
          '()))))) ; all candidates exhausted. no solution found.
 
 
@@ -97,15 +98,9 @@
 (defun get-row-vals (board row)
   (o-map 'cadr (o-filter
                 (lambda (tup)
-                  (let ((index (car tup)))
-                    (= row (get-row index))))
+                  (let ((cell (car tup)))
+                    (= row (get-row cell))))
                 (o-zip-with-index board))))
-
-
-;; get-row :: cell -> row
-;;         :: int -> int
-(defun get-row (cell)
-  (floor cell 9))
 
 
 ;; find-empty-cell :: board -> cell
@@ -120,7 +115,7 @@
 ; possible? :: board -> cell -> val -> boolean
 ;           :: [int] -> int -> int -> boolean
 (defun possible? (board cell val)
-  (o-true-p (member val (get-non-candidates board cell))))
+  (not (member val (get-non-candidates board cell))))
 
 
 ; get-non-candidates :: board -> cell -> [val]
@@ -137,8 +132,8 @@
 (defun get-row-vals (board row)
   (let ((matching-tups (o-filter
                         (lambda (tup)
-                          (let ((index (car tup)))
-                            (= row (get-row index))))
+                          (let ((cell (car tup)))
+                            (= row (get-row cell))))
                         (o-zip-with-index board))))
     (map 'cadr matching-tups)))
 
@@ -148,8 +143,8 @@
 (defun get-col-vals (board col)
   (let ((matching-tups (o-filter
                         (lambda (tup)
-                          (let ((index (car tup)))
-                            (= col (get-col index))))
+                          (let ((cell (car tup)))
+                            (= col (get-col cell))))
                         (o-zip-with-index board))))
     (map 'cadr matching-tups)))
 
@@ -159,15 +154,15 @@
 (defun get-box-vals (board box)
   (let ((matching-tups (o-filter
                         (lambda (tup)
-                          (let ((index (car tup)))
-                            (= box (get-box index))))
+                          (let ((cell (car tup)))
+                            (= box (get-box cell))))
                         (o-zip-with-index board))))
     (map 'cadr matching-tups)))
 
 
 ; get-row :: cell -> row
 ;         :: int -> int
-(defun (get-row cell)
+(defun get-row (cell)
   (floor cell 9))
 
 
@@ -175,10 +170,6 @@
 ;         :: int -> int
 (defun get-col (cell)
     (mod cell 9))
-
-
-(display-board
- (map 'get-box (o-range 81)))
 
 
 ; get-box :: cell -> box
@@ -190,6 +181,14 @@
        (floor col 3))))
 
 
+;; set-cell-val :: board -> cell -> val -> board
+;;              :: [int] -> int -> -> int -> [int]
+(defun set-cell-val (board cell val)
+  (append (o-take cell board)
+          (list val)
+          (o-drop (o-inc cell) board)))
+
+
 ;; solved? :: board -> boolean
 ;;         :: [int] -> boolean
 (defun solved? (board)
@@ -197,5 +196,6 @@
        (= -1 (find-empty-cell board)))) ; board contains no empty cells
 
 
-(display-board (solve original-board))
 (display-board original-board)
+
+(display-board (solve original-board))
