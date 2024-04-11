@@ -86,11 +86,8 @@
                          (lambda (pair)
                            (let ((index (car pair)))
                              (= row (get-row index))))
-                         (zip (range (length board))
-                              board))))
-    (map
-     cadr
-     matching-pairs)))
+                         (zip (range (length board)) board))))
+    (map cadr matching-pairs)))
 
 
 ;; get-col-digits :: board -> col -> [digits]
@@ -100,11 +97,8 @@
                          (lambda (pair)
                            (let ((index (car pair)))
                              (= col (get-col index))))
-                         (zip (range (length board))
-                              board))))
-    (map
-     cadr
-     matching-pairs)))
+                         (zip (range (length board)) board))))
+    (map cadr matching-pairs)))
 
 
 ;; get-box-digits :: board -> box -> [digits]
@@ -114,15 +108,13 @@
                          (lambda (pair)
                            (let ((index (car pair)))
                              (= box (get-box index))))
-                         (zip (range (length board))
-                              board))))
-    (map
-     cadr
-     matching-pairs)))
+                         (zip (range (length board)) board))))
+    (map cadr matching-pairs)))
 
 
 ; find-empty-cell :: board -> cell
-;                 :: board -> int
+;                 :: [int] -> int
+; note: find-empty-cell returns #f no empty cells are found
 (define (find-empty-cell board)
   (index-of board 0))
 
@@ -145,8 +137,8 @@
 ;; solved? :: board -> boolean
 ;;         :: [int] -> boolean
 (define (solved? board)
-  (not (or (null? board) ; board is not null
-           (member 0 board)))) ; board contains no zeros
+  (and (not (null? board)) ; board is not null
+       (not (find-empty-cell board)))) ; board contains no empty cells
 
 
 ;; backtracking solver
@@ -162,7 +154,7 @@
              (for ((candidate valid-digits))
                (when (possible? board empty-cell candidate)
                  (let ((possible-solution
-                        (solve(set-cell-digit board empty-cell candidate))))
+                        (solve (set-cell-digit board empty-cell candidate))))
                    (when (solved? possible-solution)
                      (return possible-solution))))) ; return solution.
              '())))))) ; all candidates exhausted. no solution found.
