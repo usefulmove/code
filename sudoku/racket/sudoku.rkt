@@ -7,7 +7,7 @@
 ;;   row - int (0-8)
 ;;   col - int (0-8)
 ;;   box - int (0-8)
-;;   digit - int (1-9)
+;;   value - int (1-9)
 
 
 (define original-board
@@ -22,7 +22,7 @@
         0 0 0 0 8 0 0 7 9 ))
 
 
-(define valid-digits
+(define valid-values
   (range 1 (add1 9)))
 
 
@@ -32,24 +32,24 @@
   (newline)
   (let ((display-row (lambda (row)
                        (for-each
-                        (lambda (digit)
-                          (display (format " ~a " digit)))
-                        (get-row-digits board row))
+                        (lambda (value)
+                          (display (format " ~a " value)))
+                        (get-row-values board row))
                        (newline))))
     (for-each display-row (range 9)))
   (newline))
 
 
-;; get-cell-digit :: board -> cell -> digit
+;; get-cell-value :: board -> cell -> value
 ;;                :: [int] -> int -> -> int
-(define get-cell-digit list-ref) ; list-ref ( point-free )
+(define get-cell-value list-ref) ; list-ref ( point-free )
 
 
-;; set-cell-digit :: board -> cell -> digit -> board
+;; set-cell-value :: board -> cell -> value -> board
 ;;                :: [int] -> int -> -> int -> [int]
-(define (set-cell-digit board cell digit)
+(define (set-cell-value board cell value)
   (append (take board cell)
-          (list digit)
+          (list value)
           (drop board (add1 cell))))
 
 
@@ -79,9 +79,9 @@
   (apply map list lst lsts))
 
 
-;; get-row-digits :: board -> row -> [digits]
+;; get-row-values :: board -> row -> [values]
 ;;                :: [int] -> int -> [int]
-(define (get-row-digits board row)
+(define (get-row-values board row)
   (let ((matching-pairs (filter
                          (lambda (pair)
                            (let ((index (car pair)))
@@ -90,9 +90,9 @@
     (map cadr matching-pairs)))
 
 
-;; get-col-digits :: board -> col -> [digits]
+;; get-col-values :: board -> col -> [values]
 ;;                :: [int] -> int -> [int]
-(define (get-col-digits board col)
+(define (get-col-values board col)
   (let ((matching-pairs (filter
                          (lambda (pair)
                            (let ((index (car pair)))
@@ -101,9 +101,9 @@
     (map cadr matching-pairs)))
 
 
-;; get-box-digits :: board -> box -> [digits]
+;; get-box-values :: board -> box -> [values]
 ;;                :: [int] -> int -> [int]
-(define (get-box-digits board box)
+(define (get-box-values board box)
   (let ((matching-pairs (filter
                          (lambda (pair)
                            (let ((index (car pair)))
@@ -112,53 +112,56 @@
     (map cadr matching-pairs)))
 
 
-; find-empty-cell :: board -> cell
+; get-first-empty-cell :: board -> cell
 ;                 :: [int] -> int
-; note: find-empty-cell returns #f no empty cells are found
-(define (find-empty-cell board)
+; note: get-first-empty-cell returns #f no empty cells are found
+(define (get-first-empty-cell board)
   (index-of board 0))
 
 
-; get-non-candidates :: board -> cell -> [digits]
+; get-non-candidates :: board -> cell -> [value]
 ;                    :: [int] -> int -> [int]
 (define (get-non-candidates board cell)
   (remove-duplicates
-   (append (get-row-digits board (get-row cell))
-           (get-col-digits board (get-col cell))
-           (get-box-digits board (get-box cell)))))
+   (append (get-row-values board (get-row cell))
+           (get-col-values board (get-col cell))
+           (get-box-values board (get-box cell)))))
 
 
-; possible? :: board -> cell -> digit -> boolean
+; possible? :: board -> cell -> value -> boolean
 ;           :: [int] -> int -> int -> boolean
-(define (possible? board cell digit)
-  (not (member digit (get-non-candidates board cell))))
+(define (possible? board cell value)
+  (not (member value (get-non-candidates board cell))))
 
 
-;; solved? :: board -> boolean
+;; board-solved? :: board -> boolean
 ;;         :: [int] -> boolean
-(define (solved? board)
+(define (board-solved? board)
   (and (not (null? board)) ; board is not null
-       (not (find-empty-cell board)))) ; board contains no empty cells
+       (not (get-first-empty-cell board)))) ; board contains no empty cells
 
 
 ;; backtracking solver
-;; solve :: board -> board
-;;       :: [int] -> [int] (empty list if no solution found)
-(define (solve board)
+;; solve-board :: board -> board
+;;                  :: [int] -> [int] (empty list if no solution found)
+(define (solve-board board)
   (call-with-current-continuation
    (lambda (return)
-     (let ((empty-cell (find-empty-cell board)))
-       (if (false? empty-cell)
-           board ; return solution.
+     (let ((empty-cell (get-first-empty-cell board)))
+       (if (not empty-cell)
+           board ; return solved board.
            (begin
-             (for ((candidate valid-digits))
+             (for ((candidate valid-values))
                (when (possible? board empty-cell candidate)
-                 (let ((possible-solution
-                        (solve (set-cell-digit board empty-cell candidate))))
-                   (when (solved? possible-solution)
-                     (return possible-solution))))) ; return solution.
+                 (let ((could-be-solution (solve-board
+                                           (set-cell-value
+                                            board
+                                            empty-cell
+                                            candidate))))
+                   (when (board-solved? could-be-solution)
+                     (return could-be-solution))))) ; return solved board.
              '())))))) ; all candidates exhausted. no solution found.
 
 
 
-(display-board (solve original-board))
+(display-board (solve-board original-board))
