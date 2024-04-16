@@ -2,7 +2,7 @@
 
 
 (define-syntax o-for
-  (syntax-rules ()
+  (syntax-rules (car cdr if lambda let letrec null? void)
     ((_ ((var lst)) body ...)
      (letrec ((recur (lambda (ls)
                        (if (null? ls)
