@@ -9,12 +9,14 @@
 
 
 (defun convert (n)
-  (let ((sounds (apply'concat (mapcar
-                                (lambda (pair)
-                                  (if (= 0 (mod n (car pair)))
-                                      (cdr pair)
-                                    ""))
-                                '((3 . "Pling") (5 . "Plang") (7 . "Plong"))))))
+  "Convert integer N to its raindrops string."
+  (let* ((rainspeak '((3 . "Pling") (5 . "Plang") (7 . "Plong")))
+         (sounds (mapconcat
+                  (lambda (pair) (if (zerop (mod n (car pair)))
+                                     (cdr pair)
+                                   ""))
+                  rainspeak
+                  nil)))
     (if (equal "" sounds)
         (number-to-string n)
       sounds)))
