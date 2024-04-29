@@ -1,4 +1,4 @@
-Scheme Basics
+* Scheme Basics
 
 1. numbers and symbols
 2. bindings
@@ -6,6 +6,8 @@ Scheme Basics
    - let
 3. control structures
 4. pairs and lists
+   - cons cells
+   - lists
    - destructuring (car, cdr)
 5. functions and procedures
 6. recursion
