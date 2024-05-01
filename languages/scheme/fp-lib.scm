@@ -15,6 +15,7 @@
         (else (cons (replace-underscore (car sexp) value)
                     (replace-underscore (cdr sexp) value)))))
 
+
 ; scan
 (define (scan-left f lst)
   (let ((last (lambda (lst)
@@ -25,3 +26,12 @@
            (append acc (list (f a (last acc))))))
      '()
      lst)))
+
+
+; debug
+(define-syntax debug
+  (syntax-rules ()
+    ((_ sexp) (let ((value sexp))
+                (display value)
+                (newline)
+                value))))
