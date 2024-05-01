@@ -4,15 +4,18 @@
     ((thread seed form more ...)
      (thread ((eval (create-lambda form)) seed) more ...))))
 
+
 (define (create-lambda sexp)
   `(lambda (_arg_)
     ,(replace-underscore sexp '_arg_)))
+
 
 (define (replace-underscore sexp value)
   (cond ((eq? sexp '_) value)
         ((not (pair? sexp)) sexp)
         (else (cons (replace-underscore (car sexp) value)
                     (replace-underscore (cdr sexp) value)))))
+
 
 #;(begin
   (display (replace-underscore '(* _ _ _) 8))
@@ -25,6 +28,7 @@
              ((eval f) 5)))
   (newline))
 
+
 ; prototype(s)
 (begin 
   (display
@@ -32,16 +36,24 @@
     '(sqrt _)
     '(- _ 1)
     '(/ _ 2)
-    '(/ _)))
+    '(/ 1 _)
+    '(/ 1 _)))
   (newline))
 
-(begin
+#;(begin 
+  (display 
+   (expand '(thread 5
+             '(sqrt _)
+             '(- _ 1))))
+  (newline))
+
+#;(begin
   (display
    (thread 8
     '(* _ _ _)))
   (newline))
 
-(begin
+#;(begin
   (display
    (thread 8
     '(iota (add1 _))
