@@ -3,7 +3,7 @@
   (syntax-rules ()
     ((thread seed) seed)
     ((thread seed form more ...)
-     (thread ((eval (create-lambda form)) seed) more ...))))
+     (thread ((eval (create-lambda 'form)) seed) more ...))))
 
 (define (create-lambda sexp)
   `(lambda (_arg_)
