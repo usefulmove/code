@@ -16,6 +16,12 @@
                     (replace-underscore (cdr sexp) value)))))
 
 
+; lam
+(define-syntax lam
+  (syntax-rules ()
+    ((_ form) (eval (create-lambda 'form)))))
+
+
 ; scan
 (define (scan-left f lst)
   (let ((last (lambda (lst)
