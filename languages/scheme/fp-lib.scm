@@ -21,6 +21,15 @@
   (syntax-rules ()
     ((_ form) (eval (create-lambda 'form)))))
 
+; red
+(define-syntax red
+  (syntax-rules (car cdr eval fold-left)
+    ((_ form seed lst)
+     (fold-left
+      (eval `(lambda (:acc _) form))
+      seed
+      lst))))
+
 
 ; scan
 (define (scan-left f lst)
