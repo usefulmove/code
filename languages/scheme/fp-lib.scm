@@ -1,11 +1,13 @@
 ; thread
 (define-syntax thread
-  (syntax-rules (eval)
+  (syntax-rules ()
     ((thread seed) seed)
-    ((thread seed form)
-     (eval (replace-underscore 'form seed)))
-    ((thread seed form1 form2 ...)
-     (thread (thread seed form1) form2 ...))))
+    ((thread seed form more ...)
+     (thread ((eval (create-lambda form)) seed) more ...))))
+
+(define (create-lambda sexp)
+  `(lambda (_arg_)
+     ,(replace-underscore sexp '_arg_)))
 
 (define (replace-underscore sexp value)
   (cond ((eq? sexp '_) value)
