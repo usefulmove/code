@@ -21,6 +21,7 @@
   (syntax-rules ()
     ((_ form) (eval (create-lambda 'form)))))
 
+
 ; red
 (define-syntax red
   (syntax-rules (car cdr eval fold-left)
@@ -29,6 +30,15 @@
       (eval `(lambda (:acc _) form))
       seed
       lst))))
+
+
+; enumerate
+(define (enumerate lst . params)
+  (let ((index (if (not (null? params)) (car params) 0)))
+    (cond ((null? lst) '())
+          (else (cons (cons index
+                            (car lst))
+                      (enumerate (cdr lst) (+ 1 index)))))))
 
 
 ; scan
