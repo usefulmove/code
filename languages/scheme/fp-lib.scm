@@ -1,13 +1,9 @@
-; thread
-(define-syntax thread
-  (syntax-rules ()
-    ((thread seed) seed)
-    ((thread seed form more ...)
-     (thread ((eval (create-lambda 'form)) seed) more ...))))
+;; macro support
 
 (define (create-lambda sexp)
   `(lambda (_arg_)
      ,(replace-underscore sexp '_arg_)))
+
 
 (define (replace-underscore sexp value)
   (cond ((eq? sexp '_) value)
@@ -16,15 +12,23 @@
                     (replace-underscore (cdr sexp) value)))))
 
 
-; fn
+;; thread
+(define-syntax thread
+  (syntax-rules (eval)
+    ((thread seed) seed)
+    ((thread seed form more ...)
+     (thread ((eval (create-lambda 'form)) seed) more ...))))
+
+
+;; fn (function)
 (define-syntax fn
-  (syntax-rules ()
+  (syntax-rules (eval)
     ((_ form) (eval (create-lambda 'form)))))
 
 
-; red
+;; red (reduce)
 (define-syntax red
-  (syntax-rules (car cdr eval fold-left)
+  (syntax-rules (eval fold-left)
     ((_ form seed lst)
      (fold-left
       (eval `(lambda (:acc _) form))
@@ -32,7 +36,7 @@
       lst))))
 
 
-; enumerate
+;; enumerate
 (define (enumerate lst . params)
   (let ((index (if (not (null? params)) (car params) 0)))
     (cond ((null? lst) '())
@@ -41,7 +45,7 @@
                       (enumerate (cdr lst) (+ 1 index)))))))
 
 
-; scan
+;; scan
 (define (scan-left f lst)
   (let ((last (lambda (lst)
                 (car (reverse lst)))))
@@ -53,9 +57,9 @@
      lst)))
 
 
-; debug
+;; debug
 (define-syntax debug
-  (syntax-rules ()
+  (syntax-rules (display let newline)
     ((_ sexp) (let ((value sexp))
                 (display value)
                 (newline)
