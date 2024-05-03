@@ -16,8 +16,8 @@
                     (replace-underscore (cdr sexp) value)))))
 
 
-; lam
-(define-syntax lam
+; fn
+(define-syntax fn
   (syntax-rules ()
     ((_ form) (eval (create-lambda 'form)))))
 
