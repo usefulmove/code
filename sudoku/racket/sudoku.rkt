@@ -10,7 +10,7 @@
 ;;   value - int (1-9)
 
 
-(define unsolved-board
+#;(define unsolved-board
   (list 5 3 0 0 7 0 0 0 0
         6 0 0 1 9 5 0 0 0
         0 9 8 0 0 0 0 6 0
@@ -20,6 +20,17 @@
         0 6 0 0 0 0 2 8 0
         0 0 0 4 1 9 0 0 5
         0 0 0 0 8 0 0 7 9 ))
+
+(define unsolved-board
+  (list 0 0 5 3 0 0 0 0 0
+        8 0 0 0 0 0 0 2 0
+        0 7 0 0 1 0 5 0 0
+        4 0 0 0 0 5 3 0 0
+        0 1 0 0 7 0 0 0 6
+        0 0 3 2 0 0 0 8 0
+        0 6 0 5 0 0 0 0 9
+        0 0 4 0 0 0 0 3 0
+        0 0 0 0 0 9 7 0 0 ))
 
 
 (define valid-values
