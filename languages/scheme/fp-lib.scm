@@ -14,26 +14,23 @@
 
 ;; thread
 (define-syntax thread
-  (syntax-rules (eval)
-    ((thread seed) seed)
-    ((thread seed form more ...)
+  (syntax-rules ()
+    ((_ seed) seed)
+    ((_ seed form more ...)
      (thread ((eval (create-lambda 'form)) seed) more ...))))
 
 
 ;; fn (function)
 (define-syntax fn
-  (syntax-rules (eval)
+  (syntax-rules ()
     ((_ form) (eval (create-lambda 'form)))))
 
 
 ;; red (reduce)
 (define-syntax red
-  (syntax-rules (eval fold-left)
+  (syntax-rules ()
     ((_ form seed lst)
-     (fold-left
-      (eval `(lambda (:acc _) form))
-      seed
-      lst))))
+     (fold-left (eval `(lambda (:acc _) form)) seed lst))))
 
 
 ;; enumerate
@@ -59,7 +56,7 @@
 
 ;; debug
 (define-syntax debug
-  (syntax-rules (display let newline)
+  (syntax-rules ()
     ((_ sexp) (let ((value sexp))
                 (display value)
                 (newline)
