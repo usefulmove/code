@@ -1,0 +1,6 @@
+(defun fib (n &optional a b)
+  (let ((a (if a a 0))
+        (b (if b b 1)))
+    (cond ((= 0 n) a)
+          ((= 1 n) b)
+          (t (fib (- n 1) b (+ a b))))))
