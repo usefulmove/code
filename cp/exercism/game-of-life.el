@@ -34,7 +34,6 @@
                                  (funcall get-value matrix (+ row-ind 1) (- col-ind 1))
                                  (funcall get-value matrix (+ row-ind 1) col-ind)
                                  (funcall get-value matrix (+ row-ind 1) (+ col-ind 1)))))
-              (message (prin1-to-string (cons cell neighbors)))
               (cond ((funcall cell-alive? cell)
                      (if (or (= 2 neighbors)
                              (= 3 neighbors))
