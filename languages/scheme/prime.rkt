@@ -6,7 +6,6 @@
         ((even? n) #f)
         (else
          (let loop ((i 3))
-           (cond
-             ((> (* i i) n) #t)
-             ((zero? (remainder n i)) #f)
-             (else (loop (+ i 2))))))))
+           (cond ((> (* i i) n) #t)
+                 ((zero? (remainder n i)) #f)
+                 (else (loop (+ i 2))))))))
