@@ -17,7 +17,7 @@
 (script-fu-register
  "script-fu-add-grain-400tx"                    ; Procedure name
  "Add Grain (400TX)"                            ; Menu label
- "Adds a Tri-X 400 (400TX) layer"               ; Description
+ "Adds a Tri-X 400 (400TX) film grain emulation layer"     ; Description
  "Duane Edmonds"                                ; Author
  "Duane Edmonds"                                ; Copyright
  "2025"                                         ; Date
