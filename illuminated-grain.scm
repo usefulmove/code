@@ -1,16 +1,25 @@
 (define (script-fu-add-grain-400tx image drawable)
   (let* ((width (car (gimp-image-get-width image)))
          (height (car (gimp-image-get-height image)))
-         (layer (car (gimp-layer-new image
-                                     "Grain (400TX)"
-                                     width
-                                     height
-                                     RGB-IMAGE 
-                                     100.0
-                                     LAYER-MODE-GRAIN-MERGE))))
-    (gimp-image-insert-layer image layer 0 -1)
+         (current-layer drawable)
+         (copy-layer (car (gimp-layer-copy current-layer TRUE)))
+         (noise-layer (car (gimp-layer-new image
+                                           "Grain (400TX)"
+                                           width
+                                           height
+                                           RGB-IMAGE 
+                                           100.0
+                                           LAYER-MODE-GRAIN-MERGE))))
+    ; copy layer and desaturate
+    (gimp-image-insert-layer image copy-layer 0 -1)
+    (gimp-item-set-name copy-layer "Desaturate")
+    (gimp-drawable-desaturate DESATURATE-LUMINANCE)
+
+    ; add grain layer
+    (gimp-image-insert-layer image noise-layer 0 -1)
     (gimp-context-set-foreground '(128 128 128))
-    (gimp-drawable-fill layer FILL-FOREGROUND)
+    (gimp-drawable-fill noise-layer FILL-FOREGROUND)
+
     ; update all open displays to show changes
     (gimp-displays-flush)))
 
