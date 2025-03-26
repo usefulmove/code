@@ -16,7 +16,7 @@
     ;; copy layer and desaturate
     (gimp-image-insert-layer image copy-layer 0 -1)
     (gimp-item-set-name copy-layer "Desaturate")
-    (gimp-drawable-desaturate DESATURATE-LUMINANCE)
+    (gimp-drawable-desaturate copy-layer DESATURATE-LUMINANCE)
 
     ;; add grain layer
     (gimp-image-insert-layer image noise-layer 0 -1)
