@@ -8,7 +8,7 @@
                                            width
                                            height
                                            RGB-IMAGE 
-                                           100.0
+                                           72.0
                                            LAYER-MODE-GRAIN-MERGE))))
     ;; start an undo group
     (gimp-image-undo-group-start image)
