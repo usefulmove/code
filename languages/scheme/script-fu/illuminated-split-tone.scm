@@ -2,10 +2,10 @@
   (let* ((width (car (gimp-image-get-width image)))
          (height (car (gimp-image-get-height image)))
          (current-layer drawable))
-    ; start undo group
+    ;; start undo group
     (gimp-image-undo-group-start image)
 
-    ; apply color balance
+    ;; apply color balance
     (gimp-drawable-color-balance current-layer
                                  TRANSFER-SHADOWS
                                  FALSE
@@ -19,10 +19,10 @@
                                  FALSE
                                  4.0 3.0 0.0)
 
-    ; end undo group
+    ;; end undo group
     (gimp-image-undo-group-end image)
 
-    ; update all open displays to show changes
+    ;; update all open displays to show changes
     (gimp-displays-flush)))
 
 (script-fu-register

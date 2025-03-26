@@ -10,23 +10,23 @@
                                            RGB-IMAGE 
                                            100.0
                                            LAYER-MODE-GRAIN-MERGE))))
-    ; start an undo group
+    ;; start an undo group
     (gimp-image-undo-group-start image)
 
-                                        ; copy layer and desaturate
+    ;; copy layer and desaturate
     (gimp-image-insert-layer image copy-layer 0 -1)
     (gimp-item-set-name copy-layer "Desaturate")
     (gimp-drawable-desaturate DESATURATE-LUMINANCE)
 
-                                        ; add grain layer
+    ;; add grain layer
     (gimp-image-insert-layer image noise-layer 0 -1)
     (gimp-context-set-foreground '(128 128 128))
     (gimp-drawable-fill noise-layer FILL-FOREGROUND)
 
-    ; end undo group
+    ;; end undo group
     (gimp-image-undo-group-end image)
 
-    ; update all open displays to show changes
+    ;; update all open displays to show changes
     (gimp-displays-flush)))
 
 (script-fu-register
