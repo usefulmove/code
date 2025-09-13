@@ -16,4 +16,5 @@
                                             (drop cnts (+ ind 1)))
                                     (cons (cons c 1) cnts))))))))
 
-(counter (string->list "this is a test."))
+(counter (string->list "this is a test.")) ; =>
+; '((#\t . 3) (#\h . 1) (#\i . 2) (#\s . 3) (#\space . 3) (#\a . 1) (#\e . 1) (#\. . 1))
