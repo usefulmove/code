@@ -159,8 +159,8 @@
   (call-with-current-continuation
    (lambda (return)
      (let ((hole (get-first-hole-pos board)))
-       (if (not hole)
-           board ; return solved board.
+       (if (not hole) ; if no holes left
+           board ; return solved board
            (begin
              (for ((candidate valid-values))
                (when (candidate-allowed? board hole candidate)
@@ -170,8 +170,8 @@
                                             hole
                                             candidate))))
                    (when (board-solved? could-be-solution)
-                     (return could-be-solution))))) ; return solved board.
-             '())))))) ; all candidates exhausted. no solution found.
+                     (return could-be-solution))))) ; return solved board
+             '())))))) ; all candidates exhausted and no solution found
 
 
 
