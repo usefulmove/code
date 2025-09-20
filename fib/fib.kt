@@ -1,5 +1,5 @@
 fun main() {
-    println(fib(10))
+  println(fib(10))
 }
 
 fun fib(n: Int): Int {
