@@ -24,8 +24,8 @@
                    matches))))))
 
 (let ((tosses 8000000)
-      (show (lambda (a)
-              (displayln (/ (round (* a 100)) 100.0)))))
-  (show (cointoss '(1 1 1) tosses))
-  (show (cointoss '(1 0 1) tosses))
-  (show (cointoss '(1 1 0) tosses)))
+      (show (lambda (n)
+              (displayln (/ (round (* n 100)) 100.0)))))
+  (show (cointoss '(0 0 0) tosses))
+  (show (cointoss '(0 1 0) tosses))
+  (show (cointoss '(0 0 1) tosses)))
