@@ -21,4 +21,11 @@
                    (else (fib3 (- n 1) b (+ a b)))))))
 
 
-(display (fib3 38))
+(define (fib4 n)
+  (let loop ((m n) (a 0) (b 1))
+    (cond ((= m 0) a)
+          ((= m 1) b)
+          (else (loop (- m 1) b (+ a b))))))
+
+
+(display (fib2 38))
