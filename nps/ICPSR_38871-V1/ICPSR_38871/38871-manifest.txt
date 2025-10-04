@@ -1,0 +1,57 @@
+File Manifest for ICPSR 38871
+
+United States. Bureau of Justice Statistics. National Prisoner Statistics,
+[United States], 1978-2022. ICPSR38871-v1. Ann Arbor, MI: Inter-university
+Consortium for Political and Social Research [distributor], 2024-01-10.
+http://doi.org/10.3886/ICPSR38871.v1
+
+
+Study-level Documentation
+
+    Filename                            Record  Record    Var.    Date        MD5
+                                        Length  Count     Count   Updated     Checksum
+
+    38871-descriptioncitation.pdf       -       -         -       2024-01-10  -
+
+    38871-related_literature.txt        -       -         -       daily       -
+
+    38871-manifest.txt                  -       -         -       daily       -
+
+
+DS0001 National Prisoner Statistics, [United States], 1978-2022
+
+    Filename                            Record  Record    Var.    Date        MD5
+                                        Length  Count     Count   Updated     Checksum
+
+    38871-0001-Codebook.pdf             -       -         -       2024-01-10  9d405aabe791ee1b6e630e73782869d2
+
+    38871-0001-Data.dta                 -       2,430     231     2024-01-10  d2c125312691b9e8fed49282fd01f248
+
+    38871-0001-Data.rda                 -       2,430     231     2024-01-10  b8d733df9ac180604613440536dcf15b
+
+    38871-0001-Data.sav                 -       2,430     231     2024-01-10  5e795f3c87c752d574f7a7e8b41faec2
+
+    38871-0001-Data.stc                 -       2,430     231     2024-01-10  d0d47acd2a450ec6b9c3671cb49c01fe
+
+    38871-0001-Data.tsv                 -       2,430     231     2024-01-10  657d8692e20e729e7647f9ff2710db2e
+
+    38871-0001-Data.txt                 946     2,430     231     2024-01-10  4347fff91a586ece9a6cd642381fa3b6
+
+    38871-0001-Documentation-NPS_Crosswalk_1978_2022.xlsx -       -         -       2024-01-10  9766bb79b23d79542e4fdf85fd273b1e
+
+    38871-0001-Documentation-notes.zip  -       -         -       2024-01-10  66ee61cc2d4579fd5eb66e4dbc0174e4
+
+    38871-0001-Questionnaire.pdf        -       -         -       2024-01-10  2870f3dfc5a6c8fbc7858d429d83e9a2
+
+    38871-0001-Setup.dct                -       -         -       2024-01-10  61be6cba2ef15ee00c707c5f2f4b4449
+
+    38871-0001-Setup.do                 -       -         -       2024-01-10  f57ea8915e3f5683e4c0199ba453ea28
+
+    38871-0001-Setup.sas                -       -         -       2024-01-10  d3c751b236b96764026f527609c0907c
+
+    38871-0001-Setup.sps                -       -         -       2024-01-10  e0542cf6bf13664abb7df00c4352ceed
+
+    38871-0001-Supplemental_syntax.do   -       -         -       2024-01-10  a829fbe57985b080a6e228df499db604
+
+    38871-0001-Supplemental_syntax.sas  -       -         -       2024-01-10  769cf901f93a267f153b9c135edca2be
+
