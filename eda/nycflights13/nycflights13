@@ -1,0 +1,6 @@
+airlines - https://raw.githubusercontent.com/tidyverse/nycflights13/refs/heads/main/data-raw/airlines.csv
+airports - https://raw.githubusercontent.com/tidyverse/nycflights13/refs/heads/main/data-raw/airports.csv
+flights - https://www.openintro.org/data/csv/nycflights.csv
+planes - https://raw.githubusercontent.com/tidyverse/nycflights13/refs/heads/main/data-raw/planes.csv
+weather - https://raw.githubusercontent.com/tidyverse/nycflights13/refs/heads/main/data-raw/weather.csv
+
