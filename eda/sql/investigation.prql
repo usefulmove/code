@@ -1,0 +1,183 @@
+prql target:sql.duckdb version:1
+
+# -----------------------------------------------------------------------------
+# 1) Crime scene report (SQL City, 2018-01-15, murder)
+# -----------------------------------------------------------------------------
+let scene = (
+  from crime_scene_report
+  filter date == 20180115
+  filter type == "murder"
+  filter city == "SQL City"
+)
+
+scene
+
+# -----------------------------------------------------------------------------
+# 2) Witness one: lives at the *last* house on Northwestern Dr
+#    (keep both extreme house numbers to mirror your original min/ max search)
+# -----------------------------------------------------------------------------
+let nw_all = (
+  from person
+  filter contains(lower(address_street_name), "northwestern")
+  select [id, name, address_number, address_street_name]
+)
+
+let nw_first = (
+  nw_all
+  sort address_number
+  take 1
+)
+
+let nw_last = (
+  nw_all
+  sort [-address_number]
+  take 1
+)
+
+# Show both extreme addresses (your original query surfaces both)
+(nw_first | nw_last)
+
+# -----------------------------------------------------------------------------
+# 3) Witness two: Annabel on Franklin Ave
+# -----------------------------------------------------------------------------
+let annabel = (
+  from person
+  filter contains(lower(name), "annabel")
+  filter contains(lower(address_street_name), "franklin")
+  select [id, name, address_number, address_street_name]
+)
+
+annabel
+
+# -----------------------------------------------------------------------------
+# 4) Witness interviews for both witness sets
+# -----------------------------------------------------------------------------
+let interviews_w1_first = (
+  from interview
+  join nw_first [person_id == id]
+  select [interview.person_id, interview.transcript, interview.date]
+)
+
+let interviews_w1_last = (
+  from interview
+  join nw_last [person_id == id]
+  select [interview.person_id, interview.transcript, interview.date]
+)
+
+let interviews_w2 = (
+  from interview
+  join annabel [person_id == id]
+  select [interview.person_id, interview.transcript, interview.date]
+)
+
+# Output all relevant interviews
+(interviews_w1_first | interviews_w1_last | interviews_w2)
+
+# -----------------------------------------------------------------------------
+# 5) Person of interest via gym check-ins (2018-01-09, membership starts with 48Z, gold)
+# -----------------------------------------------------------------------------
+let member_candidates = (
+  from get_fit_now_check_in
+  filter check_in_date == 20180109
+  filter starts_with(membership_id, "48Z")
+  select [membership_id]
+  distinct
+)
+
+let member_pois = (
+  from member_candidates c
+  join get_fit_now_member m [c.membership_id == m.id]
+  filter m.membership_status == "gold"
+  select [m.id, m.person_id]
+)
+
+# Cross with person + DMV; plate contains "h42w" (case-insensitive)
+let poi_primary = (
+  from member_pois mp
+  join person p [mp.person_id == p.id]
+  join drivers_license l [p.license_id == l.id]
+  filter contains(lower(l.plate_number), "h42w")
+  select [
+    p.id,
+    p.name,
+    p.ssn,
+    p.license_id,
+    l.plate_number,
+    l.car_make,
+    l.car_model
+  ]
+)
+
+poi_primary
+# Expect: Jeremy Bowers (person_id 67318)
+
+# -----------------------------------------------------------------------------
+# 6) Interview the primary POI (id = 67318)
+# -----------------------------------------------------------------------------
+let poi_primary_interview = (
+  from interview
+  filter person_id == 67318
+)
+
+poi_primary_interview
+# (Hired by woman; wealthy; 65–67"; red hair; Tesla Model S; attended SQL Symphony 3 times in Dec 2017)
+
+# -----------------------------------------------------------------------------
+# 7) Event logs to find the second POI:
+#    Attended event_id = 1143 ("SQL Symphony") exactly 3 times in Dec 2017
+# -----------------------------------------------------------------------------
+let second_pois = (
+  from facebook_event_checkin
+  filter event_id == 1143
+  filter date >= 20171201
+  filter date <= 20171231
+  group person_id (
+    aggregate [
+      count = count
+    ]
+  )
+  filter count == 3
+)
+
+# Cross with person + DMV; female, Tesla Model S, red hair
+let poi_second = (
+  from second_pois sp
+  join person p [sp.person_id == p.id]
+  join drivers_license d [p.license_id == d.id]
+  filter d.gender == "female"
+  filter contains(lower(d.car_make), "tesla")
+  filter contains(lower(d.car_model), "model s")
+  filter d.hair_color == "red"
+  select [
+    p.id,
+    p.name,
+    p.ssn,
+    p.license_id,
+    d.gender,
+    d.age,
+    d.height,
+    d.eye_color,
+    d.hair_color,
+    d.plate_number,
+    d.car_make,
+    d.car_model
+  ]
+)
+
+poi_second
+# Expect: Miranda Priestly (person_id 99716)
+
+# -----------------------------------------------------------------------------
+# 8) Full info on both POIs (join income)
+# -----------------------------------------------------------------------------
+from person p
+join drivers_license d [p.license_id == d.id]
+join income i [p.ssn == i.ssn]
+filter p.id in [67318, 99716]
+select [
+  p.id, p.ssn, p.name, d.gender,
+  p.address_number, p.address_street_name,
+  d.age, d.height, d.eye_color, d.hair_color,
+  p.license_id, d.plate_number, d.car_make, d.car_model,
+  i.annual_income
+]
