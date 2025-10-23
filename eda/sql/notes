@@ -1,0 +1,72 @@
+A crime has taken place and the detective needs your help. The detective gave you the crime scene report, but you somehow lost it. You vaguely remember that the crime was a ​murder​ that occurred sometime on ​Jan.15, 2018​ and that it took place in ​SQL City​. Start by retrieving the corresponding crime scene report from the police department’s database.
+
+
+possible witness no. 1
+| id    | name            | license_id | address_number | address_street_name | ssn       |
+| ----- | --------------- | ---------- | -------------- | ------------------- | --------- |
+| 14887 | Morty Schapiro  | 118009     | 4919           | Northwestern Dr     | 111564949 |
+| 89906 | Kinsey Erickson | 510019     | 309            | Northwestern Dr     | 635287661 |  (x) no interview
+
+
+possible witness no. 2
+| id    | name           | license_id | address_number | address_street_name | ssn       |
+| ----- | -------------- | ---------- | -------------- | ------------------- | --------- |
+| 16371 | Annabel Miller | 490173     | 103            | Franklin Ave        | 318771143 |
+
+
+interviews
+interviews| person_id | transcript                                                                                                                                                                                                                      |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 14887     | I heard a gunshot and then saw a man run out. He had a "Get Fit Now Gym" bag. The membership number on the bag started with "48Z". Only gold members have those bags. The man got into a car with a plate that included "H42W". |
+| 16371     | I saw the murder happen, and I recognized the killer from my gym when I was working out last week on January the 9th.                                                                                                           |
+
+persons of interest
+| id    | person_id | name          | membership_start_date | membership_status |
+| ----- | --------- | ------------- | --------------------- | ----------------- |
+| 48Z55 | 67318     | Jeremy Bowers | 20160101              | gold              |
+| 48Z7A | 28819     | Joe Germuska  | 20160305              | gold              |
+
+
+potential cars of person of interest
+| id     | age | height | eye_color | hair_color | gender | plate_number | car_make  | car_model |
+| ------ | --- | ------ | --------- | ---------- | ------ | ------------ | --------- | --------- |
+| 183779 | 21  | 65     | blue      | blonde     | female | H42W0X       | Toyota    | Prius     |
+| 423327 | 30  | 70     | brown     | brown      | male   | 0H42W2       | Chevrolet | Spark LS  |
+| 664760 | 21  | 71     | black     | black      | male   | 4H42WR       | Nissan    | Altima    |
+
+
+driver's license matches linked to potential cars of person of interest (name Jeremy Bowers [id 67318] matches gym membership)
+| id    | name           | license_id | address_number | address_street_name   | ssn       |
+| ----- | -------------- | ---------- | -------------- | --------------------- | --------- |
+| 51739 | Tushar Chandra | 664760     | 312            | Phi St                | 137882671 |
+| 67318 | Jeremy Bowers  | 423327     | 530            | Washington Pl, Apt 3A | 871539279 |
+| 78193 | Maxine Whitely | 183779     | 110            | Fisk Rd               | 137882671 |
+
+
+Jeremy Bowers checked into The Funky Grooves Tour on Facebook on the date of the murder
+| person_id | event_id | event_name             | date     |
+| --------- | -------- | ---------------------- | -------- |
+| 67318     | 4719     | The Funky Grooves Tour | 20180115 |
+| 67318     | 1143     | SQL Symphony Concert   | 20171206 |
+
+
+Jeremy Bowers' interview transcript (have 2nd person of interest)
+  - woman, wealthy, around 65-67", red hair, drives Tesla Model S, attended SQL Symphony Concert 3 times in Dec 2017
+| person_id | transcript                                                                                                                                                                                                                                        |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 67318     | I was hired by a woman with a lot of money. I don't know her name but I know she's around 5'5" (65") or 5'7" (67"). She has red hair and she drives a Tesla Model S. I know that she attended the SQL Symphony Concert 3 times in December 2017.
+ |
+
+
+
+second person of interest
+| id    | age | height | eye_color | hair_color | gender | plate_number | car_make | car_model | name             | license_id | address_number | address_street_name | ssn       | annual_income |
+| ----- | --- | ------ | --------- | ---------- | ------ | ------------ | -------- | --------- | ---------------- | ---------- | -------------- | ------------------- | --------- | ------------- |
+| 99716 | 68  | 66     | green     | red        | female | 500123       | Tesla    | Model S   | Miranda Priestly | 202298     | 1883           | Golden Ave          | 987756388 | 310000        |
+
+
+full info on persons of interest
+| ssn       | name             | age | gender | height | eye_color | hair_color | address_number | address_street_name   | license_id | plate_number | car_make  | car_model | annual_income |
+| --------- | ---------------- | --- | ------ | ------ | --------- | ---------- | -------------- | --------------------- | ---------- | ------------ | --------- | --------- | ------------- |
+| 871539279 | Jeremy Bowers    | 30  | male   | 70     | brown     | brown      | 530            | Washington Pl, Apt 3A | 423327     | 0H42W2       | Chevrolet | Spark LS  | 10500         |
+| 987756388 | Miranda Priestly | 68  | female | 66     | green     | red        | 1883           | Golden Ave            | 202298     | 500123       | Tesla     | Model S   | 310000        |
