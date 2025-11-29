@@ -2,6 +2,7 @@ use std::env;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
+
     println!("{}", fib2(args[1].parse().unwrap()));
 }
 

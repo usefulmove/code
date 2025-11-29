@@ -23,7 +23,7 @@ def fib2(n: int, a: int = 0, b: int = 1) -> int:
 
 def main():
     if len(sys.argv) > 1:
-        print(str(fib2(int(sys.argv[1]))))
+        print(fib2(int(sys.argv[1])))
 
 
 if __name__ == '__main__':
