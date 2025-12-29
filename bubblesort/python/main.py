@@ -1,22 +1,14 @@
 def main():
     o = [3,1,2,5,4]
-
     recheck = True
 
-    def swap(i, j):
-        nonlocal recheck
-        recheck = True
-
-        tmp = o[i]
-        o[i] = o[j]
-        o[j] = tmp
-    
     while recheck:
         recheck = False
 
         for i in range(len(o) - 1):
             if o[i] > o[i + 1]:
-                swap(i, i + 1)
+                recheck = True
+                o[i], o[i+1] = o[i+1], o[i] # swap
     
     print(f"{o}")
 
