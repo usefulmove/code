@@ -6,7 +6,7 @@ def main():
         recheck = False
 
         for i in range(len(o) - 1):
-            if o[i] > o[i + 1]:
+            if o[i] > o[i+1]:
                 recheck = True
                 o[i], o[i+1] = o[i+1], o[i] # swap
     
