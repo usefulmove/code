@@ -8,7 +8,11 @@ int fib(int n) {
   }
 }
 
+int fib2(int n) {
+  return n < 2 ? n : fib2(n-1) + fib2(n-2);
+}
+
 int main() {
-    printf("%d", fib(38));
+    printf("%d\n", fib2(38));
     return 0;
 }
