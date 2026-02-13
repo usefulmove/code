@@ -10,6 +10,7 @@ fn main() {
     relation_graph.insert("bass", HashMap::new());
     relation_graph.insert("drums", HashMap::new());
     relation_graph.insert("piano", HashMap::new());
+
     for (&node, obj) in relation_graph.iter_mut() {
         match node {
             "book" => {
