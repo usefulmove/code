@@ -8,5 +8,5 @@ fib :: proc(n: int) -> int {
 }
 
 main :: proc() {
-    fmt.printf("result: %d\n", fib(38))
+    fmt.printf("  %d\n", fib(38))
 }
