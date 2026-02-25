@@ -8,7 +8,7 @@ main :: proc() {
     filepath: string
 
     if len(os.args) == 1 {
-        fmt.printf("  error: no argument\n")
+        fmt.printfln("  error: no argument")
         return
     }
 
@@ -18,7 +18,7 @@ main :: proc() {
     defer delete(raw_data, context.allocator)
 
     if !ok {
-        fmt.printf("  error: could not read file (%s)\n", filepath)
+        fmt.printfln("  error: could not read file (%s)", filepath)
         return
     }
 
@@ -30,7 +30,7 @@ main :: proc() {
         words := strings.fields(line)
         n_words += len(words)
     }
-    fmt.printf("  file:  %s\n", filepath)
-    fmt.printf("  lines: %d\n", n_lines)
-    fmt.printf("  words: %d\n", n_words)
+    fmt.printfln("  file:  %s", filepath)
+    fmt.printfln("  lines: %d", n_lines)
+    fmt.printfln("  words: %d", n_words)
 }
