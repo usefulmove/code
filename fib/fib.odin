@@ -23,7 +23,7 @@ fib2 :: proc(n: int, a: int = 0, b: int = 1) -> int {
 main :: proc() {
     if len(os.args) > 1 {
         n, ok := strconv.parse_int(os.args[1])
-        if ok { fmt.printf("  %d\n", fib2(n)) }
-        else { fmt.printf("  invalid input (%s)\n", os.args[1]) }
+        if ok { fmt.printfln("  %d", fib2(n)) }
+        else { fmt.printfln("  invalid input (%s)", os.args[1]) }
     }
 }
