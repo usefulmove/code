@@ -6,6 +6,7 @@ fn main() {
         Ok(contents) => {
             println!("  file:  {}", filename);
             println!("  lines: {}", contents.lines().count());
+            println!("  words: {}", contents.split_whitespace().count());
         },
         Err(e) => println!("  error: {}", e),
     }
