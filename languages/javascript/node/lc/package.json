@@ -1,0 +1,8 @@
+{
+  "name": "lc",
+  "version": "1.0.0",
+  "description": "A simple line counter CLI",
+  "bin": {
+    "lc": "./index.js"
+  }
+}
