@@ -1,4 +1,4 @@
-# Functional Programming
+# Functional Programming Patterns
 
 *["Idiomatic Rust favors functional programming. It's a better fit for its ownership model."](https://kerkour.com/rust-functional-programming)  Sylvain Kerkour*
 
