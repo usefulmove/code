@@ -2,39 +2,314 @@
 
 *["Idiomatic Rust favors functional programming. It's a better fit for its ownership model."](https://kerkour.com/rust-functional-programming)  Sylvain Kerkour*
 
+---
+
+## map
+Transform each element of a collection.
+
+| Language | Syntax |
+|:---------|:-------|
+| Scala | `map` |
+| Rust | `iter.map(f)` |
+| JavaScript | `arr.map(f)` |
+| RamdaJS | `R.map(f, arr)` |
+| Python | `map(f, iter)` · `[f(x) for x in iter]` |
+| C++ | `views::transform(f)` · `ranges::transform` |
+| OCaml | `List.map f lst` · `Seq.map` |
+
+---
+
+## filter
+Keep only elements satisfying a predicate.
+
+| Language | Syntax |
+|:---------|:-------|
+| Scala | `filter` |
+| Rust | `iter.filter(pred)` |
+| JavaScript | `arr.filter(pred)` |
+| RamdaJS | `R.filter(pred, arr)` |
+| Python | `filter(pred, iter)` · `[x for x in iter if pred(x)]` |
+| C++ | `views::filter(pred)` · `ranges::copy_if` |
+| OCaml | `List.filter pred lst` · `Seq.filter` |
+
+---
+
+## fold
+Reduce a collection to a single value by accumulating with a function.
+
+| Language | Syntax |
+|:---------|:-------|
+| Scala | `foldLeft` · `reduce` |
+| Rust | `iter.fold(init, f)` · `iter.reduce(f)` |
+| JavaScript | `arr.reduce(f, init)` |
+| RamdaJS | `R.reduce(f, init, arr)` |
+| Python | `functools.reduce(f, iter)` |
+| C++ | `ranges::fold_left` (C++23) · `std::accumulate` |
+| OCaml | `List.fold_left f init lst` · `List.fold_right` |
+
+---
+
+## flatmap
+Map then flatten one level — each element produces a list, results are concatenated.
+
+| Language | Syntax |
+|:---------|:-------|
+| Scala | `collect` · `flatMap` |
+| Rust | `iter.flat_map(f)` |
+| JavaScript | `arr.flatMap(f)` |
+| RamdaJS | `R.chain(f, arr)` |
+| Python | — |
+| C++ | `views::transform(f) \| views::join` |
+| OCaml | `List.concat_map f lst` |
+
+---
+
+## flatten
+Collapse one level of nesting.
+
+| Language | Syntax |
+|:---------|:-------|
+| Scala | `flatten` |
+| Rust | `iter.flatten()` |
+| JavaScript | `arr.flat()` |
+| RamdaJS | `R.flatten(arr)` |
+| Python | `(x for subseq in seq for x in subseq)` |
+| C++ | `views::join` |
+| OCaml | `List.flatten lst` · `List.concat` |
+
+---
+
+## curry
+Partially apply a function by fixing some of its arguments.
+
+| Language | Syntax |
+|:---------|:-------|
+| Scala | — |
+| Rust | — |
+| JavaScript | — |
+| RamdaJS | `R.curry(f)` |
+| Python | `toolz.curry(f)` · `functools.partial` |
+| C++ | lambdas · `std::bind_front` |
+| OCaml | native — all functions are curried by default |
+
+---
+
+## compose
+Combine functions so the output of one feeds into the next.
+
+| Language | Syntax |
+|:---------|:-------|
+| Scala | — |
+| Rust | — |
+| JavaScript | — |
+| RamdaJS | `R.compose(f, g)` (right-to-left) · `R.pipe(f, g)` (left-to-right) |
+| Python | `toolz.compose(f, g)` · `toolz.compose_left` as pipe |
+| C++ | `\|` pipe operator · lambdas |
+| OCaml | `\|>` pipe (left-to-right) · `@@` apply · manual `%` compose |
+
+---
+
+## scan
+Like fold, but emits each intermediate accumulator value.
+
+| Language | Syntax |
+|:---------|:-------|
+| Scala | `scanLeft` |
+| Rust | `iter.scan(init, f)` |
+| JavaScript | — |
+| RamdaJS | `R.scan(f, init, arr)` |
+| Python | `itertools.accumulate(iter, f)` |
+| C++ | `std::inclusive_scan` · `std::partial_sum` |
+| OCaml | custom via `List.fold_left` |
+
+---
+
+## sum
+Sum all elements.
+
+| Language | Syntax |
+|:---------|:-------|
+| Scala | `sum` |
+| Rust | `iter.sum()` |
+| JavaScript | `arr.reduce((a, b) => a + b, 0)` |
+| RamdaJS | `R.sum(arr)` |
+| Python | `sum(iter)` |
+| C++ | `ranges::fold_left` (C++23) · `std::accumulate` |
+| OCaml | `List.fold_left (+) 0 lst` |
+
+---
+
+## count
+Count elements (optionally matching a predicate).
+
+| Language | Syntax |
+|:---------|:-------|
+| Scala | `size` · `count` |
+| Rust | `iter.count()` · `len()` |
+| JavaScript | `arr.length` |
+| RamdaJS | `R.count(pred, arr)` |
+| Python | `len(lst)` |
+| C++ | `ranges::count` · `ranges::distance` |
+| OCaml | `List.length lst` |
+
+---
+
+## max / min
+Find the largest or smallest element.
+
+| Language | Syntax |
+|:---------|:-------|
+| Scala | `max` / `min` |
+| Rust | `iter.max()` / `iter.min()` |
+| JavaScript | `arr.reduce((a, b) => a > b ? a : b)` |
+| RamdaJS | `R.max(arr)` / `R.min(arr)` |
+| Python | `max(iter)` / `min(iter)` |
+| C++ | `ranges::max` / `ranges::min` |
+| OCaml | `List.fold_left max (List.hd lst) lst` / `List.fold_left min` |
+
+---
+
+## sort
+Sort elements. Items marked `*` sort in place (mutate).
+
+| Language | Syntax |
+|:---------|:-------|
+| Scala | `sorted` |
+| Rust | `slice::sort*` |
+| JavaScript | `arr.sort((a, b) => a - b)*` |
+| RamdaJS | `R.sort(comparator, arr)` |
+| Python | `sorted(iter)` |
+| C++ | `ranges::sort*` |
+| OCaml | `List.sort compare lst` |
+
+---
+
+## reverse
+Reverse the order of elements. Items marked `*` mutate.
+
+| Language | Syntax |
+|:---------|:-------|
+| Scala | `reverse` |
+| Rust | `iter.rev()` |
+| JavaScript | `arr.reverse()*` |
+| RamdaJS | `R.reverse(arr)` |
+| Python | `lst[::-1]` · `reversed(iter)` |
+| C++ | `views::reverse` |
+| OCaml | `List.rev lst` |
+
+---
+
+## rotate
+Move elements cyclically (e.g. last element to front, or shift by n).
+
+| Language | Syntax |
+|:---------|:-------|
+| Scala | `(o.takeRight(1) ::: o.dropRight(1))` · `(o.tail :+ o.head)` |
+| Rust | `slice::rotate_right(n)*` · `slice::rotate_left(n)*` |
+| JavaScript | — |
+| RamdaJS | `R.move(-1, 0, arr)` · `R.move(0, -1, arr)` |
+| Python | `lst[n:] + lst[:n]` · `numpy.roll(arr, n)` |
+| C++ | `ranges::rotate*` |
+| OCaml | custom via `take`/`drop` + `@` |
+
+Items marked `*` mutate.
+
+---
+
+## unique
+Remove duplicate elements.
+
+| Language | Syntax |
+|:---------|:-------|
+| Scala | `distinct` |
+| Rust | `dedup*` |
+| JavaScript | `[...new Set(arr)]` |
+| RamdaJS | `R.uniq(arr)` |
+| Python | `list(set(seq))` |
+| C++ | `ranges::unique*` |
+| OCaml | `List.sort_uniq compare lst` |
+
+Items marked `*` mutate (or require a sorted/mutable structure).
+
+---
+
+## take / drop
+Take the first n elements, or skip the first n elements.
+
+| Language | Syntax |
+|:---------|:-------|
+| Scala | `take(n)` / `drop(n)` |
+| Rust | `iter.take(n)` / `iter.skip(n)` |
+| JavaScript | `arr.slice(0, n)` / `arr.slice(n)` |
+| RamdaJS | `R.take(n, arr)` / `R.drop(n, arr)` |
+| Python | `lst[:n]` / `lst[n:]` |
+| C++ | `views::take(n)` / `views::drop(n)` |
+| OCaml | custom `take n lst` / custom `drop n lst` · `Seq.take`/`Seq.drop` (≥4.14) |
+
+---
+
+## any / all
+Test whether any or all elements satisfy a predicate.
+
+| Language | Syntax |
+|:---------|:-------|
+| Scala | `exists(pred)` / `forall(pred)` |
+| Rust | `iter.any(pred)` / `iter.all(pred)` |
+| JavaScript | `arr.some(pred)` / `arr.every(pred)` |
+| RamdaJS | `R.any(pred, arr)` / `R.all(pred, arr)` |
+| Python | `any(pred(x) for x in iter)` / `all(...)` |
+| C++ | `ranges::any_of` / `ranges::all_of` |
+| OCaml | `List.exists pred lst` / `List.for_all pred lst` |
+
+---
+
+## zip
+Pair elements from two collections by position (inner product / shortest wins).
+
+| Language | Syntax |
+|:---------|:-------|
+| Scala | `zip` |
+| Rust | `iter.zip(other)` |
+| JavaScript | — |
+| RamdaJS | `R.zip(a, b)` |
+| Python | `zip(a, b)` |
+| C++ | `views::zip` (C++23) |
+| OCaml | `List.combine a b` |
+
+---
+
+## cartesian product
+Produce all combinations of elements from two collections (outer product).
+
+| Language | Syntax |
+|:---------|:-------|
+| Scala | — |
+| Rust | `itertools::iproduct!(a, b)` |
+| JavaScript | — |
+| RamdaJS | — |
+| Python | `itertools.product(a, b)` · `[(x, y) for x in a for y in b]` |
+| C++ | `views::cartesian_product` (C++23) |
+| OCaml | `List.concat_map (fun x -> List.map (fun y -> (x,y)) b) a` |
+
+---
+
+## chain
+Concatenate two or more collections end-to-end.
+
+| Language | Syntax |
+|:---------|:-------|
+| Scala | `a ++ b` |
+| Rust | `iter.chain(other)` |
+| JavaScript | `a.concat(b)` |
+| RamdaJS | `R.concat(a, b)` |
+| Python | `itertools.chain(a, b)` |
+| C++ | `views::concat` (C++26) |
+| OCaml | `a @ b` · `List.append a b` |
+
+---
 
 <br>
 
-|  | Scala | Rust | JavaScript | RamdaJS | Python | C++ (std::ranges) |
-|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
-| map | map | iter.map | map | R.map | map<br>( f(a) for a in iter ) | views::transform<br>ranges::transform |
-| filter | filter | iter.filter | filter | R.filter | filter<br>( a for a in iter if predicate(a) ) | views::filter<br>ranges::copy_if |
-| fold | foldLeft<br>reduce | iter.fold<br>iter.reduce | reduce | R.reduce | functools.reduce | ranges::fold_left (C++23)<br>std::accumulate |
-| flatmap | collect<br>flatMap | iter.flat_map | flatMap | R.chain | | views::transform \| views::join |
-| flatten | flatten | iter.flatten | flat() | R.flatten | ( a for subseq in seq for a in subseq ) | views::join |
-| curry | TODO | TODO | | R.curry | toolz.curry | lambdas<br>std::bind_front |
-| scan | scanLeft | iter.scan | | R.scan | itertools.accumulate | std::inclusive_scan<br>std::partial_sum |
-| sum | sum | iter.sum | reduce | R.sum | sum | ranges::fold_left (C++23)<br>std::accumulate |
-| count | size<br>count | iter.count<br>len | length | R.count | len | ranges::count<br>ranges::distance |
-| max | max | iter.max | reduce | R.max | max | ranges::max |
-| min | min | iter.min | reduce | R.min | min | ranges::min |
-| sort | sorted | slice::sort* | sort((a,b) => a-b)* | R.sort | sorted | ranges::sort* |
-| reverse | reverse | iter.rev | reverse* | R.reverse | `[::-1]`<br>reversed | views::reverse |
-| compose | TODO | TODO | | R.compose<br>R.pipe | toolz.compose<br>toolz.compose_left as pipe | \| (pipe operator)<br>lambdas |
-| drop | drop | skip | slice | R.drop | `[:-1]` | views::drop |
-| take | take | take | slice | R.take | `[:1]` | views::take |
-| any | exists | iter.any | some() | R.any | any | ranges::any_of |
-| all | forall | iter.all | every() | R.all | all | ranges::all_of |
-| zip<br>inner product | zip | iter.zip | ??? | R.zip | zip | views::zip (C++23) |
-| outer product (Cartesian) | ??? | itertools::iproduct | ??? | | itertools.product<br>( (a, b) for a in as for b in bs ) | views::cartesian_product (C++23) |
-| chain | ++ | iter.chain | concat | R.concat | itertools.chain | views::concat (C++26) |
-| rotate | `(o takeRight 1) ::: (o dropRight 1)`<br>`o.tail :+ o.head` | slice.rotate_right<br>slice.rotate_left | ??? | R.move(-1)(0) <br> R.move(0)(-1) | `o[n:] + o[:n]`<br>`o[-n:] + o[:-n]`<br>`numpy.roll` | ranges::rotate* |
-| unique | distinct | dedup | | R.uniq | set(seq) | ranges::unique* |
-
-( *modifies a mutable data structure )
-
-
-<br><br>
 ## C++ Ranges Includes
 ```cpp
 #include <ranges>      // views::transform, views::filter, views::take, views::drop, views::reverse, views::join, views::zip (C++23)
@@ -44,7 +319,8 @@
 ```
 
 
-<br><br>
+<br>
+
 ## Concepts ([ref](https://www.baeldung.com/scala/functional-programming))
 - Immutability
 - Recursion ( Tail Recursion )
@@ -59,25 +335,31 @@
 - Currying
 
 
-<br><br>
+<br>
+
 ## Iterators in Rust
 
 [Iterator in std::iter](https://doc.rust-lang.org/std/iter/trait.Iterator.html)
 
-iter (by reference)
-into_iter (owned)
+`iter` — borrows elements by reference
 
-Iter.inspect can be used to inspect values flowing through an iterator.
+`into_iter` — takes ownership (consumes the collection)
+
+`iter_mut` — mutable references
+
+`iter.inspect(f)` — peek at values flowing through a pipeline without consuming them
 
 
-<br><br>
+<br>
+
 ## Scala Tail Recursion
 `import scala.annotation.tailrec`
 
-`@tailrec` decorator before recursive function definition
+`@tailrec` annotation before recursive function definition
 
 
-<br><br>
+<br>
+
 ## Python Caching
 `from functools import cache`
 
