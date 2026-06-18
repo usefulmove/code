@@ -2,7 +2,7 @@ import gleam/io
 import gleam/int
 
 pub fn main() {
-    io.println(int.to_string(fib2(10)))
+    io.println(int.to_string(fib2(38)))
 }
 
 fn fib(n) {
