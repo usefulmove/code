@@ -10,4 +10,4 @@ sub fib {
     }
 }
 
-print fib(10)
+print fib(10);
