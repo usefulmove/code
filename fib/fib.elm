@@ -9,6 +9,14 @@ main =
     text out
   
 
+fib : Int -> Int
+fib n =
+  case n of
+    0 -> n
+    1 -> n
+    _ -> fib (n-1) + fib (n-2)
+
+
 fib2 : Int -> Int
 fib2 n =
   let
