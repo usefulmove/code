@@ -11,6 +11,7 @@ Transform each element of a collection.
 |:---------|:-------|
 | Scala | `map` |
 | Rust | `iter.map(f)` |
+| Kotlin | `arr.map(f)` · `seq.map(f)` |
 | JavaScript | `arr.map(f)` |
 | RamdaJS | `R.map(f, arr)` |
 | Python | `map(f, iter)` · `[f(x) for x in iter]` |
@@ -26,6 +27,7 @@ Keep only elements satisfying a predicate.
 |:---------|:-------|
 | Scala | `filter` |
 | Rust | `iter.filter(pred)` |
+| Kotlin | `arr.filter(pred)` · `arr.filterNot(pred)` |
 | JavaScript | `arr.filter(pred)` |
 | RamdaJS | `R.filter(pred, arr)` |
 | Python | `filter(pred, iter)` · `[x for x in iter if pred(x)]` |
@@ -41,6 +43,7 @@ Reduce a collection to a single value by accumulating with a function.
 |:---------|:-------|
 | Scala | `foldLeft` · `reduce` |
 | Rust | `iter.fold(init, f)` · `iter.reduce(f)` |
+| Kotlin | `fold(init, f)` · `reduce(f)` |
 | JavaScript | `arr.reduce(f, init)` |
 | RamdaJS | `R.reduce(f, init, arr)` |
 | Python | `functools.reduce(f, iter)` |
@@ -56,6 +59,7 @@ Map then flatten one level — each element produces a list, results are concate
 |:---------|:-------|
 | Scala | `collect` · `flatMap` |
 | Rust | `iter.flat_map(f)` |
+| Kotlin | `arr.flatMap(f)` |
 | JavaScript | `arr.flatMap(f)` |
 | RamdaJS | `R.chain(f, arr)` |
 | Python | — |
@@ -71,6 +75,7 @@ Collapse one level of nesting.
 |:---------|:-------|
 | Scala | `flatten` |
 | Rust | `iter.flatten()` |
+| Kotlin | `arr.flatten()` |
 | JavaScript | `arr.flat()` |
 | RamdaJS | `R.flatten(arr)` |
 | Python | `(x for subseq in seq for x in subseq)` |
@@ -86,6 +91,7 @@ Partially apply a function by fixing some of its arguments.
 |:---------|:-------|
 | Scala | — |
 | Rust | — |
+| Kotlin | curried lambdas · custom `curried()` / `partial` |
 | JavaScript | — |
 | RamdaJS | `R.curry(f)` |
 | Python | `toolz.curry(f)` · `functools.partial` |
@@ -101,6 +107,7 @@ Combine functions so the output of one feeds into the next.
 |:---------|:-------|
 | Scala | — |
 | Rust | — |
+| Kotlin | `let` chaining · custom `compose` / `andThen` |
 | JavaScript | — |
 | RamdaJS | `R.compose(f, g)` (right-to-left) · `R.pipe(f, g)` (left-to-right) |
 | Python | `toolz.compose(f, g)` · `toolz.compose_left` as pipe |
@@ -116,6 +123,7 @@ Like fold, but emits each intermediate accumulator value.
 |:---------|:-------|
 | Scala | `scanLeft` |
 | Rust | `iter.scan(init, f)` |
+| Kotlin | `runningFold(init, f)` · `scan(init, f)` (alias) |
 | JavaScript | — |
 | RamdaJS | `R.scan(f, init, arr)` |
 | Python | `itertools.accumulate(iter, f)` |
@@ -131,6 +139,7 @@ Sum all elements.
 |:---------|:-------|
 | Scala | `sum` |
 | Rust | `iter.sum()` |
+| Kotlin | `sum()` · `sumOf { }` |
 | JavaScript | `arr.reduce((a, b) => a + b, 0)` |
 | RamdaJS | `R.sum(arr)` |
 | Python | `sum(iter)` |
@@ -146,6 +155,7 @@ Count elements (optionally matching a predicate).
 |:---------|:-------|
 | Scala | `size` · `count` |
 | Rust | `iter.count()` · `len()` |
+| Kotlin | `count()` · `count(pred)` · `size` |
 | JavaScript | `arr.length` |
 | RamdaJS | `R.count(pred, arr)` |
 | Python | `len(lst)` |
@@ -161,6 +171,7 @@ Find the largest or smallest element.
 |:---------|:-------|
 | Scala | `max` / `min` |
 | Rust | `iter.max()` / `iter.min()` |
+| Kotlin | `maxOrNull()` / `minOrNull()` · `maxByOrNull { }` / `minByOrNull { }` |
 | JavaScript | `arr.reduce((a, b) => a > b ? a : b)` |
 | RamdaJS | `R.max(arr)` / `R.min(arr)` |
 | Python | `max(iter)` / `min(iter)` |
@@ -176,6 +187,7 @@ Sort elements. Items marked `*` sort in place (mutate).
 |:---------|:-------|
 | Scala | `sorted` |
 | Rust | `slice::sort*` |
+| Kotlin | `sorted()` · `sortedBy { }` · `MutableList.sort()`* |
 | JavaScript | `arr.sort((a, b) => a - b)*` |
 | RamdaJS | `R.sort(comparator, arr)` |
 | Python | `sorted(iter)` |
@@ -191,6 +203,7 @@ Reverse the order of elements. Items marked `*` mutate.
 |:---------|:-------|
 | Scala | `reverse` |
 | Rust | `iter.rev()` |
+| Kotlin | `reversed()` · `asReversed()` (view) · `MutableList.reverse()`* |
 | JavaScript | `arr.reverse()*` |
 | RamdaJS | `R.reverse(arr)` |
 | Python | `lst[::-1]` · `reversed(iter)` |
@@ -206,6 +219,7 @@ Move elements cyclically (e.g. last element to front, or shift by n).
 |:---------|:-------|
 | Scala | `(o.takeRight(1) ::: o.dropRight(1))` · `(o.tail :+ o.head)` |
 | Rust | `slice::rotate_right(n)*` · `slice::rotate_left(n)*` |
+| Kotlin | `l.drop(n) + l.take(n)` · `l.takeLast(1) + l.dropLast(1)` |
 | JavaScript | — |
 | RamdaJS | `R.move(-1, 0, arr)` · `R.move(0, -1, arr)` |
 | Python | `lst[n:] + lst[:n]` · `numpy.roll(arr, n)` |
@@ -223,6 +237,7 @@ Remove duplicate elements.
 |:---------|:-------|
 | Scala | `distinct` |
 | Rust | `dedup*` |
+| Kotlin | `distinct()` · `distinctBy { }` |
 | JavaScript | `[...new Set(arr)]` |
 | RamdaJS | `R.uniq(arr)` |
 | Python | `list(set(seq))` |
@@ -240,6 +255,7 @@ Take the first n elements, or skip the first n elements.
 |:---------|:-------|
 | Scala | `take(n)` / `drop(n)` |
 | Rust | `iter.take(n)` / `iter.skip(n)` |
+| Kotlin | `take(n)` / `drop(n)` · `takeWhile { }` / `dropWhile { }` |
 | JavaScript | `arr.slice(0, n)` / `arr.slice(n)` |
 | RamdaJS | `R.take(n, arr)` / `R.drop(n, arr)` |
 | Python | `lst[:n]` / `lst[n:]` |
@@ -255,6 +271,7 @@ Test whether any or all elements satisfy a predicate.
 |:---------|:-------|
 | Scala | `exists(pred)` / `forall(pred)` |
 | Rust | `iter.any(pred)` / `iter.all(pred)` |
+| Kotlin | `any(pred)` / `all(pred)` · `none(pred)` |
 | JavaScript | `arr.some(pred)` / `arr.every(pred)` |
 | RamdaJS | `R.any(pred, arr)` / `R.all(pred, arr)` |
 | Python | `any(pred(x) for x in iter)` / `all(...)` |
@@ -270,6 +287,7 @@ Pair elements from two collections by position (inner product / shortest wins).
 |:---------|:-------|
 | Scala | `zip` |
 | Rust | `iter.zip(other)` |
+| Kotlin | `a.zip(b)` · `zipWithNext()` |
 | JavaScript | — |
 | RamdaJS | `R.zip(a, b)` |
 | Python | `zip(a, b)` |
@@ -285,6 +303,7 @@ Produce all combinations of elements from two collections (outer product).
 |:---------|:-------|
 | Scala | — |
 | Rust | `itertools::iproduct!(a, b)` |
+| Kotlin | `a.flatMap { x -> b.map { y -> x to y } }` |
 | JavaScript | — |
 | RamdaJS | — |
 | Python | `itertools.product(a, b)` · `[(x, y) for x in a for y in b]` |
@@ -300,6 +319,7 @@ Concatenate two or more collections end-to-end.
 |:---------|:-------|
 | Scala | `a ++ b` |
 | Rust | `iter.chain(other)` |
+| Kotlin | `a + b` |
 | JavaScript | `a.concat(b)` |
 | RamdaJS | `R.concat(a, b)` |
 | Python | `itertools.chain(a, b)` |
@@ -348,6 +368,19 @@ Concatenate two or more collections end-to-end.
 `iter_mut` — mutable references
 
 `iter.inspect(f)` — peek at values flowing through a pipeline without consuming them
+
+
+<br>
+
+## Collections vs Sequences in Kotlin
+
+`List` / `Iterable` operations are eager — each step allocates an intermediate list
+
+`Sequence` operations are lazy — call `.asSequence()` to opt in
+
+`generateSequence(seed) { next }` — build a possibly infinite sequence
+
+`sequence { yield(x) }` — imperative-style lazy generator
 
 
 <br>
