@@ -6,7 +6,7 @@ import kotlin.math.sqrt
 
 fun double(n: Int): Int = n + n
 
-val square: (Int) -> Int = {n -> n * n}
+val square: (Int) -> Int = { n -> n * n }
 
 fun cube(n: Int): Int {
    return n * n * n
@@ -26,7 +26,7 @@ println(hello())
 println(hello("cora"))
 
 // lambda
-println( {n: Int -> n * n * n}(2) )
+println( { n: Int -> n * n * n }(2) )
 
 // higher-order functions
 fun fold(f: (Int, Int) -> Int, ns: Array<Int>, seed: Int = 0): Int {
@@ -43,3 +43,6 @@ println(fold(::add, arr))
 
 fun f(n: Int, acc: Int): Int = acc + n * n
 println(fold(::f, arr))
+
+// fold over a range
+(0..8).fold(0) { acc, n -> acc + n * n }
