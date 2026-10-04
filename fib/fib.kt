@@ -1,6 +1,6 @@
 fun main() = println(fib(10))
 
-tailrec fun fib(n: Int): Int = when (n) {
-    0, 1 -> return n
-    else -> return fib(n-1) + fib(n-2)
+fun fib(n: Int): Int = when (n) {
+    0, 1 -> n
+    else -> fib(n - 1) + fib(n - 2)
 }
