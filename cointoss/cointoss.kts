@@ -1,9 +1,6 @@
 typealias Coins = List<Int>
 
-fun getCoins(vararg coins: Int): Coins =
-    List(coins.size) { 0 }
-        .withIndex()
-        .map { (i, _) -> coins[i] }
+fun getCoins(vararg coins: Int): Coins = coins.toList()
 
 fun toss(times: Int = 1): Coins =
     List(times) { (0..1).random() }
