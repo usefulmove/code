@@ -29,6 +29,10 @@ fun runSimulation(pattern: Coins, cycles: Int): Double =
 
 val res101 = runSimulation(getCoins(1,0,1), 2_000_000)
 val res001 = runSimulation(getCoins(0,0,1), 2_000_000)
+val res10101 = runSimulation(getCoins(1,0,1,0,1), 1_000_000)
+val res00000 = runSimulation(getCoins(0,0,0,0,0), 1_000_000)
 
-println("  ${"%.3f".format(res101)}")
-println("  ${"%.3f".format(res001)}")
+println("  101:   ${"%.3f".format(res101)}")
+println("  001:   ${"%.3f".format(res001)}")
+println("  10101: ${"%.3f".format(res10101)}")
+println("  00000: ${"%.3f".format(res00000)}")
